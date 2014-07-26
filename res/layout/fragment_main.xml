@@ -95,7 +95,7 @@
         android:layout_gravity="center"
         android:id="@+id/resultLayer"
         android:visibility="invisible"
-        android:background="@color/test"
+        android:background="@color/darkgray"
         >
 	    <TextView 
 	        android:id="@+id/resultTV"
