@@ -2,11 +2,15 @@ package com.echo.littleapple;
 
 
 
+import java.util.Random;
+
 import com.echo.littleapple.GameView.GameEventListner;
 
+import android.R.string;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -46,6 +50,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private long lastPressMillis = 0;
 	
 	private BlockOnTouchEvent blockOnTouchEvent;
+	
+	private static final String[] colors = {"#773460" ,"#FE436A" ,"#823935" ,"#113F3D" ,"#26BCD5" ,"#36424A" ,"#458994" ,"#554840" ,"#D96831" ,"#AEDD81" ,"#593D43"};
+	private Random random;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -136,7 +143,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	public void onStartButtonClick(View view){
 		startLayer.setVisibility(View.INVISIBLE);
-		gameView.reset();
+		//gameView.reset();
 	}
 
 	public void onRestartButtonClick(View view){
@@ -158,6 +165,12 @@ public class GameActiviy extends Activity implements GameEventListner{
 		value = getString(R.string.best, bestScore);
 		bestTV.setText(value);
 
+		if (random == null) {
+			random = new Random();
+		}
+		int colorIndex = random.nextInt(colors.length);
+
+		resultLayer.setBackgroundColor(Color.parseColor(colors[colorIndex]));;
 		resultLayer.setVisibility(View.VISIBLE);
 		
 	}

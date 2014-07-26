@@ -157,7 +157,7 @@ public class GameView extends View{
 		
 		if (apples == null) {
 			apples = new int[row][COLUMN];
-			//randomApples();
+			randomApples();
 		}
 
 

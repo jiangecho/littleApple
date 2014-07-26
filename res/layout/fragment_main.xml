@@ -16,6 +16,7 @@
         android:layout_marginTop="50dip"
         android:layout_gravity="center_horizontal"
         android:textSize="40sp"
+        android:textColor="@android:color/background_dark"
         android:text="30.00"
         />
 
@@ -76,16 +77,14 @@
 
 	    <Button
 	        android:id="@+id/startButton"
-	        android:layout_width="wrap_content"
+	        android:layout_width="150dp"
 	        android:layout_height="wrap_content"
 	        android:layout_gravity="center_horizontal"
 	        android:layout_marginTop="15dip"
 	        android:background="@color/red"
-	        android:textColor="@color/white"
-	        android:text="@string/start" 
 	        android:onClick="onStartButtonClick"
-	        />
-
+	        android:text="@string/start"
+	        android:textColor="@color/white" />
 
     </LinearLayout>
     
@@ -96,7 +95,7 @@
         android:layout_gravity="center"
         android:id="@+id/resultLayer"
         android:visibility="invisible"
-        android:background="@color/darkgray"
+        android:background="@color/test"
         >
 	    <TextView 
 	        android:id="@+id/resultTV"
@@ -130,7 +129,7 @@
 
 	    <Button
 	        android:id="@+id/restartButton"
-	        android:layout_width="wrap_content"
+	        android:layout_width="150dp"
 	        android:layout_height="wrap_content"
 	        android:layout_gravity="center_horizontal"
 	        android:layout_marginTop="15dip"
