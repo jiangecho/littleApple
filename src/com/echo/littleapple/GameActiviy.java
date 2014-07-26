@@ -13,7 +13,9 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -42,17 +44,23 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	
 	private long lastPressMillis = 0;
+	
+	private BlockOnTouchEvent blockOnTouchEvent;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_main);
 		countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+		blockOnTouchEvent = new BlockOnTouchEvent();
         timerTV = (TextView)findViewById(R.id.timerTV);
         gameView = (GameView)findViewById(R.id.gameView);
         gameView.setGameEventListener(this);
         startLayer = (LinearLayout)findViewById(R.id.startLayer);
+        startLayer.setOnTouchListener(blockOnTouchEvent);
+
         resultLayer = (LinearLayout)findViewById(R.id.resultLayer);
+        resultLayer.setOnTouchListener(blockOnTouchEvent);
         
         resultTV = (TextView) findViewById(R.id.resultTV);
         bestTV = (TextView) findViewById(R.id.bestTV);
@@ -186,5 +194,14 @@ public class GameActiviy extends Activity implements GameEventListner{
 		}
 		
 		return super.onKeyUp(keyCode, event);
+	}
+	
+	private class BlockOnTouchEvent implements OnTouchListener{
+
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			return true;
+		}
+		
 	}
 }
