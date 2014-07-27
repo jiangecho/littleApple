@@ -169,16 +169,14 @@ public class GameActiviy extends Activity implements GameEventListner{
 			value = getResources().getString(R.string.strf);
 		}
 		promptTV.setText(value);
-		
-		value = getString(R.string.best, bestScore);
-		bestTV.setText(value);
-
-		resultLayer.setVisibility(View.VISIBLE);
 
 		if (score > bestScore) {
 			bestScore = score;
+			value = getString(R.string.best, bestScore);
+			bestTV.setText(value);
 			sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
 		}
+		resultLayer.setVisibility(View.VISIBLE);
 		
 	}
 
