@@ -116,10 +116,6 @@ public class GameView extends View{
 			canvas.drawLine(cellWidth * i, 0, cellWidth * i, height, linePaint);
 		}
 		
-		if (apples == null) {
-			return;
-		}
-		
 		if (bitmapApple == null || bitmapError == null) {
 			return;
 		}
@@ -261,10 +257,9 @@ public class GameView extends View{
 
 			// right, move
 			// wrong, game over
-			
+			return true;
 		}
 		
-		return false;
 	}
 
 
