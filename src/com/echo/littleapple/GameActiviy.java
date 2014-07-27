@@ -37,6 +37,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private LinearLayout resultLayer;
 	private TextView resultTV;
 	private TextView bestTV;
+	private TextView promptTV;
 	private Handler handler;
 	
 	private CountDownTimer countDownTimer;
@@ -60,6 +61,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		blockOnTouchEvent = new BlockOnTouchEvent();
         timerTV = (TextView)findViewById(R.id.timerTV);
         gameView = (GameView)findViewById(R.id.gameView);
+        promptTV = (TextView) findViewById(R.id.promptTV);
         gameView.setGameEventListener(this);
         startLayer = (LinearLayout)findViewById(R.id.startLayer);
         startLayer.setOnTouchListener(blockOnTouchEvent);
@@ -164,14 +166,22 @@ public class GameActiviy extends Activity implements GameEventListner{
 		String value = getResources().getString(R.string.result, score);
 		resultTV.setText(value);
 		
-		if (score > bestScore) {
-			bestScore = score;
-			sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
+		if (score > 100) {
+			value = getResources().getString(R.string.str_high_score);
+		}else {
+			value = getResources().getString(R.string.strf);
 		}
+		promptTV.setText(value);
+		
 		value = getString(R.string.best, bestScore);
 		bestTV.setText(value);
 
 		resultLayer.setVisibility(View.VISIBLE);
+
+		if (score > bestScore) {
+			bestScore = score;
+			sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
+		}
 		
 	}
 
