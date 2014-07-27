@@ -83,6 +83,8 @@ public class GameView extends View{
 		int left, top, right, bottom;
 		
 		
+		//draw the first horizontal lines, maybe hidden
+		canvas.drawLine(0, moveYOffset + firstCellHeight - cellHeight, width, moveYOffset + firstCellHeight - cellHeight, linePaint);
 		//draw horizontal lines
 		for (int i = 0; i < row ; i++) {
 			canvas.drawLine(0, moveYOffset + firstCellHeight + cellHeight * i, width, moveYOffset + firstCellHeight + cellHeight * i, linePaint);
@@ -150,7 +152,7 @@ public class GameView extends View{
 			row  += 1;
 		}
 		
-		moveStepHeight = cellHeight / 3;
+		moveStepHeight = cellHeight / 6;
 		
 		if (apples == null) {
 			apples = new int[row][COLUMN];
@@ -256,7 +258,7 @@ public class GameView extends View{
 				if (moveYOffset < cellHeight) {
 					moveYOffset += moveStepHeight;
 					invalidate();
-					postDelayed(this, 25);
+					postDelayed(this, 10);
 				}else {
 					moveYOffset = 0;
 					for (int i = row - 2; i > 0; i--) {
@@ -270,7 +272,7 @@ public class GameView extends View{
 					invalidate();
 				}
 			}
-		}, 25);
+		}, 10);
 	}
 	
 	
