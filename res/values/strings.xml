@@ -11,6 +11,7 @@
     <string name="strd">小苹果！</string>
     <string name="result">呵呵！我吃掉了%d个小苹果！</string>
     <string name="strf">亲加油哦！</string>
+    <string name="str_high_score">亲快炫耀一下!</string>
     <string name="best">最高纪录: %d</string>
     <string name="start">预备，上！</string>
     <string name="restart">再挑战一次</string>
