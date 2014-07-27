@@ -2,16 +2,13 @@ package com.echo.littleapple;
 
 import java.util.Random;
 
-import android.R.integer;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.CountDownTimer;
 import android.os.Handler;
-import android.renderscript.Type.CubemapFace;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;

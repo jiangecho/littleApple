@@ -4,9 +4,6 @@ package com.echo.littleapple;
 
 import java.util.Random;
 
-import com.echo.littleapple.GameView.GameEventListner;
-
-import android.R.string;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,17 +11,15 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.echo.littleapple.GameView.GameEventListner;
 
 
 public class GameActiviy extends Activity implements GameEventListner{
@@ -51,7 +46,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	private BlockOnTouchEvent blockOnTouchEvent;
 	
-	private static final String[] colors = {"#773460" ,"#FE436A" ,"#823935" ,"#113F3D" ,"#26BCD5" ,"#36424A" ,"#458994" ,"#554840" ,"#D96831" ,"#AEDD81" ,"#593D43"};
+	private static final String[] colors = {"#773460" ,"#FE436A" ,"#823935" ,"#113F3D" ,"#26BCD5" ,"#F40D64" ,"#458994" ,"#93E0FF" ,"#D96831" ,"#AEDD81" ,"#593D43"};
 	private Random random;
 
 	@Override
@@ -154,6 +149,13 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	
 	private void updateAndShowResultLayer(){
+		
+		if (random == null) {
+			random = new Random();
+		}
+		int colorIndex = random.nextInt(colors.length);
+		resultLayer.setBackgroundColor(Color.parseColor(colors[colorIndex]));;
+
 		int score = gameView.getScore();
 		String value = getResources().getString(R.string.result, score);
 		resultTV.setText(value);
@@ -165,12 +167,6 @@ public class GameActiviy extends Activity implements GameEventListner{
 		value = getString(R.string.best, bestScore);
 		bestTV.setText(value);
 
-		if (random == null) {
-			random = new Random();
-		}
-		int colorIndex = random.nextInt(colors.length);
-
-		resultLayer.setBackgroundColor(Color.parseColor(colors[colorIndex]));;
 		resultLayer.setVisibility(View.VISIBLE);
 		
 	}
