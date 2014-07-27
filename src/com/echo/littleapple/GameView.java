@@ -8,7 +8,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,6 +19,9 @@ import android.view.View;
 public class GameView extends View{
 	
 	private static final int COLUMN = 4;
+	private static final int OK = 0;
+	private static final int FAIL = 1;
+	public static final int TIME_OUT = 2;
 	private int row;
 	private int cellWidth;
 	private int cellHeight;
@@ -41,6 +47,16 @@ public class GameView extends View{
 	private int moveStepHeight;
 	private int moveYOffset = 0;
 	private Handler handler;
+	
+	private SoundPool soundPool;
+	private int[] sounds;
+	private float audioMaxVolumn;
+	private float audioCurrentVolumn;
+	private float volumnRatio;
+	private Context context;
+	
+	private HandlerThread soundPoolThread;
+	private Handler soundPoolHandler;
 
 	public GameView(Context context) {
 		this(context, null);
@@ -74,6 +90,11 @@ public class GameView extends View{
 		
 		score = 0;
 		handler = new Handler();
+		
+		this.context = context;
+		// init sound play
+		initSoundPool();
+
 	}
 
 
@@ -198,7 +219,7 @@ public class GameView extends View{
 			
 			if (y < height - 2 * cellHeight
 					|| y > height - cellHeight) {
-				// wrong, gamve over
+				// wrong, do not have any effect
 				return false;
 			}
 			
@@ -207,7 +228,7 @@ public class GameView extends View{
 			//game over
 			if (apples[row - 2][x_index] != 1) {
 				apples[row - 2][x_index] = 3;
-				
+				playGameSoundEffect(FAIL);
 				running = false;
 				invalidate();
 				handler.postDelayed(new Runnable() {
@@ -225,6 +246,7 @@ public class GameView extends View{
 				
 				
 			}else {
+				playGameSoundEffect(OK);
 				if (!running) {
 					running = true;
 					if (listner != null) {
@@ -273,6 +295,38 @@ public class GameView extends View{
 				}
 			}
 		}, 10);
+	}
+	
+	private void initSoundPool(){
+		soundPoolThread = new HandlerThread("test");
+		soundPoolThread.start();
+		soundPoolHandler = new Handler(soundPoolThread.getLooper(), null);
+		soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
+		
+		sounds = new int[3];
+		sounds[0] = soundPool.load(context, R.raw.ok, 1);
+		sounds[1] = soundPool.load(context, R.raw.fail, 1);
+		sounds[2] = soundPool.load(context, R.raw.time_out, 1);
+
+		AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+		audioMaxVolumn = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+		audioCurrentVolumn = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+		
+		volumnRatio = audioCurrentVolumn / audioMaxVolumn;
+	}
+	
+	
+	public void playGameSoundEffect(final int type){
+		//soundPool.pla
+		soundPoolHandler.post(new Runnable() {
+			
+			@Override
+			public void run() {
+				soundPool.play(sounds[type], volumnRatio, volumnRatio, 1, 0, 1);
+				
+			}
+		});
+
 	}
 	
 	

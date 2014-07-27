@@ -100,6 +100,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 		@Override
 		public void onFinish() {
+			gameView.playGameSoundEffect(GameView.TIME_OUT);
 			timerTV.setText(getResources().getString(R.string.time_out));
 			handler.postDelayed(new Runnable() {
 				
