@@ -265,6 +265,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 			e.printStackTrace();
 		}
 		
+		rootView.destroyDrawingCache();
 		return file.getAbsolutePath();
 		
 	}
