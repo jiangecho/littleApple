@@ -2,14 +2,20 @@ package com.echo.littleapple;
 
 
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.Random;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -229,10 +235,42 @@ public class GameActiviy extends Activity implements GameEventListner{
 	}
 	
 	public void onShareButtonClick(View view){
-		showShare();
+		String imgPath = takeScreenShot(view);
+		if (imgPath == null) {
+			Toast.makeText(this, "SD卡不存在", Toast.LENGTH_SHORT).show();
+		}else {
+			showShare(imgPath);
+		}
 	}
 	
-   private void showShare() {
+	private String takeScreenShot(View view){
+		View rootView = view.getRootView();
+		rootView.setDrawingCacheEnabled(true);
+		rootView.buildDrawingCache(true);
+		Bitmap bitmap = rootView.getDrawingCache(true);
+		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+			return null;
+		}
+		File  path = Environment.getExternalStorageDirectory();
+		File file = new File(path, "screenshot.png");
+
+		if (file.exists()) {
+			file.delete();
+		}
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream(file);
+			bitmap.compress(CompressFormat.PNG, 100, fileOutputStream);
+			fileOutputStream.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return file.getAbsolutePath();
+		
+	}
+	
+   private void showShare(String imgPath) {
         ShareSDK.initSDK(this);
         OnekeyShare oks = new OnekeyShare();
         //关闭sso授权
@@ -245,9 +283,9 @@ public class GameActiviy extends Activity implements GameEventListner{
         // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
         //oks.setTitleUrl("http://sharesdk.cn");
         // text是分享文本，所有平台都需要这个字段
-        oks.setText("我吃了" + gameView.getScore() + "个小苹果，快来挑战我！你是我的小苹果，地址:" + APP_URL);
+        oks.setText("哈哈，来挑战我吧！你是我的小苹果:" + APP_URL);
         // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
-        //oks.setImagePath("/sdcard/test.jpg");
+        oks.setImagePath(imgPath);
         // url仅在微信（包括好友和朋友圈）中使用
         //oks.setUrl("http://sharesdk.cn");
         // comment是我对这条分享的评论，仅在人人网和QQ空间使用
