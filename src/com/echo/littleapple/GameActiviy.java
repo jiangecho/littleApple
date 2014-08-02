@@ -3,7 +3,6 @@ package com.echo.littleapple;
 
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Random;
 
@@ -34,7 +33,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	private static final int TIME_LENGHT = 30 * 1000;
 	private static final String BEST_SCORE = "BEST_SCORE";
-	private static final String APP_URL = "http://shouji.360tpcdn.com/140725/3c2102377593c497b481f2d775633320/com.echo.littleapple_3.apk";
+	private static final String APP_URL = "http://shouji.360tpcdn.com/140728/9c84852ba0df5ee6c31bf7dd91b4a743/com.echo.littleapple_4.apk";
 
 	private TextView timerTV;
 	private GameView gameView;
@@ -281,19 +280,19 @@ public class GameActiviy extends Activity implements GameEventListner{
         // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
         oks.setTitle(getString(R.string.app_name));
         // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
-        //oks.setTitleUrl("http://sharesdk.cn");
+        oks.setTitleUrl(APP_URL);
         // text是分享文本，所有平台都需要这个字段
         oks.setText("哈哈，来挑战我吧！你是我的小苹果:" + APP_URL);
         // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
         oks.setImagePath(imgPath);
         // url仅在微信（包括好友和朋友圈）中使用
-        //oks.setUrl("http://sharesdk.cn");
+        oks.setUrl(APP_URL);
         // comment是我对这条分享的评论，仅在人人网和QQ空间使用
-        //oks.setComment("我是测试评论文本");
+        oks.setComment("呵呵，我吃了" + gameView.getScore() + "个小苹果！");
         // site是分享此内容的网站名称，仅在QQ空间使用
-        //oks.setSite(getString(R.string.app_name));
+        oks.setSite(getString(R.string.app_name));
         // siteUrl是分享此内容的网站地址，仅在QQ空间使用
-        //oks.setSiteUrl("http://sharesdk.cn");
+        oks.setSiteUrl(APP_URL);
 
         // 启动分享GUI
         oks.show(this);
