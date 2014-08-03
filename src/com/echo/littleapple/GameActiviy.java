@@ -33,7 +33,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	private static final int TIME_LENGHT = 30 * 1000;
 	private static final String BEST_SCORE = "BEST_SCORE";
-	private static final String APP_URL = "http://shouji.360tpcdn.com/140728/9c84852ba0df5ee6c31bf7dd91b4a743/com.echo.littleapple_4.apk";
+	private static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
 
 	private TextView timerTV;
 	private GameView gameView;
