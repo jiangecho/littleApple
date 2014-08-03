@@ -1,7 +1,6 @@
 package com.echo.littleapple;
 
 import java.util.Random;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -58,6 +57,8 @@ public class GameView extends View{
 	private HandlerThread soundPoolThread;
 	private Handler soundPoolHandler;
 
+	int left, top, right, bottom;
+
 	public GameView(Context context) {
 		this(context, null);
 		
@@ -101,18 +102,18 @@ public class GameView extends View{
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		int left, top, right, bottom;
+		int i, j;
 		
 		
 		//draw the first horizontal lines, maybe hidden
 		canvas.drawLine(0, moveYOffset + firstCellHeight - cellHeight, width, moveYOffset + firstCellHeight - cellHeight, linePaint);
 		//draw horizontal lines
-		for (int i = 0; i < row ; i++) {
+		for (i = 0; i < row ; i++) {
 			canvas.drawLine(0, moveYOffset + firstCellHeight + cellHeight * i, width, moveYOffset + firstCellHeight + cellHeight * i, linePaint);
 		}
 		
 		//draw vertical lines
-		for (int i = 0; i < COLUMN ; i++) {
+		for (i = 0; i < COLUMN ; i++) {
 			canvas.drawLine(cellWidth * i, 0, cellWidth * i, height, linePaint);
 		}
 		
@@ -121,8 +122,8 @@ public class GameView extends View{
 		}
 
 		// draw applse
-		for (int i = 0; i < row; i++) {
-			for (int j = 0; j < COLUMN; j++) {
+		for (i = 0; i < row; i++) {
+			for (j = 0; j < COLUMN; j++) {
 				if (apples[i][j] == 0) {
 					// do nothing
 				}else if(apples[i][j] == 1){
