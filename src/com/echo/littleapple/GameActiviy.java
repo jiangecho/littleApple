@@ -4,10 +4,17 @@ package com.echo.littleapple;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -17,9 +24,11 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +66,11 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	private static final String[] colors = {"#773460" ,"#FE436A" ,"#823935" ,"#113F3D" ,"#26BCD5" ,"#F40D64" ,"#458994" ,"#93E0FF" ,"#D96831" ,"#AEDD81" ,"#593D43"};
 	private Random random;
+	
+	private String nickyName;
+	private static final String NICKY_NAME = "nickyname";
+	private static final String HAVE_SUBMITED = "haveSubmited";
+	private boolean haveSubmited = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -82,6 +96,29 @@ public class GameActiviy extends Activity implements GameEventListner{
         
         sharedPreferences = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
         bestScore = sharedPreferences.getInt(BEST_SCORE, 0);
+        
+        nickyName = sharedPreferences.getString(NICKY_NAME, null);
+        if (nickyName == null) {
+        	nickyName = "User" + System.currentTimeMillis();
+        	LayoutInflater layoutInflater = LayoutInflater.from(this);
+        	final View view = layoutInflater.inflate(R.layout.nicky_name, null);
+        	AlertDialog dialog = new AlertDialog.Builder(this)
+        		.setTitle(getResources().getString(R.string.input_nicky_name))
+        		.setView(view)
+        		.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						nickyName = ((EditText)(view.findViewById(R.id.editText))).getText().toString().trim()
+								+ "_" + System.currentTimeMillis();
+						sharedPreferences.edit().putString(NICKY_NAME, nickyName).commit();
+					}
+				})
+				.create();
+        	dialog.show();
+		}
+        
+        haveSubmited = sharedPreferences.getBoolean(HAVE_SUBMITED, false);
 
 	}
 
@@ -178,10 +215,6 @@ public class GameActiviy extends Activity implements GameEventListner{
 		}
 		promptTV.setText(value);
 
-		if (score > bestScore) {
-			bestScore = score;
-			sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
-		}
 
         value = getString(R.string.best, bestScore);
         bestTV.setText(value);
@@ -197,13 +230,27 @@ public class GameActiviy extends Activity implements GameEventListner{
 	}
 
 	@Override
-	public void onGameOver(int score) {
+	public void onGameOver(final int score) {
 		//TODO stop timer
 		// show result
 		countDownTimer.cancel();
 		
 		//TODO best score
 		updateAndShowResultLayer();
+		
+		if (score > bestScore ) {
+			bestScore = score;
+			sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
+			submitScore(bestScore);
+		}else {
+	        if (!haveSubmited) {
+				submitScore(bestScore);
+				sharedPreferences.edit().putBoolean(HAVE_SUBMITED, true);
+			}
+			
+		}
+
+		
 	}
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
@@ -298,5 +345,20 @@ public class GameActiviy extends Activity implements GameEventListner{
         // ∆Ù∂Ø∑÷œÌGUI
         oks.show(this);
    }
-	
+   
+   private void submitScore(final int score){
+
+	   new Thread(new Runnable() {
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			  String uri = "http://littleappleapp.sinaapp.com/insert.php";
+			  List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+			  nameValuePairs.add(new BasicNameValuePair("nickyname", nickyName));
+			  nameValuePairs.add(new BasicNameValuePair("score", score + ""));
+			  Util.httpPost(uri, nameValuePairs);
+		}
+	}).start();
+
+   }
 }

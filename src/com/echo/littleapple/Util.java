@@ -1,10 +1,7 @@
 package com.echo.littleapple;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -22,7 +19,10 @@ public class Util {
 		HttpPost httpPost = new HttpPost(uri);
 		String resultString = null;
 		try {
-			httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, HTTP.UTF_8));
+			if (nameValuePairs != null) {
+				httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, HTTP.UTF_8));
+			}
+
 			HttpResponse httpResponse = new DefaultHttpClient().execute(httpPost);
 			
 			if (httpResponse.getStatusLine().getStatusCode() == 200) {
