@@ -23,4 +23,5 @@
     <string name="score">分数</string>
     <string name="input_nicky_name">请输入你的昵称, 那样你可以在排行榜中看到你的排名</string>
     <string name="confirm">确定</string>
+    <string name="me">我</string>
 </resources>

@@ -109,9 +109,13 @@ public class GameActiviy extends Activity implements GameEventListner{
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						nickyName = ((EditText)(view.findViewById(R.id.editText))).getText().toString().trim()
-								+ "_" + System.currentTimeMillis();
-						sharedPreferences.edit().putString(NICKY_NAME, nickyName).commit();
+						EditText editText = (EditText) view.findViewById(R.id.editText);
+						String tmp = editText.getText().toString().trim();
+						if (tmp.length() > 0) {
+							nickyName = tmp + "_" + System.currentTimeMillis();
+							sharedPreferences.edit().putString(NICKY_NAME, nickyName).commit();					
+						}
+
 					}
 				})
 				.create();
@@ -347,6 +351,9 @@ public class GameActiviy extends Activity implements GameEventListner{
    }
    
    private void submitScore(final int score){
+	   if (nickyName == null) {
+		   return;
+	   }
 
 	   new Thread(new Runnable() {
 		@Override
