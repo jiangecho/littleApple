@@ -392,7 +392,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	@Override
 	public void onFail() {
-		
+		haveSubmited = false;
+		sharedPreferences.edit().putBoolean(HAVE_SUBMITED, false).commit();
+
 	}
 	   
    }
