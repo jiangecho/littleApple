@@ -34,6 +34,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.echo.littleapple.RankAcitivity"
+	        android:screenOrientation="portrait"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
 			  android:name="cn.sharesdk.framework.ShareSDKUIShell"
 			  android:theme="@android:style/Theme.Translucent.NoTitleBar"
 			  android:configChanges="keyboardHidden|orientation|screenSize"

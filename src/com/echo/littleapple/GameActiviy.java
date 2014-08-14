@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -198,6 +199,11 @@ public class GameActiviy extends Activity implements GameEventListner{
 		timerTV.setText("30.00");
 		gameView.reset();
 	}
+	
+	public void onRankButtonClick(View view){
+		Intent intent = new Intent(this, RankAcitivity.class);
+		startActivity(intent);
+	}
 
 	
 	private void updateAndShowResultLayer(){
@@ -288,7 +294,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	public void onShareButtonClick(View view){
 		String imgPath = takeScreenShot(view);
 		if (imgPath == null) {
-			Toast.makeText(this, "SD¿¨²»´æÔÚ", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "SDï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", Toast.LENGTH_SHORT).show();
 		}else {
 			showShare(imgPath);
 		}
@@ -325,29 +331,29 @@ public class GameActiviy extends Activity implements GameEventListner{
    private void showShare(String imgPath) {
         ShareSDK.initSDK(this);
         OnekeyShare oks = new OnekeyShare();
-        //¹Ø±ÕssoÊÚÈ¨
+        //ï¿½Ø±ï¿½ssoï¿½ï¿½È¨
         oks.disableSSOWhenAuthorize();
        
-        // ·ÖÏíÊ±NotificationµÄÍ¼±êºÍÎÄ×Ö
+        // ï¿½ï¿½ï¿½ï¿½Ê±Notificationï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
-        // title±êÌâ£¬Ó¡Ïó±Ê¼Ç¡¢ÓÊÏä¡¢ĞÅÏ¢¡¢Î¢ĞÅ¡¢ÈËÈËÍøºÍQQ¿Õ¼äÊ¹ÓÃ
+        // titleï¿½ï¿½ï¿½â£¬Ó¡ï¿½ï¿½Ê¼Ç¡ï¿½ï¿½ï¿½ï¿½ä¡¢ï¿½ï¿½Ï¢ï¿½ï¿½Î¢ï¿½Å¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½QQï¿½Õ¼ï¿½Ê¹ï¿½ï¿½
         oks.setTitle(getString(R.string.app_name));
-        // titleUrlÊÇ±êÌâµÄÍøÂçÁ´½Ó£¬½öÔÚÈËÈËÍøºÍQQ¿Õ¼äÊ¹ÓÃ
+        // titleUrlï¿½Ç±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½QQï¿½Õ¼ï¿½Ê¹ï¿½ï¿½
         oks.setTitleUrl(APP_URL);
-        // textÊÇ·ÖÏíÎÄ±¾£¬ËùÓĞÆ½Ì¨¶¼ĞèÒªÕâ¸ö×Ö¶Î
-        oks.setText("¹ş¹ş£¬À´ÌôÕ½ÎÒ°É£¡ÄãÊÇÎÒµÄĞ¡Æ»¹û:" + APP_URL);
-        // imagePathÊÇÍ¼Æ¬µÄ±¾µØÂ·¾¶£¬Linked-InÒÔÍâµÄÆ½Ì¨¶¼Ö§³Ö´Ë²ÎÊı
+        // textï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ½Ì¨ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Ö¶ï¿½
+        oks.setText("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ½ï¿½Ò°É£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òµï¿½Ğ¡Æ»ï¿½ï¿½:" + APP_URL);
+        // imagePathï¿½ï¿½Í¼Æ¬ï¿½Ä±ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½Linked-Inï¿½ï¿½ï¿½ï¿½ï¿½Æ½Ì¨ï¿½ï¿½Ö§ï¿½Ö´Ë²ï¿½ï¿½ï¿½
         oks.setImagePath(imgPath);
-        // url½öÔÚÎ¢ĞÅ£¨°üÀ¨ºÃÓÑºÍÅóÓÑÈ¦£©ÖĞÊ¹ÓÃ
+        // urlï¿½ï¿½ï¿½ï¿½Î¢ï¿½Å£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñºï¿½ï¿½ï¿½ï¿½ï¿½È¦ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½
         oks.setUrl(APP_URL);
-        // commentÊÇÎÒ¶ÔÕâÌõ·ÖÏíµÄÆÀÂÛ£¬½öÔÚÈËÈËÍøºÍQQ¿Õ¼äÊ¹ÓÃ
-        oks.setComment("ºÇºÇ£¬ÎÒ³ÔÁË" + gameView.getScore() + "¸öĞ¡Æ»¹û£¡");
-        // siteÊÇ·ÖÏí´ËÄÚÈİµÄÍøÕ¾Ãû³Æ£¬½öÔÚQQ¿Õ¼äÊ¹ÓÃ
+        // commentï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Û£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½QQï¿½Õ¼ï¿½Ê¹ï¿½ï¿½
+        oks.setComment("ï¿½ÇºÇ£ï¿½ï¿½Ò³ï¿½ï¿½ï¿½" + gameView.getScore() + "ï¿½ï¿½Ğ¡Æ»ï¿½ï¿½");
+        // siteï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İµï¿½ï¿½ï¿½Õ¾ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½QQï¿½Õ¼ï¿½Ê¹ï¿½ï¿½
         oks.setSite(getString(R.string.app_name));
-        // siteUrlÊÇ·ÖÏí´ËÄÚÈİµÄÍøÕ¾µØÖ·£¬½öÔÚQQ¿Õ¼äÊ¹ÓÃ
+        // siteUrlï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İµï¿½ï¿½ï¿½Õ¾ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½QQï¿½Õ¼ï¿½Ê¹ï¿½ï¿½
         oks.setSiteUrl(APP_URL);
 
-        // Æô¶¯·ÖÏíGUI
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½GUI
         oks.show(this);
    }
    
