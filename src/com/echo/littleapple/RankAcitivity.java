@@ -32,7 +32,7 @@ public class RankAcitivity extends Activity{
 	private String myNickyName;
 	private boolean inRank;
 	private RankItem meItem;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,6 +51,7 @@ public class RankAcitivity extends Activity{
 				.getString("nickyname", null);
 		
 		inRank = false;
+
 		new LoadDataTask().execute();
 		
 	}
@@ -161,7 +162,7 @@ public class RankAcitivity extends Activity{
 				nameValuePairs.add(new BasicNameValuePair("nickyname", myNickyName));
 			}
 
-			String ranks = Util.httpPost(uri, nameValuePairs);
+			String ranks = Util.httpPost(uri, nameValuePairs, null);
 			items.clear();
 			if (ranks == null) {
 				return null;

@@ -72,6 +72,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private static final String NICKY_NAME = "nickyname";
 	private static final String HAVE_SUBMITED = "haveSubmited";
 	private boolean haveSubmited = false;
+	
+	private Util.PostResultCallBack postResultCallBack;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -124,6 +126,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 		}
         
         haveSubmited = sharedPreferences.getBoolean(HAVE_SUBMITED, false);
+        
+        postResultCallBack = new CallBack();
 
 	}
 
@@ -226,7 +230,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		promptTV.setText(value);
 
 
-        value = getString(R.string.best, bestScore);
+        value = getString(R.string.best, score > bestScore ? score : bestScore);
         bestTV.setText(value);
 		resultLayer.setVisibility(View.VISIBLE);
 
@@ -253,10 +257,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 			sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
 			submitScore(bestScore);
 		}else {
+			// submit the old best score
 	        if (!haveSubmited) {
 				submitScore(bestScore);
-				//TODO only when submit successfully, will we set the flag
-				sharedPreferences.edit().putBoolean(HAVE_SUBMITED, true);
 			}
 			
 		}
@@ -370,9 +373,27 @@ public class GameActiviy extends Activity implements GameEventListner{
 			  List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 			  nameValuePairs.add(new BasicNameValuePair("nickyname", nickyName));
 			  nameValuePairs.add(new BasicNameValuePair("score", score + ""));
-			  Util.httpPost(uri, nameValuePairs);
+			  Util.httpPost(uri, nameValuePairs, postResultCallBack);
 		}
 	}).start();
 
+   }
+   
+   private class CallBack implements Util.PostResultCallBack{
+
+	@Override
+	public void onSuccess() {
+		if (!haveSubmited) {
+			haveSubmited = true;
+			sharedPreferences.edit().putBoolean(HAVE_SUBMITED, true).commit();
+		}
+		
+	}
+
+	@Override
+	public void onFail() {
+		
+	}
+	   
    }
 }

@@ -14,7 +14,7 @@ import org.apache.http.util.EntityUtils;
 public class Util {
 
 	// TODO can be used to submit data or get data from the server
-	public static String httpPost(String uri, List<NameValuePair> nameValuePairs){
+	public static String httpPost(String uri, List<NameValuePair> nameValuePairs, PostResultCallBack callBack){
 		
 		HttpPost httpPost = new HttpPost(uri);
 		String resultString = null;
@@ -27,11 +27,28 @@ public class Util {
 			
 			if (httpResponse.getStatusLine().getStatusCode() == 200) {
 				resultString = EntityUtils.toString(httpResponse.getEntity());
+				if (callBack != null) {
+					callBack.onSuccess();
+				}
+			}else {
+				if (callBack != null) {
+					callBack.onFail();
+				}
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			if (callBack != null) {
+				callBack.onFail();
+			}
 		}
 		return resultString;
 	} 
+	
+	public interface PostResultCallBack{
+		public void onSuccess();
+		public void onFail();
+			
+	}
 	
 }
