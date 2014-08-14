@@ -249,6 +249,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		}else {
 	        if (!haveSubmited) {
 				submitScore(bestScore);
+				//TODO only when submit successfully, will we set the flag
 				sharedPreferences.edit().putBoolean(HAVE_SUBMITED, true);
 			}
 			

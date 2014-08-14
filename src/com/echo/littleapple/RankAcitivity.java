@@ -29,6 +29,8 @@ public class RankAcitivity extends Activity{
 	private RankItemAdapter rankAdapter;
 	private List<RankItem> items;
 	private String myNickyName;
+	private boolean inRank;
+	private RankItem meItem;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class RankAcitivity extends Activity{
 		myNickyName = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE)
 				.getString("nickyname", null);
 		
+		inRank = false;
 		new LoadDataTask().execute();
 		
 	}
@@ -81,7 +84,7 @@ public class RankAcitivity extends Activity{
 
 		@Override
 		public int getCount() {
-			return items.size() + 1;
+			return inRank ? items.size() : items.size() + 1;
 		}
 
 		@Override
@@ -107,20 +110,37 @@ public class RankAcitivity extends Activity{
 			nickyNameTextView = (TextView) view.findViewById(R.id.nickyNameTextView);
 			scoreTextView = (TextView) view.findViewById(R.id.scoreTextView);
 			
-			if (position < getCount() - 1) {
+			if (position < items.size() - 1) {
 				RankItem item = getItem(position);
-				rankTextView.setText("" + position);
+				rankTextView.setText("" + item.rank);
 				nickyNameTextView.setText(item.nickyName);
 				scoreTextView.setText(item.score);
-			}else if (position == getCount() - 1) {
-				rankTextView.setText("");
-				nickyNameTextView.setText(".....");
-				scoreTextView.setText("");
+			}else if (position == items.size() - 1) {
+				if (inRank) {
+					RankItem item = getItem(position);
+					rankTextView.setText("" + item.rank);
+					nickyNameTextView.setText(item.nickyName);
+					scoreTextView.setText(item.score);
+	
+				}else {
+					rankTextView.setText("");
+					nickyNameTextView.setText(".....");
+					scoreTextView.setText("");
+
+//						RankItem meItem = getItem(getCount() - 1);
+//						rankTextView.setText("" + meItem.rank);
+//						nickyNameTextView.setText(meItem.nickyName);
+//						scoreTextView.setText(meItem.score);
+					
+				}
+				
 			}else {
-				RankItem meItem = getItem(getCount() - 1);
-				rankTextView.setText("" + meItem.rank);
-				nickyNameTextView.setText(meItem.nickyName);
-				scoreTextView.setText(meItem.score);
+				// postion == items.size() 
+				RankItem item = getItem(items.size() - 1);
+				rankTextView.setText("" + item.rank);
+				nickyNameTextView.setText(item.nickyName);
+				scoreTextView.setText(item.score);
+
 			}
 
 			return view;
@@ -149,6 +169,7 @@ public class RankAcitivity extends Activity{
 				tmpStrings = itemStrings[i].trim().split(" ");
 				if (myNickyName != null && tmpStrings[0].equals(myNickyName)) {
 					nickyName = getResources().getString(R.string.me);
+					inRank = true;
 				}else {
 					if (tmpStrings[0].contains("_")) {
 						nickyName = tmpStrings[0].substring(0, tmpStrings[0].indexOf("_"));
@@ -157,6 +178,20 @@ public class RankAcitivity extends Activity{
 					}
 				}
 				items.add(new RankItem(i + 1, nickyName, tmpStrings[1]));
+			}
+			
+			if (myNickyName != null) {
+				int myRank = Integer.parseInt(itemStrings[itemStrings.length - 1].trim());
+				int myScore = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE).getInt("BEST_SCORE", 0);
+				nickyName = getResources().getString(R.string.me);
+				if (inRank) {
+					
+				}else if(myRank == items.size() + 1){
+					inRank = true;
+					items.add(new RankItem(myRank, nickyName, myScore + ""));
+				}else {
+					items.add(new RankItem(myRank, nickyName, myScore + ""));
+				}
 			}
 			
 			// my rank
