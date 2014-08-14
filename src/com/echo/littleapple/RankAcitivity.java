@@ -25,6 +25,7 @@ public class RankAcitivity extends Activity{
 	private ListView rankListView;
 	private TextView rankTextView;
 	private ProgressBar progressBar;
+	private TextView networkInfoTextView;
 	
 	private RankItemAdapter rankAdapter;
 	private List<RankItem> items;
@@ -39,6 +40,7 @@ public class RankAcitivity extends Activity{
 		rankTextView = (TextView) findViewById(R.id.rankTextView);
 		rankListView = (ListView) findViewById(R.id.rankListView);
 		progressBar = (ProgressBar) findViewById(R.id.progressBar);
+		networkInfoTextView = (TextView) findViewById(R.id.networkInfoTV);
 
 		rankListView.setVisibility(View.GONE);
 		items = new ArrayList<RankAcitivity.RankItem>();
@@ -161,6 +163,10 @@ public class RankAcitivity extends Activity{
 
 			String ranks = Util.httpPost(uri, nameValuePairs);
 			items.clear();
+			if (ranks == null) {
+				return null;
+			}
+
 			ranks = ranks.substring(0, ranks.length() - 1);
 			String[] itemStrings = ranks.split(";");
 			String[] tmpStrings;
@@ -208,8 +214,13 @@ public class RankAcitivity extends Activity{
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
 			progressBar.setVisibility(View.GONE);
-			rankAdapter.notifyDataSetChanged();
-			rankListView.setVisibility(View.VISIBLE);
+			if (items.size() > 0) {
+				rankAdapter.notifyDataSetChanged();
+				rankListView.setVisibility(View.VISIBLE);
+			}else {
+				networkInfoTextView.setVisibility(View.VISIBLE);
+				
+			}
 		}
 
 		@Override
