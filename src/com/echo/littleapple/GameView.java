@@ -117,9 +117,9 @@ public class GameView extends View{
 			canvas.drawLine(cellWidth * i, 0, cellWidth * i, height, linePaint);
 		}
 		
-		if (bitmapApple == null || bitmapError == null) {
-			return;
-		}
+//		if (bitmapApple == null || bitmapError == null) {
+//			return;
+//		}
 
 		// draw applse
 		for (i = 0; i < row; i++) {
