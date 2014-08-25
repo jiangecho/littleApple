@@ -216,7 +216,7 @@
 		
 		
 		    <ListView
-		        android:id="@+id/rank_of_current_week_list"
+		        android:id="@+id/current_week_rank_list"
 			    android:layout_marginTop="5dip"
 			    android:minHeight="250dip"
 		        android:layout_width="match_parent"
