@@ -163,6 +163,10 @@ public class GameActiviy extends Activity implements GameEventListner{
 		public void onFinish() {
 			gameView.playGameSoundEffect(GameView.TIME_OUT);
 			timerTV.setText(getResources().getString(R.string.time_out));
+			if (gameView.getScore()> bestScore ) {
+				bestScore = gameView.getScore();
+				sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
+			}
 			submitScore(gameView.getScore());
 			handler.postDelayed(new Runnable() {
 				
@@ -254,9 +258,14 @@ public class GameActiviy extends Activity implements GameEventListner{
 		//TODO stop timer
 		// show result
 		countDownTimer.cancel();
+
+		if (score > bestScore ) {
+			bestScore = score;
+			sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
+		}
 		
-		//TODO best score
 		updateAndShowResultLayer();
+
 		
 		submitScore(score);
 		
@@ -369,6 +378,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	   if (nickyName == null) {
 		   return;
+	   }
+	   if (score == 0) {
+		return;
 	   }
 
 	   new Thread(new Runnable() {

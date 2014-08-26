@@ -288,6 +288,7 @@ public class NewRankAcitivity extends Activity{
 						tmp = line.substring(CURRENT_WEEK_RANK_LIST.length());
 						items = tmp.split(";");
 						itemFields = null;
+						int index;
 
                         for (int i = 0; i < items.length - 1; i++) {
 							itemFields = items[i].trim().split(" ");
@@ -295,6 +296,11 @@ public class NewRankAcitivity extends Activity{
 								rank = (i + 1) + "";
 								nickyName = itemFields[0];
 								score = itemFields[1];
+								
+								index = nickyName.indexOf("_");
+								if (index > 0) {
+									nickyName = nickyName.substring(0, index);
+								}
 								rankListItems.add(new RankItem(rank, nickyName, score));
 
 							}
