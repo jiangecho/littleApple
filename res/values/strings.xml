@@ -32,4 +32,7 @@
     <string name="award_of_last_week">上周获奖名单</string>
     <string name="accept_award">领奖</string>
     <string name="award">奖金</string>
+    <string name="last_week_no_competition">上周未开赛</string>
+    <string name="no_rank_info">无</string>
+    <string name="current_week_no_rank_list">暂无排名</string>
 </resources>

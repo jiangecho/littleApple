@@ -154,6 +154,16 @@
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content" >
 		    </ListView>
+		    
+		    <TextView 
+		        android:id="@+id/last_week_no_award_list" 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:gravity="center_horizontal"
+		        android:text="@string/last_week_no_competition"
+		        android:alpha="0.6"
+		        android:visibility="gone"
+		        />
 		
 			<View 
 			    android:layout_height="2dip"
@@ -222,6 +232,16 @@
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content" >
 		    </ListView>
+
+		    <TextView 
+		        android:id="@+id/current_week_no_rank_list" 
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:gravity="center_horizontal"
+		        android:text="@string/last_week_no_competition"
+		        android:alpha="0.6"
+		        android:visibility="gone"
+		        />
             
         </LinearLayout>
     </ScrollView>
