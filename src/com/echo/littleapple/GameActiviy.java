@@ -102,7 +102,7 @@ public class GameActiviy extends Activity implements GameEventListner{
         
         nickyName = sharedPreferences.getString(NICKY_NAME, null);
         if (nickyName == null) {
-        	nickyName = "User" + System.currentTimeMillis();
+        	//nickyName = "User" + System.currentTimeMillis();
         	LayoutInflater layoutInflater = LayoutInflater.from(this);
         	final View view = layoutInflater.inflate(R.layout.nicky_name, null);
         	AlertDialog dialog = new AlertDialog.Builder(this)
