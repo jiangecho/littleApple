@@ -114,6 +114,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 					public void onClick(DialogInterface dialog, int which) {
 						EditText editText = (EditText) view.findViewById(R.id.editText);
 						String tmp = editText.getText().toString().replaceAll("\\s+", "");
+						tmp.replaceAll("_", "");
+						tmp.replaceAll(";", "");
 						if (tmp.length() > 0) {
 							nickyName = tmp + "_" + System.currentTimeMillis();
 							sharedPreferences.edit().putString(NICKY_NAME, nickyName).commit();					
@@ -354,16 +356,16 @@ public class GameActiviy extends Activity implements GameEventListner{
    }
    
    private void submitScore(final int score){
-		if (score > bestScore ) {
-			bestScore = score;
-			sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
-		}else {
-			// submit the old best score
-	        if (haveSubmited) {
-	        	return;
-			}
-			
-		}
+//		if (score > bestScore ) {
+//			bestScore = score;
+//			sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
+//		}else {
+//			// submit the old best score
+//	        if (haveSubmited) {
+//	        	return;
+//			}
+//			
+//		}
 
 	   if (nickyName == null) {
 		   return;
@@ -376,7 +378,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 			  String uri = "http://littleappleapp.sinaapp.com/insert.php";
 			  List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 			  nameValuePairs.add(new BasicNameValuePair("nickyname", nickyName));
-			  nameValuePairs.add(new BasicNameValuePair("score", bestScore + ""));
+			  nameValuePairs.add(new BasicNameValuePair("score", score + ""));
 			  Util.httpPost(uri, nameValuePairs, postResultCallBack);
 		}
 	}).start();
