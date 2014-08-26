@@ -57,7 +57,7 @@ public class NewRankAcitivity extends Activity{
 	$current_week_rank_list = "current_week_rank_list:";
 	*/
 	private static final String LAST_WEEK_AWARD = "last_week_award:";
-	private static final String MY_LAST_WEEK_RANK = "my_last_week_rank	:";
+	private static final String MY_LAST_WEEK_RANK = "my_last_week_rank:";
 	private static final String MY_CURRENT_WEEK_RANK = "my_current_week_rank:";
 	private static final String LAST_WEEK_AWARD_LIST = "last_week_award_list:";
 	private static final String CURRENT_WEEK_RANK_LIST = "current_week_rank_list:";
@@ -248,7 +248,7 @@ public class NewRankAcitivity extends Activity{
 			// TODO start with award, rank and so to mark the line's meaning;
 			try {
 				line = reader.readLine();
-				if (line != null) {
+				while(line != null){
 					if(line.startsWith(LAST_WEEK_AWARD)){
 						tmp = line.substring(LAST_WEEK_AWARD.length()).trim();
 						//TODO need check the return value from the server
@@ -291,19 +291,18 @@ public class NewRankAcitivity extends Activity{
 
                         for (int i = 0; i < items.length - 1; i++) {
 							itemFields = items[i].trim().split(" ");
-							if (itemFields != null && itemFields.length == 3) {
-								rank = itemFields[0];
-								nickyName = itemFields[1];
-								score = itemFields[2];
+							if (itemFields != null && itemFields.length == 2) {
+								rank = (i + 1) + "";
+								nickyName = itemFields[0];
+								score = itemFields[1];
 								rankListItems.add(new RankItem(rank, nickyName, score));
 
 							}
 						}
 					}
-				}
-				while(line != null){
 					line = reader.readLine();
 				}
+				reader.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 				loadDataSuccess = false;
@@ -321,15 +320,15 @@ public class NewRankAcitivity extends Activity{
 			//TODO do more check
 			if (loadDataSuccess) {
 				if (myCurrentWeekRank >= 0) {
-					myCurrentWeekRankTextView.setText(myCurrentWeekRank + "");
+					myCurrentWeekRankTextView.setText(getString(R.string.my_rank_of_current_week, myCurrentWeekRank));
 				}else {
-					myCurrentWeekRankTextView.setText(getString(R.string.no_rank_info));
+					myCurrentWeekRankTextView.setText(getString(R.string.current_week_no_rank));
 				}
 
 				if (myLastWeekRank >= 0) {
-					myLastWeekRankTextView.setText(myLastWeekRank + "");
+					myLastWeekRankTextView.setText(getString(R.string.my_rank_of_last_week, myLastWeekRank));
 				}else {
-					myLastWeekRankTextView.setText(getString(R.string.no_rank_info));
+					myLastWeekRankTextView.setText(getString(R.string.last_week_no_rank));
 				}
 
 				if (awardListItems.size() == 0) {
@@ -344,7 +343,9 @@ public class NewRankAcitivity extends Activity{
 					currentWeekNoRankLisTextView.setVisibility(View.GONE);
 				}
 
+				ListViewEXUtil.setListViewHeightBasedOnChild(currentWeekRankListListView);
 				rankAdapter.notifyDataSetChanged();
+				ListViewEXUtil.setListViewHeightBasedOnChild(lastWeekAwardListView);
 				awardAdaper.notifyDataSetChanged();
 				scrollView.setVisibility(View.VISIBLE);
 			}else {

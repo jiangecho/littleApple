@@ -209,7 +209,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	}
 	
 	public void onRankButtonClick(View view){
-		Intent intent = new Intent(this, RankAcitivity.class);
+		Intent intent = new Intent(this, NewRankAcitivity.class);
 		startActivity(intent);
 	}
 

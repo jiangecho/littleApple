@@ -26,8 +26,10 @@
     <string name="me">我</string>
     <string name="network_error">网络异常</string>
     <string name="check_rank">排行榜</string>
-    <string name="my_rank_of_current_week">本周排名:%d</string>
-    <string name="my_rank_of_last_week">上周排名:%d</string>
+    <string name="my_rank_of_current_week">本周排名: %d</string>
+    <string name="my_rank_of_last_week">上周排名: %d</string>
+    <string name="last_week_no_rank">上周排名: 无</string>
+    <string name="current_week_no_rank">本周排名: 无</string>
     <string name="rank_of_current_week">本周排行榜</string>
     <string name="award_of_last_week">上周获奖名单</string>
     <string name="accept_award">领奖</string>
