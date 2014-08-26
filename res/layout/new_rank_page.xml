@@ -70,6 +70,7 @@
 			        android:layout_weight="1"
 			        android:text="@string/accept_award"
 			        android:textColor="@color/red"
+			        android:onClick="onAcceptAwardButtonClick"
 			        />
 			    
 			</LinearLayout>

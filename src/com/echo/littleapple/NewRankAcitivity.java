@@ -6,6 +6,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.security.auth.Subject;
 
@@ -14,7 +16,9 @@ import org.apache.http.message.BasicNameValuePair;
 
 import android.R.integer;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,10 +26,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class NewRankAcitivity extends Activity{
 	private ProgressBar progressBar;
@@ -236,6 +242,11 @@ public class NewRankAcitivity extends Activity{
 
 			String content = Util.httpPost(uri, nameValuePairs, null);
 			String line, tmp;
+			if (content == null) {
+				loadDataSuccess = false;
+				return null;
+			}
+
 			BufferedReader reader = new BufferedReader(new StringReader(content));
 
 			String[] items = null;
@@ -354,6 +365,7 @@ public class NewRankAcitivity extends Activity{
 				ListViewEXUtil.setListViewHeightBasedOnChild(lastWeekAwardListView);
 				awardAdaper.notifyDataSetChanged();
 				scrollView.setVisibility(View.VISIBLE);
+				
 			}else {
 				networkInfoTextView.setVisibility(View.VISIBLE);
 				
@@ -363,6 +375,60 @@ public class NewRankAcitivity extends Activity{
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
+		}
+		
+	}
+	
+	
+	public void onAcceptAwardButtonClick(View v){
+        	LayoutInflater layoutInflater = LayoutInflater.from(this);
+        	final View view = layoutInflater.inflate(R.layout.accept_award_dialog, null);
+        	int award = 0;
+        	if (lastWeekAwardStatus) {
+        		switch (myLastWeekRank) {
+				case 1:
+					award = 50;
+					break;
+				case 2:
+					award = 30;
+					break;
+				case 3:
+					award = 20;
+					break;
+
+				default:
+					break;
+				}
+				
+			}
+        	AlertDialog dialog = new AlertDialog.Builder(this)
+        		.setTitle(getString(R.string.award_value, award))
+        		.setView(view)
+        		.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						EditText editText = (EditText) view.findViewById(R.id.editText);
+						String phoneNum = editText.getText().toString().trim();
+						if (isPhoneNumber(phoneNum)) {
+							//TODO send to the server
+						}else {
+							Toast.makeText(NewRankAcitivity.this, getString(R.string.invalid_phone_number), Toast.LENGTH_LONG)
+								.show();;
+						}
+
+					}
+				})
+				.create();
+        	dialog.show();
+	}
+	
+	//TODO more strict
+	public boolean isPhoneNumber(String phoneNum) {
+		if (phoneNum != null && phoneNum.length() == 11) {
+			return true;
+		}else {
+			return false;
 		}
 		
 	}

@@ -37,4 +37,8 @@
     <string name="last_week_no_competition">上周未开赛</string>
     <string name="no_rank_info">无</string>
     <string name="current_week_no_rank_list">暂无排名</string>
+    <string name="input_phone_number">手机号码</string>
+    <string name="accept_award_prompt">请输入您的手机号码，我们将在24小时内为您充值~</string>
+    <string name="invalid_phone_number">手机号错误~</string>
+    <string name="award_value">奖金: %d</string>
 </resources>
