@@ -37,6 +37,8 @@
     <string name="no_award">未获奖</string>
     <string name="have_accept_award">已领取</string>
     <string name="last_week_no_competition">上周未开赛</string>
+    <string name="competition_over">比赛已结束</string>
+    <string name="current_week_tmp_no_rank">本周暂无排名</string>
     <string name="no_rank_info">无</string>
     <string name="current_week_no_rank_list">暂无排名</string>
     <string name="input_phone_number">手机号码</string>

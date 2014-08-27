@@ -387,7 +387,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			  String uri = "http://littleappleapp.sinaapp.com/insert.php";
+			  String uri = "http://littleappleapp.sinaapp.com/new_insert.php";
 			  List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 			  nameValuePairs.add(new BasicNameValuePair("nickyname", nickyName));
 			  nameValuePairs.add(new BasicNameValuePair("score", score + ""));

@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.echo.littleapple.RankAcitivity"
+            android:name="com.echo.littleapple.NewRankAcitivity"
 	        android:screenOrientation="portrait"
             android:label="@string/app_name" >
         </activity>

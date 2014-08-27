@@ -5,16 +5,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.security.auth.Subject;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -62,22 +56,31 @@ public class NewRankAcitivity extends Activity{
 	$last_week_award_list = "last_week_award_list:";
 	$current_week_rank_list = "current_week_rank_list:";
 	*/
-	private static final String LAST_WEEK_AWARD = "last_week_award:";
+	private static final String LAST_WEEK_AWARD_STATUS = "last_week_award:";
 	private static final String MY_LAST_WEEK_RANK = "my_last_week_rank:";
 	private static final String MY_CURRENT_WEEK_RANK = "my_current_week_rank:";
 	private static final String LAST_WEEK_AWARD_LIST = "last_week_award_list:";
 	private static final String CURRENT_WEEK_RANK_LIST = "current_week_rank_list:";
 	private static final String AWARD_STATUS = "award_status:";
+	private static final String AWARD_VALUES = "award_values:";
+	
+	private static final int NOT_START = 0;
+	private static final int ON_GOING = 1;
+	private static final int END = 2;
 	
 	private static final String TRUE = "true";
 	
-	private boolean lastWeekAwardStatus = false;
+	//0, not start; 1, on going; 2, end
+	private int lastWeekAwardStatus = 0;
 	private int myLastWeekRank, myCurrentWeekRank;
 
 	private static final int NO_AWARD = 0;
 	private static final int PENDING_ACCEPT_AWARD = 1;
 	private static final int ACCEPT_AWARD = 2;
-	private int awardStatus = NO_AWARD;
+	//private int awardStatus = NO_AWARD;
+	
+	private int[] awardValues;
+	private int myAward;
 
 
 	@Override
@@ -167,6 +170,11 @@ public class NewRankAcitivity extends Activity{
 		}
 
 		@Override
+		public boolean isEnabled(int position) {
+			return false;
+		}
+
+		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view;
 			TextView rankTextView, nickyNameTextView, scoreTextView;
@@ -204,6 +212,11 @@ public class NewRankAcitivity extends Activity{
 		@Override
 		public AwardItem getItem(int position) {
 			return super.getItem(position);
+		}
+
+		@Override
+		public boolean isEnabled(int position) {
+			return false;
 		}
 
 		@Override
@@ -264,12 +277,22 @@ public class NewRankAcitivity extends Activity{
 			try {
 				line = reader.readLine();
 				while(line != null){
-					if(line.startsWith(LAST_WEEK_AWARD)){
-						tmp = line.substring(LAST_WEEK_AWARD.length()).trim();
-						//TODO need check the return value from the server
-						if (tmp.toLowerCase().equals(TRUE)) {
-							lastWeekAwardStatus = true;
+					if (line.startsWith(AWARD_VALUES)) {
+						tmp = line.substring(AWARD_VALUES.length()).trim();
+						itemFields = tmp.split(" ");
+						awardValues = new int[3];
+						for (int i = 0; i < 3; i++) {
+							awardValues[i] = Integer.parseInt(itemFields[i]);
 						}
+					}else if(line.startsWith(LAST_WEEK_AWARD_STATUS)){
+						tmp = line.substring(LAST_WEEK_AWARD_STATUS.length()).trim();
+						//TODO need check the return value from the server
+						try {
+							lastWeekAwardStatus = Integer.parseInt(tmp);
+						} catch (Exception e) {
+							// TODO: handle exception
+						}
+
 					}else if(line.startsWith(MY_LAST_WEEK_RANK)){
 						tmp = line.substring(MY_LAST_WEEK_RANK.length()).trim();
 						try {
@@ -289,23 +312,28 @@ public class NewRankAcitivity extends Activity{
 						items = tmp.split(";");
 						itemFields = null;
 						// the last one is empty
-						for (int i = 0; i < items.length - 1; i++) {
+						int index;
+						for (int i = 0; i < items.length; i++) {
 							itemFields = items[i].trim().split(" ");
-							if (itemFields != null && itemFields.length == 3) {
+							if (itemFields != null && itemFields.length == 2) {
 								nickyName = itemFields[0];
+								index = nickyName.indexOf("_");
+								if (index > 0) {
+									nickyName = nickyName.substring(0, index);
+								}
 								score = itemFields[1];
-								award = itemFields[2];
+								award = awardValues[i] + "";
 								awardListItems.add(new AwardItem(nickyName, score, award));
 							}
 						}
 						
 					}else if(line.startsWith(CURRENT_WEEK_RANK_LIST)){
-						tmp = line.substring(CURRENT_WEEK_RANK_LIST.length());
+						tmp = line.substring(CURRENT_WEEK_RANK_LIST.length()).trim();
 						items = tmp.split(";");
 						itemFields = null;
 						int index;
 
-                        for (int i = 0; i < items.length - 1; i++) {
+                        for (int i = 0; i < items.length; i++) {
 							itemFields = items[i].trim().split(" ");
 							if (itemFields != null && itemFields.length == 2) {
 								rank = (i + 1) + "";
@@ -320,14 +348,15 @@ public class NewRankAcitivity extends Activity{
 
 							}
 						}
-					}else if (line.startsWith(AWARD_STATUS)) {
-						tmp = line.substring(AWARD_STATUS.length());
-						try {
-							awardStatus = Integer.parseInt(tmp);
-						} catch (Exception e) {
-							awardStatus = NO_AWARD;
-						}
 					}
+//					else if (line.startsWith(AWARD_STATUS)) {
+//						tmp = line.substring(AWARD_STATUS.length());
+//						try {
+//							awardStatus = Integer.parseInt(tmp);
+//						} catch (Exception e) {
+//							awardStatus = NO_AWARD;
+//						}
+//					}
 					line = reader.readLine();
 				}
 				reader.close();
@@ -347,6 +376,14 @@ public class NewRankAcitivity extends Activity{
 			progressBar.setVisibility(View.GONE);
 			//TODO do more check
 			if (loadDataSuccess) {
+				if (lastWeekAwardStatus != ON_GOING) {
+					acceptAwardButton.setText(getString(R.string.no_award));
+					acceptAwardButton.setEnabled(false);
+				}else {
+					if (myLastWeekRank  <= awardListItems.size()) {
+						acceptAwardButton.setEnabled(true);
+					}
+				}
 				if (myCurrentWeekRank >= 0) {
 					myCurrentWeekRankTextView.setText(getString(R.string.my_rank_of_current_week, myCurrentWeekRank));
 				}else {
@@ -360,6 +397,11 @@ public class NewRankAcitivity extends Activity{
 				}
 
 				if (awardListItems.size() == 0) {
+					if (lastWeekAwardStatus == NOT_START) {
+						lastWeekNoAwardLisTextView.setText(getString(R.string.last_week_no_competition));
+					}else {
+						lastWeekNoAwardLisTextView.setText(getString(R.string.competition_over));
+					}
 					lastWeekNoAwardLisTextView.setVisibility(View.VISIBLE);
 				}else {
 					lastWeekNoAwardLisTextView.setVisibility(View.GONE);
@@ -377,21 +419,21 @@ public class NewRankAcitivity extends Activity{
 				awardAdaper.notifyDataSetChanged();
 				scrollView.setVisibility(View.VISIBLE);
 				
-				switch (awardStatus) {
-				case NO_AWARD:
-					acceptAwardButton.setText(getString(R.string.no_award));
-					acceptAwardButton.setEnabled(false);
-					break;
-				case PENDING_ACCEPT_AWARD:
-					//do nothing
-					break;
-				case ACCEPT_AWARD:
-					acceptAwardButton.setText(getString(R.string.have_accept_award));
-					acceptAwardButton.setEnabled(false);
-
-				default:
-					break;
-				}
+//				switch (awardStatus) {
+//				case NO_AWARD:
+//					acceptAwardButton.setText(getString(R.string.no_award));
+//					acceptAwardButton.setEnabled(false);
+//					break;
+//				case PENDING_ACCEPT_AWARD:
+//					//do nothing
+//					break;
+//				case ACCEPT_AWARD:
+//					acceptAwardButton.setText(getString(R.string.have_accept_award));
+//					acceptAwardButton.setEnabled(false);
+//
+//				default:
+//					break;
+//				}
 				
 			}else {
 				networkInfoTextView.setVisibility(View.VISIBLE);
@@ -411,7 +453,7 @@ public class NewRankAcitivity extends Activity{
         	LayoutInflater layoutInflater = LayoutInflater.from(this);
         	final View view = layoutInflater.inflate(R.layout.accept_award_dialog, null);
         	int award = 0;
-        	if (lastWeekAwardStatus) {
+        	if (lastWeekAwardStatus == ON_GOING) {
         		switch (myLastWeekRank) {
 				case 1:
 					award = 50;
@@ -442,12 +484,12 @@ public class NewRankAcitivity extends Activity{
 								
 								@Override
 								public void run() {
-									// TODO Auto-generated method stub
 	                                String uri = "http://littleappleapp.sinaapp.com/accept_award.php";
 	                                List<NameValuePair> nameValuePairs = null;
 	                                if (myNickyName != null) {
 	                                        nameValuePairs = new ArrayList<NameValuePair>();
 	                                        nameValuePairs.add(new BasicNameValuePair("nickyname", myNickyName));
+	                                        nameValuePairs.add(new BasicNameValuePair("award", awardValues[myLastWeekRank - 1] + ""));
 	                                }
 	
 	                                String content = Util.httpPost(uri, nameValuePairs, null);
@@ -456,7 +498,7 @@ public class NewRankAcitivity extends Activity{
 	                                }
 										
 									}
-								});
+								}).start();
 							acceptAwardButton.setText(getString(R.string.have_accept_award));
 							Toast.makeText(NewRankAcitivity.this, getString(R.string.accept_award_success), Toast.LENGTH_LONG).show();
 							
