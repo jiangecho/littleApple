@@ -44,6 +44,8 @@ public class NewRankAcitivity extends Activity{
 	private TextView lastWeekNoAwardLisTextView;
 	private TextView currentWeekNoRankLisTextView;
 	
+	private TextView newsTextView;
+	
 	private ScrollView scrollView;
 	private String myNickyName;
 	
@@ -63,6 +65,7 @@ public class NewRankAcitivity extends Activity{
 	private static final String CURRENT_WEEK_RANK_LIST = "current_week_rank_list:";
 	private static final String AWARD_STATUS = "award_status:";
 	private static final String AWARD_VALUES = "award_values:";
+	private static final String NEWS = "news:";
 	
 	private static final int NOT_START = 0;
 	private static final int ON_GOING = 1;
@@ -81,6 +84,8 @@ public class NewRankAcitivity extends Activity{
 	
 	private int[] awardValues;
 	private int myAward;
+	
+	private String news;
 
 
 	@Override
@@ -99,6 +104,8 @@ public class NewRankAcitivity extends Activity{
 		
 		lastWeekNoAwardLisTextView = (TextView) findViewById(R.id.last_week_no_award_list);
 		currentWeekNoRankLisTextView = (TextView) findViewById(R.id.current_week_no_rank_list);
+		
+		newsTextView = (TextView) findViewById(R.id.newsTV);
 
 		scrollView.setVisibility(View.GONE);
 
@@ -277,7 +284,9 @@ public class NewRankAcitivity extends Activity{
 			try {
 				line = reader.readLine();
 				while(line != null){
-					if (line.startsWith(AWARD_VALUES)) {
+					if (line.startsWith(NEWS)) {
+						news = line.substring(NEWS.length()).trim();
+					}else if (line.startsWith(AWARD_VALUES)) {
 						tmp = line.substring(AWARD_VALUES.length()).trim();
 						itemFields = tmp.split(" ");
 						awardValues = new int[3];
@@ -376,6 +385,10 @@ public class NewRankAcitivity extends Activity{
 			progressBar.setVisibility(View.GONE);
 			//TODO do more check
 			if (loadDataSuccess) {
+				if (news != null && news.length() > 0) {
+					newsTextView.setText(news);
+					newsTextView.setVisibility(View.VISIBLE);
+				}
 				if (lastWeekAwardStatus == ON_GOING) {
 					if (myLastWeekRank != -1 && myLastWeekRank  <= awardListItems.size()) {
 						acceptAwardButton.setEnabled(true);
