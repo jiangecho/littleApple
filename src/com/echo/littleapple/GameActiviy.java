@@ -4,13 +4,21 @@ package com.echo.littleapple;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Random;
+
+import org.apache.http.util.ByteArrayBuffer;
 
 import com.wandoujia.ads.sdk.Ads;
 import com.wandoujia.ads.sdk.Ads.ShowMode;
 import com.wandoujia.ads.sdk.loader.Fetcher.AdFormat;
+import com.wandoujia.ads.sdk.widget.AdBanner;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -33,8 +41,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import cn.sharesdk.framework.ShareSDK;
@@ -53,7 +63,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private GameView gameView;
 	private LinearLayout startLayer;
 
-	private LinearLayout resultLayer;
+	private RelativeLayout resultLayer;
 	private TextView resultTV;
 	private TextView bestTV;
 	private TextView promptTV;
@@ -70,6 +80,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private BlockOnTouchEvent blockOnTouchEvent;
 	
 	private static final String[] colors = {"#773460" ,"#FE436A" ,"#823935" ,"#113F3D" ,"#26BCD5" ,"#F40D64" ,"#458994" ,"#93E0FF" ,"#D96831" ,"#AEDD81" ,"#593D43"};
+	private static final String SAY_HELLO = "award";
 	private Random random;
 	
 	private String nickyName;
@@ -78,6 +89,11 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private boolean haveSubmited = false;
 	
 	private Util.PostResultCallBack postResultCallBack;
+
+	private AdBanner adBanner;
+	private View adBannerView;
+
+	private boolean sayHello = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -92,7 +108,7 @@ public class GameActiviy extends Activity implements GameEventListner{
         startLayer = (LinearLayout)findViewById(R.id.startLayer);
         startLayer.setOnTouchListener(blockOnTouchEvent);
 
-        resultLayer = (LinearLayout)findViewById(R.id.resultLayer);
+        resultLayer = (RelativeLayout)findViewById(R.id.resultLayer);
         resultLayer.setOnTouchListener(blockOnTouchEvent);
         
         resultTV = (TextView) findViewById(R.id.resultTV);
@@ -140,12 +156,18 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 
      // Init AdsSdk.
-      try {
-        Ads.init(this, "100010461", "7b95eea6b51978614c4ff137c2ad7c9f");
-        Ads.preLoad(this, AdFormat.interstitial, "1a3b067d93c5a677f37685fdf4c76b49");
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+        try {
+            Ads.init(this, "100010461", "7b95eea6b51978614c4ff137c2ad7c9f");
+          } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        sayHello = sharedPreferences.getBoolean(SAY_HELLO, false);
+        if (!sayHello) {
+        	asyncGetOnlineConfig();
+		}else {
+			Ads.preLoad(this, AdFormat.interstitial, "1a3b067d93c5a677f37685fdf4c76b49");
+		}
 	}
 
 	@Override
@@ -257,6 +279,25 @@ public class GameActiviy extends Activity implements GameEventListner{
 		resultLayer.setVisibility(View.VISIBLE);
 		showAd();
 
+	}
+
+	@Override
+	protected void onStart() {
+		if (!sayHello) {
+			showBannerAd();
+		}
+		if (adBanner != null) {
+			adBanner.startAutoScroll();
+		}
+		super.onStart();
+	}
+
+	@Override
+	protected void onStop() {
+		if (adBanner != null) {
+			adBanner.stopAutoScroll();
+		}
+		super.onStop();
 	}
 
 	@Override
@@ -384,6 +425,59 @@ public class GameActiviy extends Activity implements GameEventListner{
         // 启动分享GUI
         oks.show(this);
    }
+   
+
+	  private void showBannerAd() {
+		    ViewGroup containerView = (ViewGroup) findViewById(R.id.banner_ad_container);
+		    if (adBannerView != null && containerView.indexOfChild(adBannerView) >= 0) {
+		      containerView.removeView(adBannerView);
+		    }
+
+
+
+		    adBanner = Ads.showBannerAd(this, (ViewGroup) findViewById(R.id.banner_ad_container),
+		       "61312ac6f2b2f4d277ebabd02f88f00b");
+		    adBannerView = adBanner.getView();
+		  }
+	  
+	  
+	 private void getOnlineConfig(){
+		try {
+			URL url = new URL("http://littleappleapp.sinaapp.com/config.txt");
+			HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+			InputStream inputStream = urlConnection.getInputStream();
+			byte[] bytes = new byte[1024];
+			int count;
+			ByteArrayBuffer byteArrayBuffer = new ByteArrayBuffer(1024);
+			count = inputStream.read(bytes);
+			while (count != -1) {
+				byteArrayBuffer.append(bytes, 0, count);
+				count = inputStream.read(bytes);
+			}
+			String config = new String(byteArrayBuffer.toByteArray());
+			if (config.contains(SAY_HELLO)) {
+				sayHello = true;
+				sharedPreferences.edit().putBoolean(SAY_HELLO, true).commit();
+				Ads.preLoad(this, AdFormat.interstitial, "1a3b067d93c5a677f37685fdf4c76b49");
+			}
+
+			urlConnection.disconnect();
+			inputStream.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+	 } 
+	 
+	 private void asyncGetOnlineConfig(){
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				getOnlineConfig();
+			}
+		}).start(); 
+	 }
    
    private void submitScore(final int score){
 //		if (score > bestScore ) {

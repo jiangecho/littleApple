@@ -88,11 +88,11 @@
 
     </LinearLayout>
     
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" 
-        android:layout_gravity="center"
+        android:gravity="center"
         android:id="@+id/resultLayer"
         android:visibility="invisible"
         android:background="@color/darkgray"
@@ -102,27 +102,30 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_gravity="center_horizontal"
-	        android:layout_marginTop="50dip"
+	        android:layout_marginTop="20dip"
+	        android:layout_centerHorizontal="true"
 	        android:textAppearance="?android:attr/textAppearanceMedium" 
 	        android:text="@string/result"
 	        android:textColor="@color/white"
 	        />
 	    <TextView 
 	        android:id="@+id/promptTV"
+	        android:layout_below="@id/resultTV"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_marginTop="5dip"
-	        android:layout_gravity="center_horizontal"
+	        android:layout_centerHorizontal="true"
 	        android:textAppearance="?android:attr/textAppearanceMedium" 
 	        android:text="@string/strf"
 	        android:textColor="@color/white"
 	        />
 	    <TextView 
 	        android:id="@+id/bestTV"
+	        android:layout_below="@id/promptTV"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_marginTop="30dip"
-	        android:layout_gravity="center_horizontal"
+	        android:layout_centerHorizontal="true"
 	        android:textAppearance="?android:attr/textAppearanceMedium" 
 	        android:text="@string/best"
 	        android:textColor="@color/white"
@@ -130,9 +133,10 @@
 
 	    <Button
 	        android:id="@+id/restartButton"
+	        android:layout_below="@id/bestTV"
 	        android:layout_width="150dp"
 	        android:layout_height="wrap_content"
-	        android:layout_gravity="center_horizontal"
+	        android:layout_centerHorizontal="true"
 	        android:layout_marginTop="15dip"
 	        android:background="@color/red"
 	        android:textColor="@color/white"
@@ -141,9 +145,10 @@
 	        />
 	    <Button
 	        android:id="@+id/sharetButton"
+	        android:layout_below="@id/restartButton"
 	        android:layout_width="150dp"
 	        android:layout_height="wrap_content"
-	        android:layout_gravity="center_horizontal"
+	        android:layout_centerHorizontal="true"
 	        android:layout_marginTop="15dip"
 	        android:background="@color/red"
 	        android:textColor="@color/white"
@@ -152,8 +157,10 @@
 	        />
 	    <Button
 	        android:id="@+id/rankButton"
+	        android:layout_below="@id/sharetButton"
 	        android:layout_width="150dp"
 	        android:layout_height="wrap_content"
+	        android:layout_centerHorizontal="true"
 	        android:layout_gravity="center_horizontal"
 	        android:layout_marginTop="15dip"
 	        android:background="@color/red"
@@ -162,16 +169,13 @@
 	        android:onClick="onRankButtonClick"
 	        />
 
-	    <TextView
-	        android:paddingTop="10dip"
-	        android:alpha="0.6"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="@string/competition_start"
-	        android:gravity="center_horizontal"
-	        android:textAppearance="?android:attr/textAppearanceMedium" />
+	      <FrameLayout
+            android:id="@+id/banner_ad_container"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_height="80dip"/>
 
-    </LinearLayout>
+    </RelativeLayout>
     
     
 
