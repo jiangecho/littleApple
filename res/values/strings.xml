@@ -25,6 +25,7 @@
     <string name="confirm">确定</string>
     <string name="me">我</string>
     <string name="network_error">网络异常</string>
+    <string name="news">新闻</string>
     <string name="check_rank">排行榜</string>
     <string name="my_rank_of_current_week">本周排名: %d</string>
     <string name="my_rank_of_last_week">上周排名: %d</string>
