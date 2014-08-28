@@ -376,13 +376,17 @@ public class NewRankAcitivity extends Activity{
 			progressBar.setVisibility(View.GONE);
 			//TODO do more check
 			if (loadDataSuccess) {
-				if (lastWeekAwardStatus != ON_GOING) {
+				if (lastWeekAwardStatus == ON_GOING) {
+					if (myLastWeekRank != -1 && myLastWeekRank  <= awardListItems.size()) {
+						acceptAwardButton.setEnabled(true);
+					}else {
+						acceptAwardButton.setText(getString(R.string.no_award));
+						acceptAwardButton.setEnabled(false);
+					}
+				}else {
 					acceptAwardButton.setText(getString(R.string.no_award));
 					acceptAwardButton.setEnabled(false);
-				}else {
-					if (myLastWeekRank  <= awardListItems.size()) {
-						acceptAwardButton.setEnabled(true);
-					}
+
 				}
 				if (myCurrentWeekRank >= 0) {
 					myCurrentWeekRankTextView.setText(getString(R.string.my_rank_of_current_week, myCurrentWeekRank));
