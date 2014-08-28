@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.wandoujia.ads.sdk.Ads;
+import com.wandoujia.ads.sdk.Ads.ShowMode;
+import com.wandoujia.ads.sdk.loader.Fetcher.AdFormat;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -134,6 +138,14 @@ public class GameActiviy extends Activity implements GameEventListner{
         
         postResultCallBack = new CallBack();
 
+
+     // Init AdsSdk.
+      try {
+        Ads.init(this, "100010461", "7b95eea6b51978614c4ff137c2ad7c9f");
+        Ads.preLoad(this, AdFormat.interstitial, "1a3b067d93c5a677f37685fdf4c76b49");
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
 	}
 
 	@Override
@@ -243,8 +255,8 @@ public class GameActiviy extends Activity implements GameEventListner{
         value = getString(R.string.best, score > bestScore ? score : bestScore);
         bestTV.setText(value);
 		resultLayer.setVisibility(View.VISIBLE);
+		showAd();
 
-		
 	}
 
 	@Override
@@ -270,6 +282,15 @@ public class GameActiviy extends Activity implements GameEventListner{
 		submitScore(score);
 		
 	}
+	
+	private void showAd(){
+		boolean tmp = Ads.isLoaded(AdFormat.interstitial, "1a3b067d93c5a677f37685fdf4c76b49");
+		if (tmp) {
+			Ads.showAppWidget(GameActiviy.this, null, "1a3b067d93c5a677f37685fdf4c76b49", ShowMode.FULL_SCREEN);
+		}
+	}
+	
+	
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
