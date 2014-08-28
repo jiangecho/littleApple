@@ -4,10 +4,11 @@
     android:layout_height="match_parent"
     tools:context="com.echo.littleapple.MainActivity$PlaceholderFragment" >
 
-    <com.echo.littleapple.GameView 
+    <FrameLayout
         android:id="@+id/gameView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#000000"
         />
     <TextView 
         android:id="@+id/timerTV" 

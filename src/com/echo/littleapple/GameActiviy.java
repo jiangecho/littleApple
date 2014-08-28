@@ -27,16 +27,18 @@ import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 
-import com.echo.littleapple.GameView.GameEventListner;
+import com.echo.littleapple.GameSurfaceView.GameEventListner;
 
 
 public class GameActiviy extends Activity implements GameEventListner{
@@ -46,7 +48,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
 
 	private TextView timerTV;
-	private GameView gameView;
+	private GameSurfaceView gameView;
 	private LinearLayout startLayer;
 
 	private LinearLayout resultLayer;
@@ -82,7 +84,10 @@ public class GameActiviy extends Activity implements GameEventListner{
 		countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
 		blockOnTouchEvent = new BlockOnTouchEvent();
         timerTV = (TextView)findViewById(R.id.timerTV);
-        gameView = (GameView)findViewById(R.id.gameView);
+        FrameLayout frameLayout = (FrameLayout)findViewById(R.id.gameView);
+        gameView = new GameSurfaceView(this);
+        frameLayout.addView(gameView);
+
         promptTV = (TextView) findViewById(R.id.promptTV);
         gameView.setGameEventListener(this);
         startLayer = (LinearLayout)findViewById(R.id.startLayer);
@@ -161,7 +166,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 		@Override
 		public void onFinish() {
-			gameView.playGameSoundEffect(GameView.TIME_OUT);
+			gameView.playGameSoundEffect(GameSurfaceView.TIME_OUT);
 			timerTV.setText(getResources().getString(R.string.time_out));
 			if (gameView.getScore()> bestScore ) {
 				bestScore = gameView.getScore();
