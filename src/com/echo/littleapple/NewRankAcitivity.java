@@ -482,7 +482,7 @@ public class NewRankAcitivity extends Activity{
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						EditText editText = (EditText) view.findViewById(R.id.editText);
-						String phoneNum = editText.getText().toString().trim();
+						final String phoneNum = editText.getText().toString().trim();
 						if (isPhoneNumber(phoneNum)) {
 							new Thread(new Runnable() {
 								
@@ -493,6 +493,7 @@ public class NewRankAcitivity extends Activity{
 	                                if (myNickyName != null) {
 	                                        nameValuePairs = new ArrayList<NameValuePair>();
 	                                        nameValuePairs.add(new BasicNameValuePair("nickyname", myNickyName));
+	                                        nameValuePairs.add(new BasicNameValuePair("phone_number", phoneNum));
 	                                        nameValuePairs.add(new BasicNameValuePair("award", awardValues[myLastWeekRank - 1] + ""));
 	                                }
 	
