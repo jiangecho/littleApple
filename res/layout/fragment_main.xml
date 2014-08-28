@@ -162,6 +162,15 @@
 	        android:onClick="onRankButtonClick"
 	        />
 
+	    <TextView
+	        android:paddingTop="10dip"
+	        android:alpha="0.6"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/competition_start"
+	        android:gravity="center_horizontal"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+
     </LinearLayout>
     
     
