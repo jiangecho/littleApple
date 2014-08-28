@@ -1,9 +1,8 @@
 package com.echo.littleapple;
 
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
+import android.R.bool;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,12 +14,10 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
 public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callback{
 	
@@ -52,6 +49,9 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	private int moveStepHeight;
 	private int moveYOffset = 0;
 	private Handler handler;
+	private Handler animationHandler;
+	private HandlerThread animationHandlerThread;
+	private AnimationTask animationTask;
 	
 	private SoundPool soundPool;
 	private int[] sounds;
@@ -65,11 +65,9 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
 	int left, top, right, bottom;
 	
-	private Timer timer;
-	private TimerTask timerTask;
-	
 	private Canvas canvas;
 	private SurfaceHolder holder;
+	
 
 	public GameSurfaceView(Context context) {
 		this(context, null);
@@ -86,7 +84,6 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		super(context, attrs);
 
 		linePaint = new Paint();
-		linePaint.setColor(Color.RED);
 		linePaint.setAntiAlias(true);
 		
 		
@@ -102,6 +99,9 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		score = 0;
 
 		handler = new Handler();
+		animationHandlerThread = new HandlerThread("animation");
+		animationHandlerThread.start();
+		animationHandler = new Handler(animationHandlerThread.getLooper());
 		
 		this.context = context;
 		// init sound play
@@ -109,6 +109,8 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		
 		holder = getHolder();
 		holder.addCallback(this);
+		
+		animationTask = new AnimationTask();
 	}
 
 
@@ -125,6 +127,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		//draw horizontal lines
 		for (i = 0; i < row ; i++) {
 			canvas.drawLine(0, moveYOffset + firstCellHeight + cellHeight * i, width, moveYOffset + firstCellHeight + cellHeight * i, linePaint);
+			//canvas.drawLine(0,  firstCellHeight + cellHeight * i, width, firstCellHeight + cellHeight * i, linePaint);
 		}
 		
 		//draw vertical lines
@@ -183,7 +186,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 			row  += 1;
 		}
 		
-		moveStepHeight = cellHeight / 6;
+		moveStepHeight = cellHeight / 10;
 		
 		if (apples == null) {
 			apples = new int[row][COLUMN];
@@ -283,31 +286,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	
 	private void startMoveAnimation(){
 
-		timerTask = new TimerTask() {
-			
-			@Override
-			public void run() {
-				if (moveYOffset < cellHeight) {
-					moveYOffset += moveStepHeight;
-					doDraw();
-				}else {
-					moveYOffset = 0;
-					for (int i = row - 2; i > 0; i--) {
-						for (int j = 0; j < COLUMN; j++) {
-							apples[i][j] = apples[i - 1][j]; 
-							apples[i - 1][j] = 0;
-						}
-					}
-					int x_index = random.nextInt(COLUMN);
-					apples[0][x_index] = 1;
-					
-					doDraw();
-					cancel();
-				}
-				
-			}
-		};
-		timer.schedule(timerTask, 10, 10);
+		animationHandler.post(animationTask);
 	}
 	
 	private void initSoundPool(){
@@ -363,14 +342,35 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		timer = new Timer();
-		
+		doDraw();
 	}
 
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
+	}
+	
+	private class AnimationTask implements Runnable{
+
+		@Override
+		public void run() {
+			if (moveYOffset < cellHeight) {
+				moveYOffset += moveStepHeight;
+				doDraw();
+				animationHandler.postDelayed(animationTask, 4);
+			}else {
+				moveYOffset = 0;
+				for (int i = row - 2; i > 0; i--) {
+					for (int j = 0; j < COLUMN; j++) {
+						apples[i][j] = apples[i - 1][j]; 
+						apples[i - 1][j] = 0;
+					}
+				}
+				int x_index = random.nextInt(COLUMN);
+				apples[0][x_index] = 1;
+				doDraw();
+			}
+		}
 		
-		timer.cancel();
 	}
 }
