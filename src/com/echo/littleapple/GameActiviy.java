@@ -76,6 +76,10 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private boolean haveSubmited = false;
 	
 	private Util.PostResultCallBack postResultCallBack;
+	
+	private static final int MODE_CLASSIC = 0;
+	private static final int MODE_SPEED = 1;
+	private int mode = MODE_CLASSIC;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

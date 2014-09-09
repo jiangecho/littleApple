@@ -1,0 +1,68 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:layout_gravity="center"
+    android:id="@+id/startLayer"
+    android:background="#e0576069"
+    tools:context="com.echo.littleapple.MainActivity$PlaceholderFragment" >
+
+	    <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="100dip"
+	        android:layout_gravity="center_horizontal"
+	        android:textAppearance="?android:attr/textAppearanceLarge" 
+	        android:text="@string/title"
+	        android:textColor="@color/yellow"
+	        />
+	    <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dip"
+	        android:layout_gravity="center_horizontal"
+	        android:textAppearance="?android:attr/textAppearanceMedium" 
+	        android:text="@string/stra"
+	        android:textColor="@color/white"
+	        />
+	    <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="5dip"
+	        android:layout_gravity="center_horizontal"
+	        android:textAppearance="?android:attr/textAppearanceMedium" 
+	        android:text="@string/strb"
+	        android:textColor="@color/white"
+	        />
+	    <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="5dip"
+	        android:layout_gravity="center_horizontal"
+	        android:textAppearance="?android:attr/textAppearanceMedium" 
+	        android:text="@string/strc"
+	        android:textColor="@color/white"
+	        />
+	    <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="5dip"
+	        android:layout_gravity="center_horizontal"
+	        android:textAppearance="?android:attr/textAppearanceMedium" 
+	        android:text="@string/strd"
+	        android:textColor="@color/white"
+	        />
+
+	    <Button
+	        android:id="@+id/startButton"
+	        android:layout_width="150dp"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_horizontal"
+	        android:layout_marginTop="15dip"
+	        android:background="@color/red"
+	        android:onClick="onStartButtonClick"
+	        android:text="@string/start"
+	        android:textColor="@color/white" />
+
+</LinearLayout>
