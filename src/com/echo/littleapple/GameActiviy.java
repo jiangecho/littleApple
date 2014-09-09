@@ -79,13 +79,16 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	private static final int MODE_CLASSIC = 0;
 	private static final int MODE_SPEED = 1;
+	
+	private static final int SPEED_SUCCESS_SCORE = 100;
+	private static final int SPEED_MAX_TIME_LENGHT = 60 * 1000;
+	
 	private int mode = MODE_CLASSIC;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_main);
-		countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
 		blockOnTouchEvent = new BlockOnTouchEvent();
         timerTV = (TextView)findViewById(R.id.timerTV);
         FrameLayout frameLayout = (FrameLayout)findViewById(R.id.gameView);
@@ -192,40 +195,81 @@ public class GameActiviy extends Activity implements GameEventListner{
 //			String remindTime = "" + millisUntilFinished / 1000 + "." + millisUntilFinished % 1000 / 10;
 //			timerTV.setText(remindTime);
 			remindTimeSB.setLength(0);
-			remindSeconds = (int) (millisUntilFinished / 1000);
-			remindMillis = (int) (millisUntilFinished % 1000 / 10);
-			
-			if (remindSeconds < 10) {
-				remindTimeSB.append("0");
+			if (mode == MODE_CLASSIC) {
+				remindSeconds = (int) (millisUntilFinished / 1000);
+				remindMillis = (int) (millisUntilFinished % 1000 / 10);
+				if (remindSeconds < 10) {
+					remindTimeSB.append("0");
+				}
+				remindTimeSB.append(remindSeconds);
+				remindTimeSB.append(".");
+				
+				if (remindMillis < 10) {
+					remindTimeSB.append("0");
+				}
+				remindTimeSB.append(remindMillis);
+				
+				timerTV.setText(remindTimeSB);
+			}else if(mode == MODE_SPEED){
+				//do nothing
+				
 			}
-			remindTimeSB.append(remindSeconds);
-			remindTimeSB.append(".");
 			
-			if (remindMillis < 10) {
-				remindTimeSB.append("0");
-			}
-			remindTimeSB.append(remindMillis);
-			
-			timerTV.setText(remindTimeSB);
 		}
 		
 	}
 	
 	
 	public void onStartButtonClick(View view){
+		if (mode == MODE_SPEED) {
+			mode = MODE_CLASSIC;
+			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+		}else {
+			if (countDownTimer == null) {
+				countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+			}
+		}
+		
+
 		startLayer.setVisibility(View.INVISIBLE);
 		//gameView.reset();
 	}
 
+	public void onSpeedStartButtonClick(View view){
+		if (mode == MODE_CLASSIC) {
+			mode = MODE_SPEED;
+			countDownTimer = new MyCountDownTimer(SPEED_MAX_TIME_LENGHT, 100);
+		}else {
+			if (countDownTimer == null) {
+				countDownTimer = new MyCountDownTimer(SPEED_MAX_TIME_LENGHT, 100);
+			}
+		}
+
+		timerTV.setText("0");
+		startLayer.setVisibility(View.INVISIBLE);
+		//gameView.reset();
+	}
+
+
 	public void onRestartButtonClick(View view){
 		resultLayer.setVisibility(View.INVISIBLE);
-		timerTV.setText("30.00");
+		if (mode == MODE_CLASSIC) {
+			timerTV.setText("30.00");
+		}else {
+			timerTV.setText("0");
+		}
 		gameView.reset();
 	}
 	
 	public void onRankButtonClick(View view){
 		Intent intent = new Intent(this, NewRankAcitivity.class);
 		startActivity(intent);
+	}
+
+	public void onBackButtonClick(View view){
+		gameView.reset();
+		startLayer.setVisibility(View.VISIBLE);
+		resultLayer.setVisibility(View.INVISIBLE);
 	}
 
 	
@@ -279,6 +323,16 @@ public class GameActiviy extends Activity implements GameEventListner{
 		submitScore(score);
 		
 	}
+	
+	@Override
+	public void onScoreUpdate(int score) {
+		if (mode == MODE_SPEED) {
+			timerTV.setText("" + score);
+			if (score >= SPEED_SUCCESS_SCORE) {
+			}
+		}
+	}
+
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
