@@ -85,8 +85,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	private Util.PostResultCallBack postResultCallBack;
 	
-	private static final int MODE_CLASSIC = 0;
-	private static final int MODE_SPEED = 1;
+	public static final int MODE_CLASSIC = 0;
+	public static final int MODE_SPEED = 1;
+	public static final String MODE = "MODE";
 	
 	private static final int SPEED_SUCCESS_SCORE = 100;
 	private static final int SPEED_MAX_TIME_LENGHT = 60 * 1000;
@@ -285,6 +286,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	public void onRankButtonClick(View view){
 		Intent intent = new Intent(this, NewRankAcitivity.class);
+		intent.putExtra(MODE, mode);
 		startActivity(intent);
 	}
 
@@ -532,7 +534,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 			   return;
 		   }
 		   scoreString = currentScore + "";
-		   submitUri = "http://littleappleapp.sinaapp.com/new_insert_classic.php";
+		   submitUri = "http://littleappleapp.sinaapp.com/new_insert.php";
 			break;
 	
 		case MODE_SPEED:

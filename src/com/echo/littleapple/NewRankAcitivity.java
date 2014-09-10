@@ -87,8 +87,8 @@ public class NewRankAcitivity extends Activity{
 	
 	private String news;
 	
-	//TODO put mode info in the intent
 
+	private int mode;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +122,7 @@ public class NewRankAcitivity extends Activity{
 		myNickyName = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE)
 				.getString("nickyname", null);
 		
+		mode = getIntent().getIntExtra(GameActiviy.MODE, GameActiviy.MODE_CLASSIC);
 		
 		new LoadDataTask().execute();
 		
@@ -200,7 +201,18 @@ public class NewRankAcitivity extends Activity{
 			RankItem item = getItem(position);
 			rankTextView.setText("" + item.rank);
 			nickyNameTextView.setText(item.nickyName);
-			scoreTextView.setText(item.score);
+			
+			if (mode == GameActiviy.MODE_SPEED) {
+				
+				StringBuffer sb = new StringBuffer();
+				sb.append(Long.parseLong(item.score) / 1000);
+				sb.append(".");
+				sb.append((Long.parseLong(item.score) % 1000) / 10);
+				scoreTextView.setText(sb.toString());
+			}else {
+				scoreTextView.setText(item.score);
+			}
+			
 
 			//TODO set listview's height
 			return view;
@@ -260,8 +272,14 @@ public class NewRankAcitivity extends Activity{
 
 		@Override
 		protected Void doInBackground(Void... params) {
-			//TODO the uri would be depend on the mode
-			String uri = "http://littleappleapp.sinaapp.com/new_rank_str.php";
+
+			String uri = null; 
+			if (mode == GameActiviy.MODE_CLASSIC) {
+				uri = "http://littleappleapp.sinaapp.com/new_rank_str.php";
+			}else if(mode == GameActiviy.MODE_SPEED){
+				uri = "http://littleappleapp.sinaapp.com/new_rank_str_speed.php";
+			}
+
 			List<NameValuePair> nameValuePairs = null;
 			if (myNickyName != null) {
 				nameValuePairs = new ArrayList<NameValuePair>();
