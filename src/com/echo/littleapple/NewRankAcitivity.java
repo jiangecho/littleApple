@@ -86,6 +86,8 @@ public class NewRankAcitivity extends Activity{
 	private int myAward;
 	
 	private String news;
+	
+	//TODO put mode info in the intent
 
 
 	@Override
@@ -119,6 +121,7 @@ public class NewRankAcitivity extends Activity{
 		
 		myNickyName = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE)
 				.getString("nickyname", null);
+		
 		
 		new LoadDataTask().execute();
 		
@@ -257,6 +260,7 @@ public class NewRankAcitivity extends Activity{
 
 		@Override
 		protected Void doInBackground(Void... params) {
+			//TODO the uri would be depend on the mode
 			String uri = "http://littleappleapp.sinaapp.com/new_rank_str.php";
 			List<NameValuePair> nameValuePairs = null;
 			if (myNickyName != null) {

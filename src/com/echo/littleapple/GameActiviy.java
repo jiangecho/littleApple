@@ -4,6 +4,7 @@ package com.echo.littleapple;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -11,6 +12,7 @@ import java.util.Random;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.R.mipmap;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -45,6 +47,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	private static final int TIME_LENGHT = 30 * 1000;
 	private static final String BEST_SCORE = "BEST_SCORE";
+	private static final String SPEED_BEST_SCORE = "SPEED_BEST_SCORE";
 	private static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
 
 	private TextView timerTV;
@@ -60,7 +63,10 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private CountDownTimer countDownTimer;
 	private StringBuffer remindTimeSB;
 	private SharedPreferences sharedPreferences;
-	private int bestScore;
+	private int bestScore = 0;
+	private int currentScore = 0;
+	
+	private long speedBestScore;
 	
 	
 	private long lastPressMillis = 0;
@@ -71,6 +77,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private Random random;
 	
 	private String nickyName;
+	private String scoreString;
+	private String submitUri;
 	private static final String NICKY_NAME = "nickyname";
 	private static final String HAVE_SUBMITED = "haveSubmited";
 	private boolean haveSubmited = false;
@@ -82,6 +90,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	private static final int SPEED_SUCCESS_SCORE = 100;
 	private static final int SPEED_MAX_TIME_LENGHT = 60 * 1000;
+	private long escapeMillis;
 	
 	private int mode = MODE_CLASSIC;
 
@@ -111,6 +120,7 @@ public class GameActiviy extends Activity implements GameEventListner{
         
         sharedPreferences = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
         bestScore = sharedPreferences.getInt(BEST_SCORE, 0);
+        speedBestScore = sharedPreferences.getLong(SPEED_BEST_SCORE, Long.MAX_VALUE);
         
         nickyName = sharedPreferences.getString(NICKY_NAME, null);
         if (nickyName == null) {
@@ -175,11 +185,25 @@ public class GameActiviy extends Activity implements GameEventListner{
 		public void onFinish() {
 			gameView.playGameSoundEffect(GameSurfaceView.TIME_OUT);
 			timerTV.setText(getResources().getString(R.string.time_out));
-			if (gameView.getScore()> bestScore ) {
-				bestScore = gameView.getScore();
-				sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
+			
+			switch (mode) {
+			case MODE_CLASSIC:
+				if (currentScore > bestScore ) {
+					bestScore = currentScore ;
+					sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
+				}
+				
+				break;
+
+			case MODE_SPEED:
+				if (escapeMillis < speedBestScore) {
+					speedBestScore = escapeMillis;
+					sharedPreferences.edit().putLong(SPEED_BEST_SCORE, speedBestScore).commit();
+				}
+
+				break;
 			}
-			submitScore(gameView.getScore());
+			submitScore();
 			handler.postDelayed(new Runnable() {
 				
 				@Override
@@ -191,11 +215,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 		@Override
 		public void onTick(long millisUntilFinished) {
-			//timerTV.setText("test " + millisUntilFinished / 1000);
-//			String remindTime = "" + millisUntilFinished / 1000 + "." + millisUntilFinished % 1000 / 10;
-//			timerTV.setText(remindTime);
-			remindTimeSB.setLength(0);
+
 			if (mode == MODE_CLASSIC) {
+				remindTimeSB.setLength(0);
 				remindSeconds = (int) (millisUntilFinished / 1000);
 				remindMillis = (int) (millisUntilFinished % 1000 / 10);
 				if (remindSeconds < 10) {
@@ -212,7 +234,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 				timerTV.setText(remindTimeSB);
 			}else if(mode == MODE_SPEED){
 				//do nothing
-				
+				escapeMillis = SPEED_MAX_TIME_LENGHT - millisUntilFinished;
 			}
 			
 		}
@@ -255,7 +277,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		resultLayer.setVisibility(View.INVISIBLE);
 		if (mode == MODE_CLASSIC) {
 			timerTV.setText("30.00");
-		}else {
+		}else if(mode == MODE_SPEED){
 			timerTV.setText("0");
 		}
 		gameView.reset();
@@ -274,27 +296,67 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	
 	private void updateAndShowResultLayer(){
+		String resultInfo = null;
+		String bestScoreInfo = null;
+		String promptInfo = null;
 		
 		if (random == null) {
 			random = new Random();
 		}
+
 		int colorIndex = random.nextInt(colors.length);
 		resultLayer.setBackgroundColor(Color.parseColor(colors[colorIndex]));;
 
-		int score = gameView.getScore();
-		String value = getResources().getString(R.string.result, score);
-		resultTV.setText(value);
-		
-		if (score > 100) {
-			value = getResources().getString(R.string.str_high_score);
-		}else {
-			value = getResources().getString(R.string.strf);
+		switch (mode) {
+		case MODE_CLASSIC:
+			resultInfo= getResources().getString(R.string.classic_result, currentScore);
+			
+			if (currentScore > 100) {
+				promptInfo = getResources().getString(R.string.str_high_score);
+			}else {
+				promptInfo = getResources().getString(R.string.strf);
+			}
+	
+	        bestScoreInfo = getString(R.string.best, bestScore);
+			
+			break;
+
+		case MODE_SPEED:
+			StringBuffer sb = new StringBuffer();
+			if (currentScore >= SPEED_SUCCESS_SCORE) {
+				sb.append(escapeMillis / 1000);
+				sb.append(".");
+				sb.append((escapeMillis % 1000) / 10);
+				resultInfo= getResources().getString(R.string.speed_result, sb.toString());
+				
+				if (escapeMillis > 25 * 1000) {
+					promptInfo = getResources().getString(R.string.str_high_score);
+				}else {
+					promptInfo = getResources().getString(R.string.strf);
+				}
+			}else {
+				resultInfo = getResources().getString(R.string.speed_fail);
+				promptInfo = getResources().getString(R.string.strf);
+			}
+			
+			if (speedBestScore > SPEED_MAX_TIME_LENGHT) {
+				bestScoreInfo = getString(R.string.speed_best, getString(R.string.speed_rank_none));
+				
+			}else {
+				sb.setLength(0);
+				sb.append(speedBestScore / 1000);
+				sb.append(".");
+				sb.append((speedBestScore % 1000) / 10);
+				bestScoreInfo = getString(R.string.speed_best, sb.toString());
+			}
+
+
+			break;
 		}
-		promptTV.setText(value);
 
-
-        value = getString(R.string.best, score > bestScore ? score : bestScore);
-        bestTV.setText(value);
+		resultTV.setText(resultInfo);
+		promptTV.setText(promptInfo);
+        bestTV.setText(bestScoreInfo);
 		resultLayer.setVisibility(View.VISIBLE);
 
 		
@@ -307,28 +369,59 @@ public class GameActiviy extends Activity implements GameEventListner{
 	}
 
 	@Override
-	public void onGameOver(final int score) {
+	public void onGameOver() {
 		//TODO stop timer
 		// show result
 		countDownTimer.cancel();
 
-		if (score > bestScore ) {
-			bestScore = score;
-			sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
+		switch (mode) {
+		case MODE_CLASSIC:
+			if (currentScore > bestScore ) {
+				bestScore = currentScore;
+				sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
+			}
+			
+			break;
+
+		case MODE_SPEED:
+			timerTV.setText(getResources().getString(R.string.speed_fail));
+			if (currentScore >= SPEED_SUCCESS_SCORE) {
+				if (escapeMillis < speedBestScore) {
+					speedBestScore = escapeMillis;
+					sharedPreferences.edit().putLong(SPEED_BEST_SCORE, speedBestScore).commit();
+				}
+				
+			}
+			break;
 		}
 		
 		updateAndShowResultLayer();
-
-		
-		submitScore(score);
-		
+		submitScore();
 	}
 	
 	@Override
 	public void onScoreUpdate(int score) {
+		currentScore = score;
 		if (mode == MODE_SPEED) {
 			timerTV.setText("" + score);
 			if (score >= SPEED_SUCCESS_SCORE) {
+				gameView.playGameSoundEffect(GameSurfaceView.TIME_OUT);
+				timerTV.setText(getResources().getString(R.string.speed_success));
+
+				if (escapeMillis < speedBestScore) {
+					speedBestScore = escapeMillis;
+					sharedPreferences.edit().putLong(SPEED_BEST_SCORE, speedBestScore).commit();
+				}
+				
+				countDownTimer.cancel();
+				submitScore();
+				handler.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						updateAndShowResultLayer();
+					}
+				}, 500);
 			}
 		}
 	}
@@ -417,7 +510,7 @@ public class GameActiviy extends Activity implements GameEventListner{
         // url仅在微信（包括好友和朋友圈）中使用
         oks.setUrl(APP_URL);
         // comment是我对这条分享的评论，仅在人人网和QQ空间使用
-        oks.setComment("呵呵，我吃了" + gameView.getScore() + "个小苹果！");
+        oks.setComment("呵呵，我吃了" + currentScore  + "个小苹果！");
         // site是分享此内容的网站名称，仅在QQ空间使用
         oks.setSite(getString(R.string.app_name));
         // siteUrl是分享此内容的网站地址，仅在QQ空间使用
@@ -427,34 +520,37 @@ public class GameActiviy extends Activity implements GameEventListner{
         oks.show(this);
    }
    
-   private void submitScore(final int score){
-//		if (score > bestScore ) {
-//			bestScore = score;
-//			sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
-//		}else {
-//			// submit the old best score
-//	        if (haveSubmited) {
-//	        	return;
-//			}
-//			
-//		}
+   private void submitScore(){
 
 	   if (nickyName == null) {
 		   return;
 	   }
-	   if (score == 0) {
-		return;
-	   }
+	   
+	   switch (mode) {
+		case MODE_CLASSIC:
+		   if (currentScore == 0) {
+			   return;
+		   }
+		   scoreString = currentScore + "";
+		   submitUri = "http://littleappleapp.sinaapp.com/new_insert_classic.php";
+			break;
+	
+		case MODE_SPEED:
+			
+			submitUri = "http://littleappleapp.sinaapp.com/new_insert_speed.php";
+			scoreString = escapeMillis + "";
+			break;
+		}
+
 
 	   new Thread(new Runnable() {
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
-			  String uri = "http://littleappleapp.sinaapp.com/new_insert.php";
+			// TODO the uri should base on the mode
 			  List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 			  nameValuePairs.add(new BasicNameValuePair("nickyname", nickyName));
-			  nameValuePairs.add(new BasicNameValuePair("score", score + ""));
-			  Util.httpPost(uri, nameValuePairs, postResultCallBack);
+			  nameValuePairs.add(new BasicNameValuePair("score", scoreString));
+			  Util.httpPost(submitUri, nameValuePairs, postResultCallBack);
 		}
 	}).start();
 
