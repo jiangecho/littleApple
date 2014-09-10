@@ -43,7 +43,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import cn.sharesdk.framework.ShareSDK;
@@ -83,7 +82,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private BlockOnTouchEvent blockOnTouchEvent;
 	
 	private static final String[] colors = {"#773460" ,"#FE436A" ,"#823935" ,"#113F3D" ,"#26BCD5" ,"#F40D64" ,"#458994" ,"#93E0FF" ,"#D96831" ,"#AEDD81" ,"#593D43"};
-	private static final String SAY_HELLO = "news";
+	private static final String SAY_HELLO = "1.9ad";
 	private Random random;
 	
 	private String nickyName;
