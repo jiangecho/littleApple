@@ -538,6 +538,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 			break;
 	
 		case MODE_SPEED:
+			if (escapeMillis > SPEED_MAX_TIME_LENGHT || currentScore < SPEED_SUCCESS_SCORE) {
+				return;
+			}
 			
 			submitUri = "http://littleappleapp.sinaapp.com/new_insert_speed.php";
 			scoreString = escapeMillis + "";
