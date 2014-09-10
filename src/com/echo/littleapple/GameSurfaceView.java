@@ -250,7 +250,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 					public void run() {
 						// TODO Auto-generated method stub
 						if (listner != null) {
-							listner.onGameOver(score);
+							listner.onGameOver();
 					
 						}
 						
@@ -259,16 +259,19 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 				
 				
 			}else {
+				score ++;
 				playGameSoundEffect(OK);
 				if (!running) {
 					running = true;
 					if (listner != null) {
 						listner.onGameStart();
+						listner.onScoreUpdate(score);
 					}
+				}else {
+					listner.onScoreUpdate(score);
 				}
 				
 				// move down
-				score ++;
 				startMoveAnimation();
 			}
 
@@ -323,8 +326,9 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	
 	
 	public interface GameEventListner{
-		public void onGameOver(int score);
+		public void onGameOver();
 		public void onGameStart();
+		public void onScoreUpdate(int score);
 	}
 	
 	public int getScore(){
