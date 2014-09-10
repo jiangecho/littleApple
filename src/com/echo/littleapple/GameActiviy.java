@@ -406,7 +406,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		currentScore = score;
 		if (mode == MODE_SPEED) {
 			timerTV.setText("" + score);
-			if (score >= SPEED_SUCCESS_SCORE) {
+			if (score == SPEED_SUCCESS_SCORE) {
 				gameView.playGameSoundEffect(GameSurfaceView.TIME_OUT);
 				timerTV.setText(getResources().getString(R.string.speed_success));
 
