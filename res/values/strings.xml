@@ -39,8 +39,8 @@
     <string name="back">返回</string>
     <string name="my_rank_of_current_week">本周排名: %d</string>
     <string name="my_rank_of_last_week">上周排名: %d</string>
-    <string name="last_week_no_rank">上周排名: 无</string>
-    <string name="current_week_no_rank">本周排名: 无</string>
+    <string name="last_week_no_rank">上周排名: 千里之外</string>
+    <string name="current_week_no_rank">本周排名: 千里之外</string>
     <string name="rank_of_current_week">本周排行榜</string>
     <string name="award_of_last_week">上周获奖名单</string>
     <string name="accept_award">领奖</string>
@@ -60,5 +60,5 @@
     <string name="competition_start">小苹果挑战赛已开始，请点击排行榜查看获奖信息</string>
     <string name="go_dead">去死</string>
     <string name="recover">复活</string>
-    <string name="recover_prompt">点击广告，即可复活</string>
+    <string name="recover_prompt">下载游戏，原地复活</string>
 </resources>
