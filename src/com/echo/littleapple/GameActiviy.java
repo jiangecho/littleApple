@@ -11,10 +11,12 @@ import java.util.Random;
 
 import org.apache.http.util.ByteArrayBuffer;
 
+import com.wandoujia.ads.sdk.AdListener;
 import com.wandoujia.ads.sdk.Ads;
 import com.wandoujia.ads.sdk.Ads.ShowMode;
 import com.wandoujia.ads.sdk.loader.Fetcher.AdFormat;
 import com.wandoujia.ads.sdk.widget.AdBanner;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -34,6 +37,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -59,6 +63,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private static final String ENDLESS_BEST_SCORE = "ENDLESS_BEST_SCORE";
 	private static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
 
+	private static final String APP_WALL_ID = "2001e0364714d23e2f420e0f99e89020";
 	private TextView timerTV;
 	private GameSurfaceView gameView;
 	private LinearLayout startLayer;
@@ -110,6 +115,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private View adBannerView;
 
 	private boolean sayHello = false;
+	private boolean isShowingAppWall = false;
+	private boolean appWallReady = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -186,6 +193,35 @@ public class GameActiviy extends Activity implements GameEventListner{
 		}else {
 			Ads.preLoad(this, AdFormat.interstitial, "1a3b067d93c5a677f37685fdf4c76b49");
 		}
+        
+        Ads.preLoad(this, AdFormat.appwall, "GAME", APP_WALL_ID, new AdListener() {
+			
+			@Override
+			public void onLoadFailure() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAdReady() {
+				// TODO Auto-generated method stub
+				appWallReady = true;
+			}
+			
+			@Override
+			public void onAdPresent() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAdDismiss() {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+        Ads.preLoad(this, AdFormat.appwall, "APP", APP_WALL_ID);
+
 	}
 
 	@Override
@@ -462,8 +498,22 @@ public class GameActiviy extends Activity implements GameEventListner{
 				public void onClick(DialogInterface dialog, int which) {
 					//TODO show appwall
 					//TODO just for test
-					gameView.recover();
+					if (appWallReady) {
+						Ads.showAppWall(GameActiviy.this, APP_WALL_ID);
+					}
+					isShowingAppWall = true;
 					
+				}
+			});
+			dialog.setOnDismissListener(new OnDismissListener() {
+				
+				@Override
+				public void onDismiss(DialogInterface dialog) {
+					
+					if (isShowingAppWall) {
+						isShowingAppWall = false;
+						gameView.recover();
+					}
 				}
 			});
 			dialog.show();
