@@ -204,6 +204,21 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		doDraw();
 	}
 	
+	public void recover(){
+		running = false;
+		moveYOffset = 0;
+
+		for (int i = 0; i < row; i++) {
+			for (int j = 0; j < COLUMN; j++) {
+				if (apples[i][j] == 3) {
+					apples[i][j] = 0;
+				}
+			}
+		}
+
+		doDraw();
+	}
+	
 	private void randomApples(){
 		int columnIndex;
 		for (int i = 0; i < row; i++) {
@@ -333,6 +348,10 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	
 	public int getScore(){
 		return this.score;
+	}
+	
+	public void setScore(int score){
+		this.score = score;
 	}
 
 
