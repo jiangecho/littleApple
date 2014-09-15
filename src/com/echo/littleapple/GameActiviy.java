@@ -595,8 +595,12 @@ public class GameActiviy extends Activity implements GameEventListner{
 			break;
 			//TODO 
 		case MODE_ENDLESS:
-			
-			return;
+		   if (currentScore == 0) {
+			   return;
+		   }
+		   scoreString = currentScore + "";
+		   submitUri = "http://littleappleapp.sinaapp.com/new_insert_endless.php";
+			break;
 		}
 
 

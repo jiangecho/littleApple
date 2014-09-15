@@ -296,8 +296,7 @@ public class NewRankAcitivity extends Activity{
 			}else if(mode == GameActiviy.MODE_SPEED){
 				uri = "http://littleappleapp.sinaapp.com/new_rank_str_speed.php";
 			}else if (mode == GameActiviy.MODE_ENDLESS) {
-				//TODO
-				uri = "http://littleappleapp.sinaapp.com/new_rank_str.php";
+				uri = "http://littleappleapp.sinaapp.com/new_rank_str_endless.php";
 			}
 
 			List<NameValuePair> nameValuePairs = null;
