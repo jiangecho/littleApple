@@ -37,7 +37,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -88,7 +87,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private BlockOnTouchEvent blockOnTouchEvent;
 	
 	private static final String[] colors = {"#773460" ,"#FE436A" ,"#823935" ,"#113F3D" ,"#26BCD5" ,"#F40D64" ,"#458994" ,"#93E0FF" ,"#D96831" ,"#AEDD81" ,"#593D43"};
-	private static final String SAY_HELLO = "1.9ad";
+	private static final String SAY_HELLO = "2.0ad";
 	private Random random;
 	
 	private String nickyName;
