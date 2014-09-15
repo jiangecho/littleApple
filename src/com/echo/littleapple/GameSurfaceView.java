@@ -121,49 +121,49 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		canvas = holder.lockCanvas();
 
 		synchronized (holder) {
-		canvas.drawColor(Color.WHITE);
-		//draw the first horizontal lines, maybe hidden
-		canvas.drawLine(0, moveYOffset + firstCellHeight - cellHeight, width, moveYOffset + firstCellHeight - cellHeight, linePaint);
-		//draw horizontal lines
-		for (i = 0; i < row ; i++) {
-			canvas.drawLine(0, moveYOffset + firstCellHeight + cellHeight * i, width, moveYOffset + firstCellHeight + cellHeight * i, linePaint);
-			//canvas.drawLine(0,  firstCellHeight + cellHeight * i, width, firstCellHeight + cellHeight * i, linePaint);
-		}
-		
-		//draw vertical lines
-		for (i = 0; i < COLUMN ; i++) {
-			canvas.drawLine(cellWidth * i, 0, cellWidth * i, height, linePaint);
-		}
-
-		// draw applse
-		for (i = 0; i < row; i++) {
-			for (j = 0; j < COLUMN; j++) {
-				if (apples[i][j] == 0) {
-					// do nothing
-				}else if(apples[i][j] == 1){
-					// draw apples
-					//left = (j >= 1 ) ? (j - 1) * cellWidth  + cellWidth : 0;
-					left = j * cellWidth;
-					top = moveYOffset + ((i >= 1) ? (firstCellHeight + (i - 1) * cellHeight) : (firstCellHeight - cellHeight)); 
-					right = (j + 1) * cellWidth;
-					bottom = moveYOffset + firstCellHeight + i * cellHeight;
-					//rect.set(left, top, right, bottom);
-					rect.set(left, top, right, bottom);
-					canvas.drawBitmap(bitmapApple, null, rect, applePaint);
-					
-				}else {
-					left = j * cellWidth;
-					top = moveYOffset + ((i >= 1) ? (firstCellHeight + (i - 1) * cellHeight) : (firstCellHeight - cellHeight)); 
-					right = (j + 1) * cellWidth;
-					bottom = moveYOffset + firstCellHeight + i * cellHeight;
-					//rect.set(left, top, right, bottom);
-					rect.set(left, top, right, bottom);
-					canvas.drawBitmap(bitmapError, null, rect, applePaint);
-					
-				}
+			canvas.drawColor(Color.WHITE);
+			//draw the first horizontal lines, maybe hidden
+			canvas.drawLine(0, moveYOffset + firstCellHeight - cellHeight, width, moveYOffset + firstCellHeight - cellHeight, linePaint);
+			//draw horizontal lines
+			for (i = 0; i < row ; i++) {
+				canvas.drawLine(0, moveYOffset + firstCellHeight + cellHeight * i, width, moveYOffset + firstCellHeight + cellHeight * i, linePaint);
+				//canvas.drawLine(0,  firstCellHeight + cellHeight * i, width, firstCellHeight + cellHeight * i, linePaint);
 			}
 			
-		}
+			//draw vertical lines
+			for (i = 0; i < COLUMN ; i++) {
+				canvas.drawLine(cellWidth * i, 0, cellWidth * i, height, linePaint);
+			}
+	
+			// draw applse
+			for (i = 0; i < row; i++) {
+				for (j = 0; j < COLUMN; j++) {
+					if (apples[i][j] == 0) {
+						// do nothing
+					}else if(apples[i][j] == 1){
+						// draw apples
+						//left = (j >= 1 ) ? (j - 1) * cellWidth  + cellWidth : 0;
+						left = j * cellWidth;
+						top = moveYOffset + ((i >= 1) ? (firstCellHeight + (i - 1) * cellHeight) : (firstCellHeight - cellHeight)); 
+						right = (j + 1) * cellWidth;
+						bottom = moveYOffset + firstCellHeight + i * cellHeight;
+						//rect.set(left, top, right, bottom);
+						rect.set(left, top, right, bottom);
+						canvas.drawBitmap(bitmapApple, null, rect, applePaint);
+						
+					}else {
+						left = j * cellWidth;
+						top = moveYOffset + ((i >= 1) ? (firstCellHeight + (i - 1) * cellHeight) : (firstCellHeight - cellHeight)); 
+						right = (j + 1) * cellWidth;
+						bottom = moveYOffset + firstCellHeight + i * cellHeight;
+						//rect.set(left, top, right, bottom);
+						rect.set(left, top, right, bottom);
+						canvas.drawBitmap(bitmapError, null, rect, applePaint);
+						
+					}
+				}
+				
+			}
 		
 		}
 		holder.unlockCanvasAndPost(canvas);
@@ -201,6 +201,21 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		running = false;
 		randomApples();
 		moveYOffset = 0;
+		doDraw();
+	}
+	
+	public void recover(){
+		running = false;
+		moveYOffset = 0;
+
+		for (int i = 0; i < row; i++) {
+			for (int j = 0; j < COLUMN; j++) {
+				if (apples[i][j] == 3) {
+					apples[i][j] = 0;
+				}
+			}
+		}
+
 		doDraw();
 	}
 	
@@ -333,6 +348,10 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	
 	public int getScore(){
 		return this.score;
+	}
+	
+	public void setScore(int score){
+		this.score = score;
 	}
 
 

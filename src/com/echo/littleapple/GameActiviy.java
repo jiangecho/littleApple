@@ -56,6 +56,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private static final int TIME_LENGHT = 30 * 1000;
 	private static final String BEST_SCORE = "BEST_SCORE";
 	private static final String SPEED_BEST_SCORE = "SPEED_BEST_SCORE";
+	private static final String ENDLESS_BEST_SCORE = "ENDLESS_BEST_SCORE";
 	private static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
 
 	private TextView timerTV;
@@ -96,6 +97,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	public static final int MODE_CLASSIC = 0;
 	public static final int MODE_SPEED = 1;
+	public static final int MODE_ENDLESS = 2;
 	public static final String MODE = "MODE";
 	
 	private static final int SPEED_SUCCESS_SCORE = 100;
@@ -134,7 +136,6 @@ public class GameActiviy extends Activity implements GameEventListner{
         remindTimeSB = new StringBuffer();
         
         sharedPreferences = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-        bestScore = sharedPreferences.getInt(BEST_SCORE, 0);
         speedBestScore = sharedPreferences.getLong(SPEED_BEST_SCORE, Long.MAX_VALUE);
         
         nickyName = sharedPreferences.getString(NICKY_NAME, null);
@@ -272,7 +273,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	
 	public void onStartButtonClick(View view){
-		if (mode == MODE_SPEED) {
+		if (mode != MODE_CLASSIC) {
 			mode = MODE_CLASSIC;
 			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
 		}else {
@@ -281,13 +282,13 @@ public class GameActiviy extends Activity implements GameEventListner{
 			}
 		}
 		
-
+        bestScore = sharedPreferences.getInt(BEST_SCORE, 0);
 		startLayer.setVisibility(View.INVISIBLE);
 		//gameView.reset();
 	}
 
 	public void onSpeedStartButtonClick(View view){
-		if (mode == MODE_CLASSIC) {
+		if (mode != MODE_SPEED) {
 			mode = MODE_SPEED;
 			countDownTimer = new MyCountDownTimer(SPEED_MAX_TIME_LENGHT, 100);
 		}else {
@@ -296,9 +297,18 @@ public class GameActiviy extends Activity implements GameEventListner{
 			}
 		}
 
+        bestScore = sharedPreferences.getInt(SPEED_BEST_SCORE, 0);
 		timerTV.setText("0");
 		startLayer.setVisibility(View.INVISIBLE);
 		//gameView.reset();
+	}
+	
+	public void onEndlessStartButtonClick(View view){
+		mode = MODE_ENDLESS;
+        bestScore = sharedPreferences.getInt(ENDLESS_BEST_SCORE, 0);
+		countDownTimer = null;
+		timerTV.setText("0");
+		startLayer.setVisibility(View.INVISIBLE);
 	}
 
 
@@ -307,6 +317,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 		if (mode == MODE_CLASSIC) {
 		timerTV.setText("30.00");
 		}else if(mode == MODE_SPEED){
+			timerTV.setText("0");
+		}else if(mode == MODE_ENDLESS){
 			timerTV.setText("0");
 		}
 		gameView.reset();
@@ -338,6 +350,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 		resultLayer.setBackgroundColor(Color.parseColor(colors[colorIndex]));;
 
 		switch (mode) {
+		case MODE_ENDLESS:
+			//transfer to classic
 		case MODE_CLASSIC:
 			resultInfo= getResources().getString(R.string.classic_result, currentScore);
 		
@@ -414,14 +428,52 @@ public class GameActiviy extends Activity implements GameEventListner{
 	@Override
 	public void onGameStart() {
 		//gameView.reset();
-		countDownTimer.start();
+		if (countDownTimer != null) {
+			countDownTimer.start();
+		}
 	}
 
 	@Override
 	public void onGameOver() {
-		//TODO stop timer
-		// show result
-		countDownTimer.cancel();
+		
+		//TODO endless mode
+		if (mode == MODE_ENDLESS) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(R.string.recover);
+			builder.setMessage(R.string.recover_prompt);
+			AlertDialog dialog = builder.create();
+			dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.go_dead), new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					if (currentScore > bestScore ) {
+						bestScore = currentScore;
+						sharedPreferences.edit().putInt(ENDLESS_BEST_SCORE, bestScore).commit();
+					}
+					updateAndShowResultLayer();
+					submitScore();
+					
+				}
+			});
+
+			dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.recover), new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					//TODO show appwall
+					//TODO just for test
+					gameView.recover();
+					
+				}
+			});
+			dialog.show();
+			
+			return;
+		}
+		
+		if (countDownTimer != null) {
+			countDownTimer.cancel();
+		}
 
 		switch (mode) {
 		case MODE_CLASSIC:
@@ -472,6 +524,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 	}
 				}, 500);
 			}
+		}else if (mode == MODE_ENDLESS) {
+			timerTV.setText("" + score);
 		}
 	}
 
@@ -653,6 +707,14 @@ public class GameActiviy extends Activity implements GameEventListner{
 			
 			submitUri = "http://littleappleapp.sinaapp.com/new_insert_speed.php";
 			scoreString = escapeMillis + "";
+			break;
+			//TODO 
+		case MODE_ENDLESS:
+		   if (currentScore == 0) {
+			   return;
+		   }
+		   scoreString = currentScore + "";
+		   submitUri = "http://littleappleapp.sinaapp.com/new_insert_endless.php";
 			break;
 		}
 

@@ -207,6 +207,9 @@ public class NewRankAcitivity extends Activity{
 				StringBuffer sb = new StringBuffer();
 				sb.append(Long.parseLong(item.score) / 1000);
 				sb.append(".");
+				if ((Long.parseLong(item.score) % 1000) < 100) {
+					sb.append("0");
+				}
 				sb.append((Long.parseLong(item.score) % 1000) / 10);
 				scoreTextView.setText(sb.toString());
 			}else {
@@ -258,8 +261,22 @@ public class NewRankAcitivity extends Activity{
 			AwardItem item = getItem(position);
 
 			nickyNameTextView.setText(item.nickyName);
-			scoreTextView.setText(item.score);
+			//scoreTextView.setText(item.score);
 			awardTextView.setText("" + item.award);
+
+			if (mode == GameActiviy.MODE_SPEED) {
+				
+				StringBuffer sb = new StringBuffer();
+				sb.append(Long.parseLong(item.score) / 1000);
+				sb.append(".");
+				if ((Long.parseLong(item.score) % 1000) < 100) {
+					sb.append("0");
+				}
+				sb.append((Long.parseLong(item.score) % 1000) / 10);
+				scoreTextView.setText(sb.toString());
+			}else {
+				scoreTextView.setText(item.score);
+			}
 
 			//TODO set listview's height
 			return view;
@@ -278,6 +295,8 @@ public class NewRankAcitivity extends Activity{
 				uri = "http://littleappleapp.sinaapp.com/new_rank_str.php";
 			}else if(mode == GameActiviy.MODE_SPEED){
 				uri = "http://littleappleapp.sinaapp.com/new_rank_str_speed.php";
+			}else if (mode == GameActiviy.MODE_ENDLESS) {
+				uri = "http://littleappleapp.sinaapp.com/new_rank_str_endless.php";
 			}
 
 			List<NameValuePair> nameValuePairs = null;
