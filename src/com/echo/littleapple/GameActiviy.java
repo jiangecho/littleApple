@@ -48,6 +48,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private static final int TIME_LENGHT = 30 * 1000;
 	private static final String BEST_SCORE = "BEST_SCORE";
 	private static final String SPEED_BEST_SCORE = "SPEED_BEST_SCORE";
+	private static final String ENDLESS_BEST_SCORE = "ENDLESS_BEST_SCORE";
 	private static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
 
 	private TextView timerTV;
@@ -121,7 +122,6 @@ public class GameActiviy extends Activity implements GameEventListner{
         remindTimeSB = new StringBuffer();
         
         sharedPreferences = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-        bestScore = sharedPreferences.getInt(BEST_SCORE, 0);
         speedBestScore = sharedPreferences.getLong(SPEED_BEST_SCORE, Long.MAX_VALUE);
         
         nickyName = sharedPreferences.getString(NICKY_NAME, null);
@@ -254,13 +254,13 @@ public class GameActiviy extends Activity implements GameEventListner{
 			}
 		}
 		
-
+        bestScore = sharedPreferences.getInt(BEST_SCORE, 0);
 		startLayer.setVisibility(View.INVISIBLE);
 		//gameView.reset();
 	}
 
 	public void onSpeedStartButtonClick(View view){
-		if (mode == MODE_SPEED) {
+		if (mode != MODE_SPEED) {
 			mode = MODE_SPEED;
 			countDownTimer = new MyCountDownTimer(SPEED_MAX_TIME_LENGHT, 100);
 		}else {
@@ -269,6 +269,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 			}
 		}
 
+        bestScore = sharedPreferences.getInt(SPEED_BEST_SCORE, 0);
 		timerTV.setText("0");
 		startLayer.setVisibility(View.INVISIBLE);
 		//gameView.reset();
@@ -276,6 +277,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	public void onEndlessStartButtonClick(View view){
 		mode = MODE_ENDLESS;
+        bestScore = sharedPreferences.getInt(ENDLESS_BEST_SCORE, 0);
 		countDownTimer = null;
 		timerTV.setText("0");
 		startLayer.setVisibility(View.INVISIBLE);
@@ -397,6 +399,10 @@ public class GameActiviy extends Activity implements GameEventListner{
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
+					if (currentScore > bestScore ) {
+						bestScore = currentScore;
+						sharedPreferences.edit().putInt(ENDLESS_BEST_SCORE, bestScore).commit();
+					}
 					updateAndShowResultLayer();
 					submitScore();
 					
