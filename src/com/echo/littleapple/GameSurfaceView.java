@@ -42,7 +42,10 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	private Bitmap bitmapError;
 	
 	private GameEventListner listner;
-	private boolean running;
+	private int status;
+	private static final int STATUS_STOP = 0;
+	private static final int STATUS_START = 1;
+	private static final int STATUS_FAIL = 2;
 	
 	private int score;
 	
@@ -68,6 +71,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	private Canvas canvas;
 	private SurfaceHolder holder;
 	
+	//TODO cell type
 
 	public GameSurfaceView(Context context) {
 		this(context, null);
@@ -94,7 +98,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		rect = new Rect();
 		
 		random = new Random();
-		running = false;
+		status = STATUS_STOP;
 		
 		score = 0;
 
@@ -198,14 +202,14 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	
 	public void reset(){
 		this.score = 0;
-		running = false;
+		status = STATUS_STOP;
 		randomApples();
 		moveYOffset = 0;
 		doDraw();
 	}
 	
 	public void recover(){
-		running = false;
+		status = STATUS_STOP;
 		moveYOffset = 0;
 
 		for (int i = 0; i < row; i++) {
@@ -238,6 +242,9 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		//return super.onTouchEvent(event);
+		if (status == STATUS_FAIL) {
+			return false;
+		}
 		
 		if (event.getAction() != MotionEvent.ACTION_DOWN) {
 			return false;
@@ -250,14 +257,36 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 				// wrong, do not have any effect
 				return false;
 			}
-			
+
 			int x_index = x / cellWidth;
-			
+
+			// if move animation is still on going, do more check
+			// TODO refactor
+			if (moveYOffset > 0 && apples[row -3][x_index] != 1) {
+				apples[row - 3][x_index] = 3;
+				playGameSoundEffect(FAIL);
+				status = STATUS_FAIL;
+				doDraw();
+				handler.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						if (listner != null) {
+							listner.onGameOver();
+					
+						}
+						
+					}
+				}, 300);
+				return true;
+			}
+
 			//game over
 			if (apples[row - 2][x_index] != 1) {
 				apples[row - 2][x_index] = 3;
 				playGameSoundEffect(FAIL);
-				running = false;
+				status = STATUS_FAIL;
 				doDraw();
 				handler.postDelayed(new Runnable() {
 					
@@ -273,11 +302,11 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 				}, 300);
 				
 				
-			}else {
+			} else {
 				score ++;
 				playGameSoundEffect(OK);
-				if (!running) {
-					running = true;
+				if (status == STATUS_STOP) {
+					status = STATUS_START;
 					if (listner != null) {
 						listner.onGameStart();
 						listner.onScoreUpdate(score);
