@@ -515,6 +515,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		if (imgPath == null) {
 			Toast.makeText(this, "SD卡不存在", Toast.LENGTH_SHORT).show();
 		}else {
+			Toast.makeText(this, getString(R.string.capture_screen_ok), Toast.LENGTH_SHORT).show();
 			showShare(imgPath);
 		}
 	}

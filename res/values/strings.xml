@@ -61,4 +61,5 @@
     <string name="go_dead">去死</string>
     <string name="recover">复活</string>
     <string name="recover_prompt">下载游戏，原地复活</string>
+    <string name="capture_screen_ok">截图已保存到SD卡了，快去分享吧</string>
 </resources>
