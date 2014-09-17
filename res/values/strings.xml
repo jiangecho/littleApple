@@ -30,7 +30,7 @@
     <string name="rank">排名</string>
     <string name="nicky_name">昵称</string>
     <string name="score">成绩</string>
-    <string name="input_nicky_name">请输入你的昵称, 那样你可以在排行榜中看到你的排名</string>
+    <string name="input_nicky_name">请输入你的昵称, 那样获奖之后，你才可以领奖哦~</string>
     <string name="confirm">确定</string>
     <string name="me">我</string>
     <string name="network_error">网络异常</string>
