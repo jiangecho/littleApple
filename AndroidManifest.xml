@@ -57,6 +57,39 @@
 			  android:configChanges="keyboardHidden|orientation|screenSize"
 			  android:exported="true"
 			  android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.ktplay.activity.GetPhotoActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:screenOrientation="user"
+            android:windowSoftInputMode="adjustPan|adjustUnspecified" >
+        </activity>
+        
+        <meta-data
+            android:name="KTPLAY_CHANNELID"
+            android:value="DEFAULT"
+            />
+         <!-- QQ配置开始 -->
+          <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tencent1101821047" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.kryptanium.plugin.sns.qq.KTQQActivity"/>
+		<meta-data android:name="QQ_APPID" android:value="1101821047" ></meta-data>
+         <!-- QQ配置结束 -->
     </application>
 
 </manifest>

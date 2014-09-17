@@ -4,7 +4,6 @@ package com.echo.littleapple;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -12,7 +11,6 @@ import java.util.Random;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import android.R.mipmap;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -29,7 +27,6 @@ import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.EditText;
@@ -41,6 +38,7 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 
 import com.echo.littleapple.GameSurfaceView.GameEventListner;
+import com.ktplay.open.KTPlay;
 
 
 public class GameActiviy extends Activity implements GameEventListner{
@@ -158,6 +156,8 @@ public class GameActiviy extends Activity implements GameEventListner{
         
         postResultCallBack = new CallBack();
 
+        KTPlay.startWithAppKey(this, "1xD3dhp", "e61fb1f380e0541ba6f6e3a8430189df20ad3603");
+		KTPlay.update();
 	}
 
 	@Override
@@ -168,11 +168,13 @@ public class GameActiviy extends Activity implements GameEventListner{
 	@Override
 	public void onPause() {
 		super.onPause();
+		KTPlay.onPause(this);
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
+		KTPlay.onResume(this);
 	}
 	
 	private class MyCountDownTimer extends CountDownTimer{
@@ -281,6 +283,13 @@ public class GameActiviy extends Activity implements GameEventListner{
 		countDownTimer = null;
 		timerTV.setText("0");
 		startLayer.setVisibility(View.INVISIBLE);
+	}
+
+	public void onSocialStartButtonClick(View view){
+		if (KTPlay.isEnabled()) {
+
+			KTPlay.show();
+		}
 	}
 
 

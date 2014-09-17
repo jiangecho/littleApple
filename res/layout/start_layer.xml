@@ -110,4 +110,15 @@
 	        android:text="@string/endless_start"
 	        android:textColor="@color/white" />
 
+	    <Button
+	        android:id="@+id/socialStartButton"
+	        android:layout_width="150dp"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_horizontal"
+	        android:layout_marginTop="15dip"
+	        android:background="@color/red"
+	        android:onClick="onSocialStartButtonClick"
+	        android:text="@string/social_start"
+	        android:textColor="@color/white" />
+
 </LinearLayout>
