@@ -75,6 +75,8 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	private static final int CELL_TYPE_APPLE_OK = 1;
 	private static final int CELL_TYPE_APPLE_CLICKED = 2;
 	private static final int CELL_TYPE_ERROR = 3;
+	
+	boolean animationCancled = false;
 
 	public GameSurfaceView(Context context) {
 		this(context, null);
@@ -263,27 +265,12 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 			}
 
 			int x_index = x / cellWidth;
-
-			// if move animation is still on going, do more check
-			// TODO refactor
-			if (moveYOffset > 0 && apples[row -3][x_index] != CELL_TYPE_APPLE_OK) {
-				apples[row - 3][x_index] = CELL_TYPE_ERROR;
-				playGameSoundEffect(FAIL);
-				status = STATUS_FAIL;
+			
+			if (moveYOffset > 0) {
+				animationCancled = true;
+				moveYOffset = 0;
+				addNewCell();
 				doDraw();
-				handler.postDelayed(new Runnable() {
-					
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						if (listner != null) {
-							listner.onGameOver();
-					
-						}
-						
-					}
-				}, 300);
-				return true;
 			}
 
 			//game over
@@ -303,7 +290,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 						}
 						
 					}
-				}, 300);
+				}, 200);
 				
 				
 			} else {
@@ -411,23 +398,30 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
 		@Override
 		public void run() {
+			if (animationCancled) {
+				animationCancled = false;
+				return;
+			}
 			if (moveYOffset < cellHeight) {
 				moveYOffset += moveStepHeight;
 				doDraw();
 				animationHandler.postDelayed(animationTask, 4);
 			}else {
 				moveYOffset = 0;
-				for (int i = row - 2; i > 0; i--) {
-					for (int j = 0; j < COLUMN; j++) {
-						apples[i][j] = apples[i - 1][j]; 
-						apples[i - 1][j] = CELL_TYPE_BLANK;
-					}
-				}
-				int x_index = random.nextInt(COLUMN);
-				apples[0][x_index] = CELL_TYPE_APPLE_OK;
+				addNewCell();
 				doDraw();
 			}
 		}
-		
+	}
+	
+	private void addNewCell(){
+		for (int i = row - 2; i > 0; i--) {
+			for (int j = 0; j < COLUMN; j++) {
+				apples[i][j] = apples[i - 1][j]; 
+				apples[i - 1][j] = CELL_TYPE_BLANK;
+			}
+		}
+		int x_index = random.nextInt(COLUMN);
+		apples[0][x_index] = CELL_TYPE_APPLE_OK;
 	}
 }
