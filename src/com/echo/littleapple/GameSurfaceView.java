@@ -2,7 +2,6 @@ package com.echo.littleapple;
 
 import java.util.Random;
 
-import android.R.bool;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -71,7 +70,11 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	private Canvas canvas;
 	private SurfaceHolder holder;
 	
-	//TODO cell type
+	//cell types
+	private static final int CELL_TYPE_BLANK = 0;
+	private static final int CELL_TYPE_APPLE_OK = 1;
+	private static final int CELL_TYPE_APPLE_CLICKED = 2;
+	private static final int CELL_TYPE_ERROR = 3;
 
 	public GameSurfaceView(Context context) {
 		this(context, null);
@@ -142,9 +145,9 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 			// draw applse
 			for (i = 0; i < row; i++) {
 				for (j = 0; j < COLUMN; j++) {
-					if (apples[i][j] == 0) {
+					if (apples[i][j] == CELL_TYPE_BLANK) {
 						// do nothing
-					}else if(apples[i][j] == 1){
+					}else if(apples[i][j] == CELL_TYPE_APPLE_OK){
 						// draw apples
 						//left = (j >= 1 ) ? (j - 1) * cellWidth  + cellWidth : 0;
 						left = j * cellWidth;
@@ -155,7 +158,8 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 						rect.set(left, top, right, bottom);
 						canvas.drawBitmap(bitmapApple, null, rect, applePaint);
 						
-					}else {
+						//TODO add one more resource for CELL_TYPE_APPLE_CLICKED
+					}else if(apples[i][j] == CELL_TYPE_ERROR || apples[i][j] == CELL_TYPE_APPLE_CLICKED){
 						left = j * cellWidth;
 						top = moveYOffset + ((i >= 1) ? (firstCellHeight + (i - 1) * cellHeight) : (firstCellHeight - cellHeight)); 
 						right = (j + 1) * cellWidth;
@@ -214,8 +218,8 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
 		for (int i = 0; i < row; i++) {
 			for (int j = 0; j < COLUMN; j++) {
-				if (apples[i][j] == 3) {
-					apples[i][j] = 0;
+				if (apples[i][j] == CELL_TYPE_ERROR) {
+					apples[i][j] = CELL_TYPE_BLANK;
 				}
 			}
 		}
@@ -227,13 +231,13 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		int columnIndex;
 		for (int i = 0; i < row; i++) {
 			for (int j = 0; j < COLUMN; j++) {
-				apples[i][j] = 0;
+				apples[i][j] = CELL_TYPE_BLANK;
 			}
 		}
 
 		for (int i = 0; i < row - 1; i++) {
 			columnIndex = random.nextInt(COLUMN);
-			apples[i][columnIndex] = 1;
+			apples[i][columnIndex] = CELL_TYPE_APPLE_OK;
 		}
 	}
 	
@@ -262,8 +266,8 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
 			// if move animation is still on going, do more check
 			// TODO refactor
-			if (moveYOffset > 0 && apples[row -3][x_index] != 1) {
-				apples[row - 3][x_index] = 3;
+			if (moveYOffset > 0 && apples[row -3][x_index] != CELL_TYPE_APPLE_OK) {
+				apples[row - 3][x_index] = CELL_TYPE_ERROR;
 				playGameSoundEffect(FAIL);
 				status = STATUS_FAIL;
 				doDraw();
@@ -283,8 +287,8 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 			}
 
 			//game over
-			if (apples[row - 2][x_index] != 1) {
-				apples[row - 2][x_index] = 3;
+			if (apples[row - 2][x_index] != CELL_TYPE_APPLE_OK) {
+				apples[row - 2][x_index] = CELL_TYPE_ERROR;
 				playGameSoundEffect(FAIL);
 				status = STATUS_FAIL;
 				doDraw();
@@ -305,6 +309,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 			} else {
 				score ++;
 				playGameSoundEffect(OK);
+				apples[row - 2][x_index] = CELL_TYPE_APPLE_CLICKED;
 				if (status == STATUS_STOP) {
 					status = STATUS_START;
 					if (listner != null) {
@@ -415,11 +420,11 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 				for (int i = row - 2; i > 0; i--) {
 					for (int j = 0; j < COLUMN; j++) {
 						apples[i][j] = apples[i - 1][j]; 
-						apples[i - 1][j] = 0;
+						apples[i - 1][j] = CELL_TYPE_BLANK;
 					}
 				}
 				int x_index = random.nextInt(COLUMN);
-				apples[0][x_index] = 1;
+				apples[0][x_index] = CELL_TYPE_APPLE_OK;
 				doDraw();
 			}
 		}
