@@ -116,7 +116,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_gravity="center_horizontal"
 	        android:layout_marginTop="15dip"
-	        android:background="@color/red"
+	        android:background="@color/col"
 	        android:onClick="onSocialStartButtonClick"
 	        android:text="@string/social_start"
 	        android:textColor="@color/white" />
