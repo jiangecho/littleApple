@@ -25,4 +25,6 @@
 -dontwarn com.wandoujia.ads.sdk.**
 -keep class cn.sharesdk.**{*;}
 -keep class com.sina.**{*;}
+-keep class com.ktplay.**{*;}
+-keep class com.kryptanium.**{*;}
 
