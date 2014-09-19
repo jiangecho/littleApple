@@ -266,11 +266,21 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
 			int x_index = x / cellWidth;
 			
-			if (moveYOffset > 0) {
-				animationCancled = true;
-				moveYOffset = 0;
-				addNewCell();
-				doDraw();
+//			if (moveYOffset > 0) {
+//				animationCancled = true;
+//				moveYOffset = 0;
+//				addNewCell();
+//				doDraw();
+//			}
+			
+			for (int i = 0; i < COLUMN; i++) {
+				if (apples[row - 2][i] == CELL_TYPE_APPLE_CLICKED) {
+					animationCancled = true;
+					moveYOffset = 0;
+					addNewCell();
+					doDraw();
+					break;
+				}
 			}
 
 			//game over
