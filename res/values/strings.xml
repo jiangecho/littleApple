@@ -20,6 +20,7 @@
     <string name="start">经典，上！</string>
     <string name="speed_start">竞速，上!</string>
     <string name="endless_start">无尽，上!</string>
+    <string name="gravity_start">下落，上</string>
     <string name="social_start">小苹果空间</string>
     <string name="restart">再挑战一次</string>
     <string name="time_out">时间到！</string>
