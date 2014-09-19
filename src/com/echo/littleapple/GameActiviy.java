@@ -630,6 +630,14 @@ public class GameActiviy extends Activity implements GameEventListner{
 	   }
 	   
 	   switch (mode) {
+	   	case MODE_GRAVITY:
+		   if (currentScore == 0) {
+			   return;
+		   }
+		   scoreString = currentScore + "";
+		   submitUri = "http://littleappleapp.sinaapp.com/new_insert_gravity.php";
+			break;
+
 		case MODE_CLASSIC:
 		   if (currentScore == 0) {
 			   return;
