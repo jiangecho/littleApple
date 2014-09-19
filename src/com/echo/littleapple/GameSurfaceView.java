@@ -39,6 +39,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	private Rect rect;
 	private Bitmap bitmapApple;
 	private Bitmap bitmapError;
+	private Bitmap bitmapClick;
 	
 	private GameEventListner listner;
 	private int status;
@@ -102,6 +103,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		
 		bitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.apple);
 		bitmapError = BitmapFactory.decodeResource(context.getResources(), R.drawable.error);
+		bitmapClick = BitmapFactory.decodeResource(context.getResources(), R.drawable.click);
 		rect = new Rect();
 		
 		random = new Random();
@@ -149,29 +151,20 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 			// draw applse
 			for (i = 0; i < row; i++) {
 				for (j = 0; j < COLUMN; j++) {
+					left = j * cellWidth;
+					top = moveYOffset + ((i >= 1) ? (firstCellHeight + (i - 1) * cellHeight) : (firstCellHeight - cellHeight)); 
+					right = (j + 1) * cellWidth;
+					bottom = moveYOffset + firstCellHeight + i * cellHeight;
+					rect.set(left, top, right, bottom);
+
 					if (apples[i][j] == CELL_TYPE_BLANK) {
 						// do nothing
 					}else if(apples[i][j] == CELL_TYPE_APPLE_OK){
-						// draw apples
-						//left = (j >= 1 ) ? (j - 1) * cellWidth  + cellWidth : 0;
-						left = j * cellWidth;
-						top = moveYOffset + ((i >= 1) ? (firstCellHeight + (i - 1) * cellHeight) : (firstCellHeight - cellHeight)); 
-						right = (j + 1) * cellWidth;
-						bottom = moveYOffset + firstCellHeight + i * cellHeight;
-						//rect.set(left, top, right, bottom);
-						rect.set(left, top, right, bottom);
 						canvas.drawBitmap(bitmapApple, null, rect, applePaint);
-						
-						//TODO add one more resource for CELL_TYPE_APPLE_CLICKED
-					}else if(apples[i][j] == CELL_TYPE_ERROR || apples[i][j] == CELL_TYPE_APPLE_CLICKED){
-						left = j * cellWidth;
-						top = moveYOffset + ((i >= 1) ? (firstCellHeight + (i - 1) * cellHeight) : (firstCellHeight - cellHeight)); 
-						right = (j + 1) * cellWidth;
-						bottom = moveYOffset + firstCellHeight + i * cellHeight;
-						//rect.set(left, top, right, bottom);
-						rect.set(left, top, right, bottom);
+					}else if(apples[i][j] == CELL_TYPE_ERROR){
 						canvas.drawBitmap(bitmapError, null, rect, applePaint);
-						
+					}else if(apples[i][j] == CELL_TYPE_APPLE_CLICKED){
+						canvas.drawBitmap(bitmapClick, null, rect, applePaint);
 					}
 				}
 				
@@ -495,13 +488,14 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 				if (moveYOffset < cellHeight) {
 					moveYOffset += moveStepHeight;
 					doDraw();
-					animationHandler.postDelayed(animationTask, 20);
+					animationHandler.postDelayed(animationTask, 10);
 				}else {
 					// the last one move out
 					for (int i = 0; i < COLUMN; i++) {
 						if (apples[row - 1][i] == CELL_TYPE_APPLE_OK) {
 							apples[row - 1][i] = CELL_TYPE_ERROR;
-							moveYOffset -= moveStepHeight;
+							moveYOffset -= 2 * moveStepHeight;
+							status = STATUS_FAIL;
 							doDraw();
 							handler.postDelayed(new Runnable() {
 								@Override
@@ -520,7 +514,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 					moveYOffset = 0;
 					addNewCell();
 					doDraw();
-					animationHandler.postDelayed(animationTask, 20);
+					animationHandler.postDelayed(animationTask, 10);
 				}
 				return;
 			}else {

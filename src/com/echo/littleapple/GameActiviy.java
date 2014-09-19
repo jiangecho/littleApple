@@ -90,6 +90,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	public static final int MODE_CLASSIC = 0;
 	public static final int MODE_SPEED = 1;
 	public static final int MODE_ENDLESS = 2;
+	public static final int MODE_GRAVITY = 3;
 	public static final String MODE = "MODE";
 	
 	private static final int SPEED_SUCCESS_SCORE = 100;
@@ -281,6 +282,7 @@ public class GameActiviy extends Activity implements GameEventListner{
         bestScore = sharedPreferences.getInt(ENDLESS_BEST_SCORE, 0);
 		countDownTimer = null;
 		timerTV.setText("0");
+		gameView.setMode(MODE_GRAVITY);
 		startLayer.setVisibility(View.INVISIBLE);
 	}
 
