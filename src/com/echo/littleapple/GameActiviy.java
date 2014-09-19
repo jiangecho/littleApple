@@ -498,7 +498,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 					//TODO show appwall
 					//TODO just for test
 					if (appWallReady) {
-						Ads.showAppWall(GameActiviy.this, APP_WALL_ID);
+						//Ads.showAppWall(GameActiviy.this, APP_WALL_ID);
+						showAd();
 					}
 					isShowingAppWall = true;
 					
