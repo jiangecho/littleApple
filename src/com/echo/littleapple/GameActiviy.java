@@ -50,6 +50,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private static final String BEST_SCORE = "BEST_SCORE";
 	private static final String SPEED_BEST_SCORE = "SPEED_BEST_SCORE";
 	private static final String ENDLESS_BEST_SCORE = "ENDLESS_BEST_SCORE";
+	private static final String GRAVITY_BEST_SCORE = "GRAVITY_BEST_SCORE";
 	private static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
 
 	private TextView timerTV;
@@ -198,6 +199,12 @@ public class GameActiviy extends Activity implements GameEventListner{
 				}
 				
 				break;
+			case MODE_GRAVITY:
+				if (currentScore > bestScore ) {
+					bestScore = currentScore ;
+					sharedPreferences.edit().putInt(GRAVITY_BEST_SCORE, bestScore).commit();
+				}
+				break;
 
 			case MODE_SPEED:
 				if (escapeMillis < speedBestScore) {
@@ -220,7 +227,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		@Override
 		public void onTick(long millisUntilFinished) {
 
-			if (mode == MODE_CLASSIC) {
+			if (mode == MODE_CLASSIC || mode == MODE_GRAVITY) {
 				remindTimeSB.setLength(0);
 				remindSeconds = (int) (millisUntilFinished / 1000);
 				remindMillis = (int) (millisUntilFinished % 1000 / 10);
@@ -257,6 +264,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		}
 		
         bestScore = sharedPreferences.getInt(BEST_SCORE, 0);
+		gameView.setMode(mode);
 		startLayer.setVisibility(View.INVISIBLE);
 		//gameView.reset();
 	}
@@ -273,6 +281,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 
         bestScore = sharedPreferences.getInt(SPEED_BEST_SCORE, 0);
 		timerTV.setText("0");
+		gameView.setMode(mode);
 		startLayer.setVisibility(View.INVISIBLE);
 		//gameView.reset();
 	}
@@ -282,7 +291,18 @@ public class GameActiviy extends Activity implements GameEventListner{
         bestScore = sharedPreferences.getInt(ENDLESS_BEST_SCORE, 0);
 		countDownTimer = null;
 		timerTV.setText("0");
-		gameView.setMode(MODE_GRAVITY);
+		gameView.setMode(mode);
+		startLayer.setVisibility(View.INVISIBLE);
+	}
+	
+	public void onGravityStartButtonClick(View view) {
+		mode = MODE_GRAVITY;
+		if (countDownTimer == null) {
+			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+		}
+        bestScore = sharedPreferences.getInt(GRAVITY_BEST_SCORE, 0);
+		timerTV.setText("0");
+		gameView.setMode(mode);
 		startLayer.setVisibility(View.INVISIBLE);
 	}
 
@@ -325,6 +345,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		resultLayer.setBackgroundColor(Color.parseColor(colors[colorIndex]));;
 
 		switch (mode) {
+		case MODE_GRAVITY:
 		case MODE_ENDLESS:
 			//transfer to classic
 		case MODE_CLASSIC:
@@ -445,6 +466,12 @@ public class GameActiviy extends Activity implements GameEventListner{
 				sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
 			}
 			
+			break;
+		case MODE_GRAVITY:
+			if (currentScore > bestScore ) {
+				bestScore = currentScore;
+				sharedPreferences.edit().putInt(GRAVITY_BEST_SCORE, bestScore).commit();
+			}
 			break;
 
 		case MODE_SPEED:

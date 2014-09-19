@@ -497,6 +497,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 							moveYOffset -= 2 * moveStepHeight;
 							status = STATUS_FAIL;
 							doDraw();
+							playGameSoundEffect(FAIL);
 							handler.postDelayed(new Runnable() {
 								@Override
 								public void run() {
