@@ -78,7 +78,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	
 	boolean animationCancled = false;
 	
-	private int mode = GameActiviy.MODE_GRAVITY;
+	private int mode = GameActiviy.MODE_CLASSIC;
 
 	public GameSurfaceView(Context context) {
 		this(context, null);
@@ -216,6 +216,10 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		doDraw();
 	}
 	
+	public void setMode(int mode){
+		this.mode = mode;
+	}
+	
 	public void recover(){
 		status = STATUS_STOP;
 		moveYOffset = 0;
@@ -263,68 +267,139 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 			int x_index = x / cellWidth;
 			int y_index = row - 1 - (height - y) / cellHeight;
 			
-			if (y_index < row - 3) {
-				return true;
-			}
-			
-			if (moveYOffset > 0) {
-				animationCancled = true;
-				moveYOffset = 0;
-				addNewCell();
-				doDraw();
-			}
-			
-			//game over
-			if (y_index == row - 2 && apples[y_index][x_index] != CELL_TYPE_APPLE_OK) {
-				apples[row - 2][x_index] = CELL_TYPE_ERROR;
-				playGameSoundEffect(FAIL);
-				status = STATUS_FAIL;
-				doDraw();
-				handler.postDelayed(new Runnable() {
-					
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						if (listner != null) {
-							listner.onGameOver();
-					
-						}
-						
-					}
-				}, 200);
+			if (mode == GameActiviy.MODE_GRAVITY) {
 				
-				
-			} else if(y_index == row - 2 && apples[y_index][x_index] == CELL_TYPE_APPLE_OK){
-				score ++;
-				playGameSoundEffect(OK);
-				apples[row - 2][x_index] = CELL_TYPE_APPLE_CLICKED;
-				if (status == STATUS_STOP) {
-					status = STATUS_START;
-					if (listner != null) {
-						listner.onGameStart();
-						listner.onScoreUpdate(score);
-					}
-				}else {
-					listner.onScoreUpdate(score);
-				}
-				
-				// move down
-				startMoveAnimation();
-			}else {
-				if (status != STATUS_START) {
+				if (y_index < 1) {
 					return true;
 				}
-				if (apples[row - 2][x_index] == CELL_TYPE_APPLE_OK
-						|| apples[row - 2][x_index] == CELL_TYPE_APPLE_OK) {
+				
+				if (apples[y_index][x_index] == CELL_TYPE_APPLE_CLICKED) {
+					if (apples[y_index - 1][x_index] == CELL_TYPE_APPLE_OK) {
+						score ++;
+						playGameSoundEffect(OK);
+						apples[y_index - 1][x_index] = CELL_TYPE_APPLE_CLICKED;
+						listner.onScoreUpdate(score);
+						moveYOffset = cellHeight;
+						return true;
+					}
+					
+				}
+				
+				//game over
+				if (isBottomAppleRow(x_index, y_index) && apples[y_index][x_index] != CELL_TYPE_APPLE_OK) {
+					apples[y_index][x_index] = CELL_TYPE_ERROR;
+					playGameSoundEffect(FAIL);
+					status = STATUS_FAIL;
+					doDraw();
+					handler.postDelayed(new Runnable() {
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							if (listner != null) {
+								listner.onGameOver();
+						
+							}
+							
+						}
+					}, 200);
+					
+					
+				} else if(isBottomAppleRow(x_index, y_index) && apples[y_index][x_index] == CELL_TYPE_APPLE_OK){
+					score ++;
+					playGameSoundEffect(OK);
+					apples[y_index][x_index] = CELL_TYPE_APPLE_CLICKED;
+					if (status == STATUS_STOP) {
+						status = STATUS_START;
+						// move down
+						startMoveAnimation();
+						if (listner != null) {
+							listner.onGameStart();
+							listner.onScoreUpdate(score);
+						}
+					}else {
+						listner.onScoreUpdate(score);
+					}
+					
+				}else {
+					if (status != STATUS_START) {
+						return true;
+					}
+					if (isBottomAppleRow(x_index, y_index - 1) && apples[y_index - 1][x_index] == CELL_TYPE_APPLE_OK) {
+						score ++;
+						playGameSoundEffect(OK);
+						apples[y_index - 1][x_index] = CELL_TYPE_APPLE_CLICKED;
+						listner.onScoreUpdate(score);
+						
+					}
+				}
+	
+				return true;
+				
+			}else {
+				if (y_index < row - 3) {
+					return true;
+				}
+				
+				if (moveYOffset > 0) {
+					animationCancled = true;
+					moveYOffset = 0;
+					addNewCell();
+					doDraw();
+				}
+				
+				//game over
+				if (y_index == row - 2 && apples[y_index][x_index] != CELL_TYPE_APPLE_OK) {
+					apples[row - 2][x_index] = CELL_TYPE_ERROR;
+					playGameSoundEffect(FAIL);
+					status = STATUS_FAIL;
+					doDraw();
+					handler.postDelayed(new Runnable() {
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							if (listner != null) {
+								listner.onGameOver();
+						
+							}
+							
+						}
+					}, 200);
+					
+					
+				} else if(y_index == row - 2 && apples[y_index][x_index] == CELL_TYPE_APPLE_OK){
 					score ++;
 					playGameSoundEffect(OK);
 					apples[row - 2][x_index] = CELL_TYPE_APPLE_CLICKED;
-					listner.onScoreUpdate(score);
+					if (status == STATUS_STOP) {
+						status = STATUS_START;
+						if (listner != null) {
+							listner.onGameStart();
+							listner.onScoreUpdate(score);
+						}
+					}else {
+						listner.onScoreUpdate(score);
+					}
 					
 					// move down
 					startMoveAnimation();
-					
+				}else {
+					if (status != STATUS_START) {
+						return true;
+					}
+					if (apples[row - 2][x_index] == CELL_TYPE_APPLE_OK) {
+						score ++;
+						playGameSoundEffect(OK);
+						apples[row - 2][x_index] = CELL_TYPE_APPLE_CLICKED;
+						listner.onScoreUpdate(score);
+						
+						// move down
+						startMoveAnimation();
+						
+					}
 				}
+				
 			}
 
 			return true;
@@ -412,24 +487,64 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
 		@Override
 		public void run() {
-			if (animationCancled) {
-				animationCancled = false;
+			
+			if (status != STATUS_START) {
 				return;
 			}
-			if (moveYOffset < cellHeight) {
-				moveYOffset += moveStepHeight;
-				doDraw();
-				animationHandler.postDelayed(animationTask, 4);
+			if (mode == GameActiviy.MODE_GRAVITY) {
+				if (moveYOffset < cellHeight) {
+					moveYOffset += moveStepHeight;
+					doDraw();
+					animationHandler.postDelayed(animationTask, 20);
+				}else {
+					// the last one move out
+					for (int i = 0; i < COLUMN; i++) {
+						if (apples[row - 1][i] == CELL_TYPE_APPLE_OK) {
+							apples[row - 1][i] = CELL_TYPE_ERROR;
+							moveYOffset -= moveStepHeight;
+							doDraw();
+							handler.postDelayed(new Runnable() {
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									if (listner != null) {
+										listner.onGameOver();
+								
+									}
+									
+								}
+							}, 200);
+							return;
+						}
+					}
+					moveYOffset = 0;
+					addNewCell();
+					doDraw();
+					animationHandler.postDelayed(animationTask, 20);
+				}
+				return;
 			}else {
-				moveYOffset = 0;
-				addNewCell();
-				doDraw();
+				if (animationCancled) {
+					animationCancled = false;
+					return;
+				}
+				if (moveYOffset < cellHeight) {
+					moveYOffset += moveStepHeight;
+					doDraw();
+					animationHandler.postDelayed(animationTask, 4);
+				}else {
+					moveYOffset = 0;
+					addNewCell();
+					doDraw();
+				}
+				
 			}
+			
 		}
 	}
 	
 	private void addNewCell(){
-		for (int i = row - 2; i > 0; i--) {
+		for (int i = row - 1; i > 0; i--) {
 			for (int j = 0; j < COLUMN; j++) {
 				apples[i][j] = apples[i - 1][j]; 
 				apples[i - 1][j] = CELL_TYPE_BLANK;
@@ -439,20 +554,58 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		apples[0][x_index] = CELL_TYPE_APPLE_OK;
 	}
 	
-	private boolean isBottomAppleCell(int x_index, int y_index){
-		if (y_index == row - 1) {
-			return true;
-		}
-		for (int i = y_index + 1; i < row; i++) {
-			for (int j = 0; j < COLUMN; j++) {
-				if (apples[i][j] == CELL_TYPE_APPLE_OK) {
+	private boolean isBottomAppleRow(int x_index, int y_index){
+		if (apples[y_index][x_index] == CELL_TYPE_APPLE_OK) {
+			if (y_index == row - 1) {
+				return true;
+			}else {
+				for (int i = y_index + 1; i < row; i++) {
+					for (int j = 0; j < COLUMN; j++) {
+						if (apples[i][j] == CELL_TYPE_APPLE_OK) {
+							return false;
+						}
+						
+					}
+				}
+				return true;
+			}
+		}else {
+			boolean tmp1, tmp2;
+			if (y_index == row - 1) {
+				for (int i = 0; i < COLUMN; i++) {
+					if (apples[y_index][i] == CELL_TYPE_APPLE_OK) {
+						return true;
+					}
+				}
+				return false;
+			}else {
+				tmp1 = tmp2 = false;
+				for (int i = 0; i < COLUMN; i++) {
+					if (apples[y_index][i] == CELL_TYPE_APPLE_OK) {
+						tmp1 = true;
+					}
+				}
+				
+				if (tmp1) {
+					for (int i = y_index + 1; i < row; i++) {
+						for (int j = 0; j < COLUMN; j++) {
+							if (apples[i][j] == CELL_TYPE_APPLE_OK) {
+								return false;
+							}
+							
+						}
+					}
+					return true;
+					
+				}else {
 					return false;
 				}
 				
 			}
+			
+
 		}
-		
-		return true;
+
 	}
 	
 }
