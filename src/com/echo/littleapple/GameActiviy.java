@@ -301,7 +301,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
 		}
         bestScore = sharedPreferences.getInt(GRAVITY_BEST_SCORE, 0);
-		timerTV.setText("0");
+		timerTV.setText("30:00");
 		gameView.setMode(mode);
 		startLayer.setVisibility(View.INVISIBLE);
 	}
