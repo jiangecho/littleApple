@@ -47,9 +47,19 @@ import com.echo.littleapple.GameSurfaceView.GameEventListner;
 public class GameActiviy extends Activity implements GameEventListner{
 
 	private static final int TIME_LENGHT = 30 * 1000;
-	private static final String BEST_SCORE = "BEST_SCORE";
-	private static final String SPEED_BEST_SCORE = "SPEED_BEST_SCORE";
-	private static final String ENDLESS_BEST_SCORE = "ENDLESS_BEST_SCORE";
+	private static final String CLASSIC_30S_BEST_SCORE = "CLASSIC_30S_BEST_SCORE";
+	private static final String CLASSIC_SPEED_BEST_SCORE = "CLASSIC_SPEED_BEST_SCORE";
+	private static final String CLASSIC_ENDLESS_BEST_SCORE = "CLASSIC_ENDLESS_BEST_SCORE";
+	private static final String CLASSIC_DISCONTINUOUS_BEST_SCORE = "CLASSIC_DISCONTINUOUS_BEST_SCORE ";
+	private static final String CLASSIC_DOUBLE_BEST_SCORE = "CLASSIC_DOUBLE_BEST_SCORE ";
+
+	private static final String GRAVITY_30S_BEST_SCORE = "GRAVITY_30S_BEST_SCORE";
+	private static final String GRAVITY_MINE_BEST_SCORE = "GRAVITY_MINE_BEST_SCORE";
+	private static final String GRAVITY_ENDLESS_BEST_SCORE = "GRAVITY_ENDLESS_BEST_SCORE";
+	private static final String GRAVITY_DISCONTINUOUS_BEST_SCORE = "GRAVITY_DISCONTINUOUS_BEST_SCORE ";
+	private static final String GRAVITY_DOUBLE_BEST_SCORE = "GRAVITY_DOUBLE_BEST_SCORE ";
+
+	//TODO delete
 	private static final String GRAVITY_BEST_SCORE = "GRAVITY_BEST_SCORE";
 	private static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
 
@@ -69,6 +79,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private int bestScore = 0;
 	private int currentScore = 0;
 	
+	private long currentSpeedScore;
 	private long speedBestScore;
 	
 	
@@ -89,7 +100,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private Util.PostResultCallBack postResultCallBack;
 	
 	public static final int MODE_CLASSIC = 0;
-	public static final int MODE_GRAVITY = 0;
+	public static final int MODE_GRAVITY = 1;
 
 	public static final int TYPE_CLASSIC_30S = 0;
 	public static final int TYPE_CLASSIC_SPEED = 1;
@@ -147,7 +158,7 @@ public class GameActiviy extends Activity implements GameEventListner{
         remindTimeSB = new StringBuffer();
         
         sharedPreferences = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-        speedBestScore = sharedPreferences.getLong(SPEED_BEST_SCORE, Long.MAX_VALUE);
+        speedBestScore = sharedPreferences.getLong(CLASSIC_SPEED_BEST_SCORE, Long.MAX_VALUE);
         
         nickyName = sharedPreferences.getString(NICKY_NAME, null);
         if (nickyName == null) {
@@ -215,29 +226,10 @@ public class GameActiviy extends Activity implements GameEventListner{
 			gameView.playGameSoundEffect(GameSurfaceView.TIME_OUT);
 			timerTV.setText(getResources().getString(R.string.time_out));
 			
-			switch (type) {
-			case TYPE_CLASSIC_30S:
-				if (currentScore > bestScore ) {
-					bestScore = currentScore ;
-					sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
-				}
-				
-				break;
-			case TYPE_CLASSIC_GRAVITY:
-				if (currentScore > bestScore ) {
-					bestScore = currentScore ;
-					sharedPreferences.edit().putInt(GRAVITY_BEST_SCORE, bestScore).commit();
-				}
-				break;
-
-			case TYPE_CLASSIC_SPEED:
-				if (escapeMillis < speedBestScore) {
-					speedBestScore = escapeMillis;
-					sharedPreferences.edit().putLong(SPEED_BEST_SCORE, speedBestScore).commit();
-				}
-
-				break;
+			if (type == TYPE_CLASSIC_SPEED) {
+				currentSpeedScore = escapeMillis;
 			}
+			updateBestScore();
 			submitScore();
 			handler.postDelayed(new Runnable() {
 				
@@ -284,6 +276,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 		startSpeedButton.setVisibility(View.VISIBLE);
 		startMindeButton.setVisibility(View.GONE);
 		typeSelectLayer.setVisibility(View.VISIBLE);
+		
+		gameView.setMode(mode);
 	}
 	
 	public void onGravityButtonClick(View view){
@@ -293,18 +287,69 @@ public class GameActiviy extends Activity implements GameEventListner{
 		startSpeedButton.setVisibility(View.GONE);
 		startMindeButton.setVisibility(View.VISIBLE);
 		typeSelectLayer.setVisibility(View.VISIBLE);
+
+		gameView.setMode(mode);
 	}
 	
 	//select type
 	public void onStart30sButtonClick(View view) {
+		type = TYPE_CLASSIC_30S;
+		if (countDownTimer == null) {
+			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+		}else {
+			if (countDownTimer.durationMillis != TIME_LENGHT) {
+				countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+			}
+				
+		}
+		
+		switch (mode) {
+		case MODE_CLASSIC:
+			bestScore = sharedPreferences.getInt(CLASSIC_30S_BEST_SCORE, 0);
+			
+			break;
+		case MODE_GRAVITY:
+			bestScore = sharedPreferences.getInt(GRAVITY_30S_BEST_SCORE, 0);
+			
+			break;
+		}
+		typeSelectLayer.setVisibility(View.INVISIBLE);
+		timerTV.setText("30:00");
 		
 	}
 
 	public void onStartEndlessButtonClick(View view) {
+		type = TYPE_CLASSIC_ENDLESS;
+		switch (mode) {
+		case MODE_CLASSIC:
+			bestScore = sharedPreferences.getInt(CLASSIC_ENDLESS_BEST_SCORE, 0);
+			break;
+		case MODE_GRAVITY:
+			bestScore = sharedPreferences.getInt(GRAVITY_ENDLESS_BEST_SCORE, 0);
+			break;
+		}
+
+		countDownTimer = null;
+		timerTV.setText("0");
+		typeSelectLayer.setVisibility(View.INVISIBLE);
 		
 	}
 
 	public void onStartSpeedButtonClick(View view) {
+		type = TYPE_CLASSIC_SPEED;
+		if (countDownTimer == null) {
+			countDownTimer = new MyCountDownTimer(SPEED_MAX_TIME_LENGHT, 100);
+		}else {
+			if (countDownTimer.durationMillis != SPEED_MAX_TIME_LENGHT) {
+				countDownTimer = new MyCountDownTimer(SPEED_MAX_TIME_LENGHT, 100);
+			}
+		}
+
+		// speed type is only available in CLASSIC MODE
+		speedBestScore = sharedPreferences.getLong(CLASSIC_SPEED_BEST_SCORE, Long.MAX_VALUE);
+
+		timerTV.setText("0");
+		typeSelectLayer.setVisibility(View.INVISIBLE);
 		
 	}
 
@@ -320,64 +365,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 		
 	}
 
-	
-	
-	public void onStartButtonClick(View view){
-		type = TYPE_CLASSIC_30S;
-		if (countDownTimer == null) {
-			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
-		}else {
-			if (countDownTimer.durationMillis != TIME_LENGHT) {
-				countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
-			}
-				
-		}
-		
-        bestScore = sharedPreferences.getInt(BEST_SCORE, 0);
-		gameView.setMode(type);
-		typeSelectLayer.setVisibility(View.INVISIBLE);
-		//gameView.reset();
-	}
-
-	public void onSpeedStartButtonClick(View view){
-		type = TYPE_CLASSIC_SPEED;
-		if (countDownTimer == null) {
-			countDownTimer = new MyCountDownTimer(SPEED_MAX_TIME_LENGHT, 100);
-		}else {
-			if (countDownTimer.durationMillis != SPEED_MAX_TIME_LENGHT) {
-				countDownTimer = new MyCountDownTimer(SPEED_MAX_TIME_LENGHT, 100);
-			}
-		}
-
-        speedBestScore = sharedPreferences.getLong(SPEED_BEST_SCORE, Long.MAX_VALUE);
-		timerTV.setText("0");
-		gameView.setMode(type);
-		typeSelectLayer.setVisibility(View.INVISIBLE);
-		//gameView.reset();
-	}
-	
-	public void onEndlessStartButtonClick(View view){
-		type = TYPE_CLASSIC_ENDLESS;
-        bestScore = sharedPreferences.getInt(ENDLESS_BEST_SCORE, 0);
-		countDownTimer = null;
-		timerTV.setText("0");
-		gameView.setMode(type);
-		typeSelectLayer.setVisibility(View.INVISIBLE);
-	}
-	
 	public void onGravityStartButtonClick(View view) {
-		type = TYPE_CLASSIC_GRAVITY;
-		if (countDownTimer == null) {
-			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
-		}else {
-			if (countDownTimer.durationMillis != TIME_LENGHT) {
-				countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
-			}
-		}
-        bestScore = sharedPreferences.getInt(GRAVITY_BEST_SCORE, 0);
-		timerTV.setText("30:00");
-		gameView.setMode(type);
-		typeSelectLayer.setVisibility(View.INVISIBLE);
+
 	}
 
 
@@ -484,7 +473,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	@Override
 	public void onGameStart() {
-		//gameView.reset();
+		//TODO start the timer or not should depend on the mode
 		if (countDownTimer != null) {
 			countDownTimer.start();
 		}
@@ -503,13 +492,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					if (currentScore > bestScore ) {
-						bestScore = currentScore;
-						sharedPreferences.edit().putInt(ENDLESS_BEST_SCORE, bestScore).commit();
-					}
+					updateBestScore();
 					updateAndShowResultLayer();
 					submitScore();
-					
 				}
 			});
 
@@ -539,33 +524,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 			countDownTimer.cancel();
 		}
 
-		switch (type) {
-		case TYPE_CLASSIC_30S:
-			if (currentScore > bestScore ) {
-				bestScore = currentScore;
-				sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
-			}
-			
-			break;
-		case TYPE_CLASSIC_GRAVITY:
-			if (currentScore > bestScore ) {
-				bestScore = currentScore;
-				sharedPreferences.edit().putInt(GRAVITY_BEST_SCORE, bestScore).commit();
-			}
-			break;
-
-		case TYPE_CLASSIC_SPEED:
-			timerTV.setText(getResources().getString(R.string.speed_fail));
-			if (currentScore >= SPEED_SUCCESS_SCORE) {
-				if (escapeMillis < speedBestScore) {
-					speedBestScore = escapeMillis;
-					sharedPreferences.edit().putLong(SPEED_BEST_SCORE, speedBestScore).commit();
-				}
-				
-			}
-			break;
-		}
-		
+		updateBestScore();
 		updateAndShowResultLayer();
 		submitScore();
 	}
@@ -579,12 +538,10 @@ public class GameActiviy extends Activity implements GameEventListner{
 				gameView.playGameSoundEffect(GameSurfaceView.TIME_OUT);
 				timerTV.setText(getResources().getString(R.string.speed_success));
 
-				if (escapeMillis < speedBestScore) {
-					speedBestScore = escapeMillis;
-					sharedPreferences.edit().putLong(SPEED_BEST_SCORE, speedBestScore).commit();
-				}
+				currentSpeedScore = escapeMillis;
 				
 				countDownTimer.cancel();
+				updateBestScore();
 				submitScore();
 				handler.postDelayed(new Runnable() {
 					
@@ -592,7 +549,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 					public void run() {
 						updateAndShowResultLayer();
 					}
-				}, 500);
+				}, 200);
 			}
 		}else if (type == TYPE_CLASSIC_ENDLESS) {
 			timerTV.setText("" + score);
@@ -602,20 +559,31 @@ public class GameActiviy extends Activity implements GameEventListner{
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			long currentMillis = System.currentTimeMillis();
-			if (currentMillis - lastPressMillis < 2000) {
-			 	finish();
-			 	return true;
+			
+			if (resultLayer.getVisibility() == View.VISIBLE) {
+				gameView.reset();
+				resultLayer.setVisibility(View.INVISIBLE);
+				typeSelectLayer.setVisibility(View.VISIBLE);
+			}else if(typeSelectLayer.getVisibility() == View.VISIBLE){
+				typeSelectLayer.setVisibility(View.INVISIBLE);
+				modeSelectLayer.setVisibility(View.VISIBLE);
 			}else {
-				lastPressMillis = currentMillis;
-				Toast toast = Toast.makeText(this, getResources().getString(R.string.press_twice_to_exit) , Toast.LENGTH_SHORT);
-				toast.show();
-				return false;
+				long currentMillis = System.currentTimeMillis();
+				if (currentMillis - lastPressMillis < 2000) {
+				 	finish();
+				}else {
+					lastPressMillis = currentMillis;
+					Toast toast = Toast.makeText(this, getResources().getString(R.string.press_twice_to_exit) , Toast.LENGTH_SHORT);
+					toast.show();
+				}
+				
 			}
+			return true;
+		}else {
+			return super.onKeyUp(keyCode, event);
 			
 		}
 		
-		return super.onKeyUp(keyCode, event);
 	}
 	
 	private class BlockOnTouchEvent implements OnTouchListener{
@@ -694,6 +662,77 @@ public class GameActiviy extends Activity implements GameEventListner{
         oks.show(this);
    }
    
+   private void updateBestScore(){
+	  if (mode == MODE_CLASSIC) {
+		  switch (type) {
+		  	case TYPE_CLASSIC_30S:
+		  		if (currentScore > bestScore) {
+					bestScore = currentScore;
+					sharedPreferences.edit().putInt(CLASSIC_30S_BEST_SCORE, bestScore).commit();
+				}
+		  		break;
+			case TYPE_CLASSIC_ENDLESS:
+		  		if (currentScore > bestScore) {
+					bestScore = currentScore;
+					sharedPreferences.edit().putInt(CLASSIC_ENDLESS_BEST_SCORE, bestScore).commit();
+				}
+				break;
+			case TYPE_CLASSIC_SPEED:
+		  		if (currentSpeedScore > speedBestScore) {
+					speedBestScore = currentSpeedScore;
+					sharedPreferences.edit().putLong(CLASSIC_SPEED_BEST_SCORE, bestScore).commit();
+				}
+				break;
+			case TYPE_CLASSIC_DISCONTINUOUS:
+		  		if (currentScore > bestScore) {
+					bestScore = currentScore;
+					sharedPreferences.edit().putInt(CLASSIC_DISCONTINUOUS_BEST_SCORE, bestScore).commit();
+				}
+				break;
+			case TYPE_CLASSIC_DOUBLE:
+		  		if (currentScore > bestScore) {
+					bestScore = currentScore;
+					sharedPreferences.edit().putInt(CLASSIC_DOUBLE_BEST_SCORE, bestScore).commit();
+				}
+				break;
+		}
+		
+	  }else if(mode == MODE_GRAVITY){
+		  switch (type) {
+		  	case TYPE_GRAVITY_30S:
+		  		if (currentScore > bestScore) {
+					bestScore = currentScore;
+					sharedPreferences.edit().putInt(GRAVITY_30S_BEST_SCORE, bestScore).commit();
+				}
+		  		break;
+			case TYPE_GRAVITY_ENDLESS:
+		  		if (currentScore > bestScore) {
+					bestScore = currentScore;
+					sharedPreferences.edit().putInt(GRAVITY_ENDLESS_BEST_SCORE, bestScore).commit();
+				}
+				break;
+			case TYPE_GRAVITY_MINE:
+		  		if (currentScore > bestScore) {
+					bestScore = currentScore;
+					sharedPreferences.edit().putInt(GRAVITY_MINE_BEST_SCORE, bestScore).commit();
+				}
+				break;
+			case TYPE_GRAVITY_DISCONTINUOUS:
+		  		if (currentScore > bestScore) {
+					bestScore = currentScore;
+					sharedPreferences.edit().putInt(GRAVITY_DISCONTINUOUS_BEST_SCORE, bestScore).commit();
+				}
+				break;
+			case TYPE_GRAVITY_DOUBLE:
+		  		if (currentScore > bestScore) {
+					bestScore = currentScore;
+					sharedPreferences.edit().putInt(GRAVITY_DOUBLE_BEST_SCORE, bestScore).commit();
+				}
+				break;
+		}
+	  }
+   }
+
    private void submitScore(){
 
 	   if (nickyName == null) {
