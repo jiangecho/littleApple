@@ -293,7 +293,6 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	//select type
 	public void onStart30sButtonClick(View view) {
-		type = TYPE_CLASSIC_30S;
 		if (countDownTimer == null) {
 			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
 		}else {
@@ -305,10 +304,12 @@ public class GameActiviy extends Activity implements GameEventListner{
 		
 		switch (mode) {
 		case MODE_CLASSIC:
+			type = TYPE_CLASSIC_30S;
 			bestScore = sharedPreferences.getInt(CLASSIC_30S_BEST_SCORE, 0);
 			
 			break;
 		case MODE_GRAVITY:
+			type = TYPE_GRAVITY_30S;
 			bestScore = sharedPreferences.getInt(GRAVITY_30S_BEST_SCORE, 0);
 			
 			break;
@@ -319,12 +320,13 @@ public class GameActiviy extends Activity implements GameEventListner{
 	}
 
 	public void onStartEndlessButtonClick(View view) {
-		type = TYPE_CLASSIC_ENDLESS;
 		switch (mode) {
 		case MODE_CLASSIC:
+			type = TYPE_CLASSIC_ENDLESS;
 			bestScore = sharedPreferences.getInt(CLASSIC_ENDLESS_BEST_SCORE, 0);
 			break;
 		case MODE_GRAVITY:
+			type = TYPE_GRAVITY_ENDLESS;
 			bestScore = sharedPreferences.getInt(GRAVITY_ENDLESS_BEST_SCORE, 0);
 			break;
 		}
@@ -372,11 +374,11 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	public void onRestartButtonClick(View view){
 		resultLayer.setVisibility(View.INVISIBLE);
-		if (type == TYPE_CLASSIC_30S) {
+		if (type == TYPE_CLASSIC_30S || type == TYPE_GRAVITY_30S) {
 			timerTV.setText("30.00");
 		}else if(type == TYPE_CLASSIC_SPEED){
 			timerTV.setText("0");
-		}else if(type == TYPE_CLASSIC_ENDLESS){
+		}else if(type == TYPE_CLASSIC_ENDLESS || type == TYPE_GRAVITY_ENDLESS){
 			timerTV.setText("0");
 		}
 		gameView.reset();
@@ -401,6 +403,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	}
 
 	
+	//TODO bug
 	private void updateAndShowResultLayer(){
 		String resultInfo = null;
 		String bestScoreInfo = null;
@@ -414,10 +417,11 @@ public class GameActiviy extends Activity implements GameEventListner{
 		resultLayer.setBackgroundColor(Color.parseColor(colors[colorIndex]));;
 
 		switch (type) {
-		case TYPE_CLASSIC_GRAVITY:
 		case TYPE_CLASSIC_ENDLESS:
+		case TYPE_GRAVITY_ENDLESS:
 			//transfer to classic
 		case TYPE_CLASSIC_30S:
+		case TYPE_GRAVITY_30S:
 			resultInfo= getResources().getString(R.string.classic_result, currentScore);
 			
 			if (currentScore > 100) {
@@ -483,7 +487,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	public void onGameOver() {
 		
 		//TODO endless mode
-		if (type == TYPE_CLASSIC_ENDLESS) {
+		if (type == TYPE_CLASSIC_ENDLESS || type == TYPE_GRAVITY_ENDLESS) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(R.string.recover);
 			builder.setMessage(R.string.recover_prompt);
@@ -551,7 +555,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 					}
 				}, 200);
 			}
-		}else if (type == TYPE_CLASSIC_ENDLESS) {
+		}else if (type == TYPE_CLASSIC_ENDLESS || type == TYPE_GRAVITY_ENDLESS) {
 			timerTV.setText("" + score);
 		}
 	}
@@ -662,6 +666,7 @@ public class GameActiviy extends Activity implements GameEventListner{
         oks.show(this);
    }
    
+   // TODO optimize do not need to check the mode, can just use type
    private void updateBestScore(){
 	  if (mode == MODE_CLASSIC) {
 		  switch (type) {
@@ -733,7 +738,13 @@ public class GameActiviy extends Activity implements GameEventListner{
 	  }
    }
 
+   //TODO bug, different uri
    private void submitScore(){
+	   
+	   // TODO just for debug
+	   if (true) {
+		return;
+	   }
 
 	   if (nickyName == null) {
 		   return;
