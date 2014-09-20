@@ -80,6 +80,8 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	boolean animationCancled = false;
 	
 	private int mode = GameActiviy.MODE_CLASSIC;
+	
+	private int level = GameActiviy.LEVEL_NORMAL;
 
 	public GameSurfaceView(Context context) {
 		this(context, null);
@@ -317,13 +319,37 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 					if (status != STATUS_START) {
 						return true;
 					}
-					if (isBottomAppleRow(x_index, y_index - 1) && apples[y_index - 1][x_index] == CELL_TYPE_APPLE_OK) {
-						score ++;
-						playGameSoundEffect(OK);
-						apples[y_index - 1][x_index] = CELL_TYPE_APPLE_CLICKED;
-						listner.onScoreUpdate(score);
+					
+					// fault-tolerant
+					// very loose
+					if (level == GameActiviy.LEVEL_EASY || level == GameActiviy.LEVEL_NORMAL) {
+						if (isBottomAppleRow(x_index, y_index - 1) && apples[y_index - 1][x_index] == CELL_TYPE_APPLE_OK) {
+							score ++;
+							playGameSoundEffect(OK);
+							apples[y_index - 1][x_index] = CELL_TYPE_APPLE_CLICKED;
+							listner.onScoreUpdate(score);
+						}
+					// very strict
+					}else {
+						apples[y_index][x_index] = CELL_TYPE_ERROR;
+						playGameSoundEffect(FAIL);
+						status = STATUS_FAIL;
+						doDraw();
+						handler.postDelayed(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								if (listner != null) {
+									listner.onGameOver();
+							
+								}
+								
+							}
+						}, 200);
 						
 					}
+
 				}
 	
 				return true;
@@ -340,9 +366,25 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 					doDraw();
 				}
 				
+				//control fault-tolerant
+				if (level == GameActiviy.LEVEL_EASY) {
+					
+				}
 				//game over
-				if (y_index == row - 2 && apples[y_index][x_index] != CELL_TYPE_APPLE_OK) {
-					apples[row - 2][x_index] = CELL_TYPE_ERROR;
+				// very loose
+				if ((level == GameActiviy.LEVEL_EASY && y_index == row - 2 && apples[y_index][x_index] != CELL_TYPE_APPLE_OK)
+						|| (level == GameActiviy.LEVEL_NORMAL && (y_index == row - 2 || y_index == row - 3) && apples[y_index][x_index] != CELL_TYPE_APPLE_OK)
+						// very strict
+						|| (level == GameActiviy.LEVEL_HARD && apples[y_index][x_index] != CELL_TYPE_APPLE_OK)) {
+					
+//				}
+//				// very loose
+////				if (y_index == row - 2 && apples[y_index][x_index] != CELL_TYPE_APPLE_OK) {
+////					apples[row - 2][x_index] = CELL_TYPE_ERROR;
+//				// most strict
+//				if (apples[y_index][x_index] != CELL_TYPE_APPLE_OK) {
+
+					apples[y_index][x_index] = CELL_TYPE_ERROR;
 					playGameSoundEffect(FAIL);
 					status = STATUS_FAIL;
 					doDraw();
@@ -454,6 +496,14 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	
 	public void setScore(int score){
 		this.score = score;
+	}
+	
+	public void setLevel(int level){
+		this.level = level;
+	}
+	
+	public int getLevel(){
+		return this.level;
 	}
 
 

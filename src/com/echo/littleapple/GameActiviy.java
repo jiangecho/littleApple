@@ -124,6 +124,11 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	private int mode = MODE_CLASSIC;
 	private int type = TYPE_CLASSIC_30S;
+
+	public static final int LEVEL_EASY = 0;
+	public static final int LEVEL_NORMAL = 1;
+	public static final int LEVEL_HARD = 2;
+
 	
 	private Button startSpeedButton, startMindeButton;
 
