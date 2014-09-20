@@ -272,7 +272,6 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 						playGameSoundEffect(OK);
 						apples[y_index - 1][x_index] = CELL_TYPE_APPLE_CLICKED;
 						listner.onScoreUpdate(score);
-						moveYOffset = cellHeight;
 						return true;
 					}
 					

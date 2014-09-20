@@ -64,7 +64,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private TextView promptTV;
 	private Handler handler;
 	
-	private CountDownTimer countDownTimer;
+	private MyCountDownTimer countDownTimer;
 	private StringBuffer remindTimeSB;
 	private SharedPreferences sharedPreferences;
 	private int bestScore = 0;
@@ -183,9 +183,11 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private class MyCountDownTimer extends CountDownTimer{
 		private int remindSeconds;
 		private int remindMillis;
+		public long durationMillis;
 
 		public MyCountDownTimer(long millisInFuture, long countDownInterval) {
 			super(millisInFuture, countDownInterval);
+			durationMillis = millisInFuture;
 		}
 
 		@Override
@@ -256,13 +258,14 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	
 	public void onStartButtonClick(View view){
-		if (mode != MODE_CLASSIC) {
-			mode = MODE_CLASSIC;
+		mode = MODE_CLASSIC;
+		if (countDownTimer == null) {
 			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
 		}else {
-			if (countDownTimer == null) {
+			if (countDownTimer.durationMillis != TIME_LENGHT) {
 				countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
 			}
+				
 		}
 		
         bestScore = sharedPreferences.getInt(BEST_SCORE, 0);
@@ -272,11 +275,11 @@ public class GameActiviy extends Activity implements GameEventListner{
 	}
 
 	public void onSpeedStartButtonClick(View view){
-		if (mode != MODE_SPEED) {
-			mode = MODE_SPEED;
+		mode = MODE_SPEED;
+		if (countDownTimer == null) {
 			countDownTimer = new MyCountDownTimer(SPEED_MAX_TIME_LENGHT, 100);
 		}else {
-			if (countDownTimer == null) {
+			if (countDownTimer.durationMillis != SPEED_MAX_TIME_LENGHT) {
 				countDownTimer = new MyCountDownTimer(SPEED_MAX_TIME_LENGHT, 100);
 			}
 		}
@@ -301,6 +304,10 @@ public class GameActiviy extends Activity implements GameEventListner{
 		mode = MODE_GRAVITY;
 		if (countDownTimer == null) {
 			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+		}else {
+			if (countDownTimer.durationMillis != TIME_LENGHT) {
+				countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+			}
 		}
         bestScore = sharedPreferences.getInt(GRAVITY_BEST_SCORE, 0);
 		timerTV.setText("30:00");
