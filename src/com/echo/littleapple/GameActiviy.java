@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -101,6 +102,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE); 
 		setContentView(R.layout.fragment_main);
 		blockOnTouchEvent = new BlockOnTouchEvent();
         timerTV = (TextView)findViewById(R.id.timerTV);
@@ -281,7 +283,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 			}
 		}
 
-        bestScore = sharedPreferences.getInt(SPEED_BEST_SCORE, 0);
+        speedBestScore = sharedPreferences.getLong(SPEED_BEST_SCORE, Long.MAX_VALUE);
 		timerTV.setText("0");
 		gameView.setMode(mode);
 		startLayer.setVisibility(View.INVISIBLE);
