@@ -9,7 +9,8 @@
     <string name="strb">吃</string>
     <string name="strc">30秒内看你能吃掉多少个</string>
     <string name="strd">小苹果！</string>
-    <string name="stre">请先选择你喜欢的吃法</string>
+    <string name="stre">请先选择你喜欢的模式</string>
+    <string name="strh">请先选择你喜欢的玩法</string>
     <string name="strg">然后</string>
     <string name="classic_result">呵呵！我吃掉了%d个小苹果！</string>
     <string name="speed_result">吼吼！100个小苹果，我才花了%s秒！</string>
@@ -64,4 +65,13 @@
     <string name="recover">复活</string>
     <string name="recover_prompt">安装广告，可原地复活</string>
     <string name="capture_screen_ok">截图已保存到SD卡了，快去分享吧</string>
+    <string name="type_time_30">30秒</string>
+    <string name="type_time_15">15秒</string>
+    <string name="type_mine">地雷</string>
+    <string name="type_discontinuous">不连续</string>
+    <string name="type_double">双飞</string>
+    <string name="type_endless">无尽</string>
+    <string name="type_speed">竞速</string>
+    <string name="mode_classic">经典</string>
+    <string name="mode_gravity">重力</string>
 </resources>

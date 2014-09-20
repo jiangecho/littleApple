@@ -7,7 +7,7 @@
 	android:id="@+id/resultLayer"
 	android:visibility="invisible"
 	android:background="@color/darkgray"
-    tools:context="com.echo.littleapple.MainActivity$PlaceholderFragment" >
+    >
     
 	    <TextView 
 	        android:id="@+id/resultTV"

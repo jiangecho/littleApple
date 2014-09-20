@@ -122,7 +122,7 @@ public class NewRankAcitivity extends Activity{
 		myNickyName = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE)
 				.getString("nickyname", null);
 		
-		mode = getIntent().getIntExtra(GameActiviy.MODE, GameActiviy.MODE_CLASSIC);
+		mode = getIntent().getIntExtra(GameActiviy.TYPE, GameActiviy.TYPE_CLASSIC_30S);
 		
 		new LoadDataTask().execute();
 		
@@ -202,7 +202,7 @@ public class NewRankAcitivity extends Activity{
 			rankTextView.setText("" + item.rank);
 			nickyNameTextView.setText(item.nickyName);
 			
-			if (mode == GameActiviy.MODE_SPEED) {
+			if (mode == GameActiviy.TYPE_CLASSIC_SPEED) {
 				
 				StringBuffer sb = new StringBuffer();
 				sb.append(Long.parseLong(item.score) / 1000);
@@ -264,7 +264,7 @@ public class NewRankAcitivity extends Activity{
 			//scoreTextView.setText(item.score);
 			awardTextView.setText("" + item.award);
 
-			if (mode == GameActiviy.MODE_SPEED) {
+			if (mode == GameActiviy.TYPE_CLASSIC_SPEED) {
 				
 				StringBuffer sb = new StringBuffer();
 				sb.append(Long.parseLong(item.score) / 1000);
@@ -291,13 +291,13 @@ public class NewRankAcitivity extends Activity{
 		protected Void doInBackground(Void... params) {
 
 			String uri = null; 
-			if (mode == GameActiviy.MODE_CLASSIC) {
+			if (mode == GameActiviy.TYPE_CLASSIC_30S) {
 				uri = "http://littleappleapp.sinaapp.com/new_rank_str.php";
-			}else if(mode == GameActiviy.MODE_SPEED){
+			}else if(mode == GameActiviy.TYPE_CLASSIC_SPEED){
 				uri = "http://littleappleapp.sinaapp.com/new_rank_str_speed.php";
-			}else if (mode == GameActiviy.MODE_ENDLESS) {
+			}else if (mode == GameActiviy.TYPE_CLASSIC_ENDLESS) {
 				uri = "http://littleappleapp.sinaapp.com/new_rank_str_endless.php";
-			}else if(mode == GameActiviy.MODE_GRAVITY){
+			}else if(mode == GameActiviy.TYPE_CLASSIC_GRAVITY){
 				uri = "http://littleappleapp.sinaapp.com/new_rank_str_gravity.php";
 				
 			}

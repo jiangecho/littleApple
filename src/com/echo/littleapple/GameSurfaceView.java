@@ -79,7 +79,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	
 	boolean animationCancled = false;
 	
-	private int mode = GameActiviy.MODE_CLASSIC;
+	private int mode = GameActiviy.TYPE_CLASSIC_30S;
 
 	public GameSurfaceView(Context context) {
 		this(context, null);
@@ -260,7 +260,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 			int x_index = x / cellWidth;
 			int y_index = row - 1 - (height - y) / cellHeight;
 			
-			if (mode == GameActiviy.MODE_GRAVITY) {
+			if (mode == GameActiviy.TYPE_CLASSIC_GRAVITY) {
 				
 				if (y_index < 1) {
 					return true;
@@ -483,7 +483,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 			if (status != STATUS_START) {
 				return;
 			}
-			if (mode == GameActiviy.MODE_GRAVITY) {
+			if (mode == GameActiviy.TYPE_CLASSIC_GRAVITY) {
 				if (moveYOffset < cellHeight) {
 					moveYOffset += moveStepHeight;
 					doDraw();

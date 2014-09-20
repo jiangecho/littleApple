@@ -21,7 +21,8 @@
         android:text="30.00"
         />
     
-    <include layout="@layout/start_layer"/>
+    <include layout="@layout/mode_select_layer"/>
+    <include layout="@layout/type_select_layer"/>
     <include layout="@layout/result_layer"/>
     
 

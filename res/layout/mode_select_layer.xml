@@ -1,0 +1,87 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:gravity="center_vertical"
+    android:id="@+id/mode_select_layer"
+    android:background="#e0576069"
+    >
+
+	    <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_horizontal"
+	        android:textAppearance="?android:attr/textAppearanceLarge" 
+	        android:text="@string/title"
+	        android:textColor="@color/yellow"
+	        />
+
+	    <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dip"
+	        android:layout_gravity="center_horizontal"
+	        android:textAppearance="?android:attr/textAppearanceMedium" 
+	        android:text="@string/stre"
+	        android:textColor="@color/white"
+	        />
+
+	    <Button
+	        android:id="@+id/classicButton"
+	        android:layout_width="150dip"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_horizontal"
+	        android:layout_marginTop="15dip"
+	        android:background="@color/red"
+	        android:onClick="onClassicButtonClick"
+	        android:text="@string/mode_classic"
+	        android:textColor="@color/white" />
+
+	    <Button
+	        android:id="@+id/gravityButton"
+	        android:layout_width="150dip"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_horizontal"
+	        android:layout_marginTop="15dip"
+	        android:background="@color/red"
+	        android:onClick="onGravityButtonClick"
+	        android:text="@string/mode_gravity"
+	        android:textColor="@color/white" />
+	    
+	    <View 
+	        android:layout_width="fill_parent"
+	        android:layout_height="1dip"
+	        android:layout_marginTop="10dip"
+	        android:background="?android:attr/listDivider"
+	        />
+
+	    <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dip"
+	        android:layout_marginLeft="10dip"
+	        android:textAppearance="?android:attr/textAppearanceMedium" 
+	        android:text="说明:"
+	        android:textColor="@color/red"
+	        />
+	    <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dip"
+	        android:layout_marginLeft="15dip"
+	        android:textAppearance="?android:attr/textAppearanceSmall" 
+	        android:text="经典模式下，小苹果不会自动下落，点击时才下落"
+	        android:textColor="@color/white"
+	        />
+	    <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dip"
+	        android:layout_marginLeft="15dip"
+	        android:textAppearance="?android:attr/textAppearanceSmall" 
+	        android:text="重力模式下，小苹果会自动下落"
+	        android:textColor="@color/white"
+	        />
+
+</LinearLayout>
