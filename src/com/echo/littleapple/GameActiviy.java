@@ -28,6 +28,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
+import android.content.DialogInterface.OnKeyListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -43,6 +44,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -60,6 +62,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private static final String BEST_SCORE = "BEST_SCORE";
 	private static final String SPEED_BEST_SCORE = "SPEED_BEST_SCORE";
 	private static final String ENDLESS_BEST_SCORE = "ENDLESS_BEST_SCORE";
+	private static final String GRAVITY_BEST_SCORE = "GRAVITY_BEST_SCORE";
 	private static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
 
 	private static final String APP_WALL_ID = "2001e0364714d23e2f420e0f99e89020";
@@ -73,7 +76,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private TextView promptTV;
 	private Handler handler;
 	
-	private CountDownTimer countDownTimer;
+	private MyCountDownTimer countDownTimer;
 	private StringBuffer remindTimeSB;
 	private SharedPreferences sharedPreferences;
 	private int bestScore = 0;
@@ -102,6 +105,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	public static final int MODE_CLASSIC = 0;
 	public static final int MODE_SPEED = 1;
 	public static final int MODE_ENDLESS = 2;
+	public static final int MODE_GRAVITY = 3;
 	public static final String MODE = "MODE";
 	
 	private static final int SPEED_SUCCESS_SCORE = 100;
@@ -120,6 +124,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE); 
 		setContentView(R.layout.fragment_main);
 		blockOnTouchEvent = new BlockOnTouchEvent();
         timerTV = (TextView)findViewById(R.id.timerTV);
@@ -241,9 +246,11 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private class MyCountDownTimer extends CountDownTimer{
 		private int remindSeconds;
 		private int remindMillis;
+		public long durationMillis;
 
 		public MyCountDownTimer(long millisInFuture, long countDownInterval) {
 			super(millisInFuture, countDownInterval);
+			durationMillis = millisInFuture;
 		}
 
 		@Override
@@ -258,6 +265,12 @@ public class GameActiviy extends Activity implements GameEventListner{
 				sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
 			}
 				
+				break;
+			case MODE_GRAVITY:
+				if (currentScore > bestScore ) {
+					bestScore = currentScore ;
+					sharedPreferences.edit().putInt(GRAVITY_BEST_SCORE, bestScore).commit();
+				}
 				break;
 
 			case MODE_SPEED:
@@ -281,22 +294,22 @@ public class GameActiviy extends Activity implements GameEventListner{
 		@Override
 		public void onTick(long millisUntilFinished) {
 
-			if (mode == MODE_CLASSIC) {
-			remindTimeSB.setLength(0);
-			remindSeconds = (int) (millisUntilFinished / 1000);
-			remindMillis = (int) (millisUntilFinished % 1000 / 10);
-			if (remindSeconds < 10) {
-				remindTimeSB.append("0");
-			}
-			remindTimeSB.append(remindSeconds);
-			remindTimeSB.append(".");
-			
-			if (remindMillis < 10) {
-				remindTimeSB.append("0");
-			}
-			remindTimeSB.append(remindMillis);
-			
-			timerTV.setText(remindTimeSB);
+			if (mode == MODE_CLASSIC || mode == MODE_GRAVITY) {
+				remindTimeSB.setLength(0);
+				remindSeconds = (int) (millisUntilFinished / 1000);
+				remindMillis = (int) (millisUntilFinished % 1000 / 10);
+				if (remindSeconds < 10) {
+					remindTimeSB.append("0");
+				}
+				remindTimeSB.append(remindSeconds);
+				remindTimeSB.append(".");
+				
+				if (remindMillis < 10) {
+					remindTimeSB.append("0");
+				}
+				remindTimeSB.append(remindMillis);
+				
+				timerTV.setText(remindTimeSB);
 			}else if(mode == MODE_SPEED){
 				//do nothing
 				escapeMillis = SPEED_MAX_TIME_LENGHT - millisUntilFinished;
@@ -308,32 +321,35 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	
 	public void onStartButtonClick(View view){
-		if (mode != MODE_CLASSIC) {
-			mode = MODE_CLASSIC;
+		mode = MODE_CLASSIC;
+		if (countDownTimer == null) {
 			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
 		}else {
-			if (countDownTimer == null) {
+			if (countDownTimer.durationMillis != TIME_LENGHT) {
 				countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
 			}
+				
 		}
 		
         bestScore = sharedPreferences.getInt(BEST_SCORE, 0);
+		gameView.setMode(mode);
 		startLayer.setVisibility(View.INVISIBLE);
 		//gameView.reset();
 	}
 
 	public void onSpeedStartButtonClick(View view){
-		if (mode != MODE_SPEED) {
-			mode = MODE_SPEED;
+		mode = MODE_SPEED;
+		if (countDownTimer == null) {
 			countDownTimer = new MyCountDownTimer(SPEED_MAX_TIME_LENGHT, 100);
 		}else {
-			if (countDownTimer == null) {
+			if (countDownTimer.durationMillis != SPEED_MAX_TIME_LENGHT) {
 				countDownTimer = new MyCountDownTimer(SPEED_MAX_TIME_LENGHT, 100);
 			}
 		}
 
-        bestScore = sharedPreferences.getInt(SPEED_BEST_SCORE, 0);
+        speedBestScore = sharedPreferences.getLong(SPEED_BEST_SCORE, Long.MAX_VALUE);
 		timerTV.setText("0");
+		gameView.setMode(mode);
 		startLayer.setVisibility(View.INVISIBLE);
 		//gameView.reset();
 	}
@@ -343,6 +359,22 @@ public class GameActiviy extends Activity implements GameEventListner{
         bestScore = sharedPreferences.getInt(ENDLESS_BEST_SCORE, 0);
 		countDownTimer = null;
 		timerTV.setText("0");
+		gameView.setMode(mode);
+		startLayer.setVisibility(View.INVISIBLE);
+	}
+	
+	public void onGravityStartButtonClick(View view) {
+		mode = MODE_GRAVITY;
+		if (countDownTimer == null) {
+			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+		}else {
+			if (countDownTimer.durationMillis != TIME_LENGHT) {
+				countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+			}
+		}
+        bestScore = sharedPreferences.getInt(GRAVITY_BEST_SCORE, 0);
+		timerTV.setText("30:00");
+		gameView.setMode(mode);
 		startLayer.setVisibility(View.INVISIBLE);
 	}
 
@@ -385,6 +417,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		resultLayer.setBackgroundColor(Color.parseColor(colors[colorIndex]));;
 
 		switch (mode) {
+		case MODE_GRAVITY:
 		case MODE_ENDLESS:
 			//transfer to classic
 		case MODE_CLASSIC:
@@ -517,6 +550,13 @@ public class GameActiviy extends Activity implements GameEventListner{
 				}
 			});
 			dialog.show();
+			dialog.setOnKeyListener(new OnKeyListener() {
+				
+				@Override
+				public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+					return true;
+				}
+			});
 			
 			return;
 		}
@@ -532,6 +572,12 @@ public class GameActiviy extends Activity implements GameEventListner{
 			sharedPreferences.edit().putInt(BEST_SCORE, bestScore).commit();
 		}
 		
+			break;
+		case MODE_GRAVITY:
+			if (currentScore > bestScore ) {
+				bestScore = currentScore;
+				sharedPreferences.edit().putInt(GRAVITY_BEST_SCORE, bestScore).commit();
+			}
 			break;
 
 		case MODE_SPEED:
@@ -621,6 +667,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		if (imgPath == null) {
 			Toast.makeText(this, "SD卡不存在", Toast.LENGTH_SHORT).show();
 		}else {
+			Toast.makeText(this, getString(R.string.capture_screen_ok), Toast.LENGTH_SHORT).show();
 			showShare(imgPath);
 		}
 	}
@@ -742,6 +789,14 @@ public class GameActiviy extends Activity implements GameEventListner{
 	   }
 	   
 	   switch (mode) {
+	   	case MODE_GRAVITY:
+		   if (currentScore == 0) {
+			   return;
+		   }
+		   scoreString = currentScore + "";
+		   submitUri = "http://littleappleapp.sinaapp.com/new_insert_gravity.php";
+			break;
+
 		case MODE_CLASSIC:
 		   if (currentScore == 0) {
 		return;

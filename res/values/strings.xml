@@ -5,7 +5,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title">你爱小苹果吗？</string>
-    <string name="stra">点击最下面的小苹果开</string>
+    <string name="stra">点击最下面的小苹果开吃</string>
     <string name="strb">吃</string>
     <string name="strc">30秒内看你能吃掉多少个</string>
     <string name="strd">小苹果！</string>
@@ -20,6 +20,7 @@
     <string name="start">经典，上！</string>
     <string name="speed_start">竞速，上!</string>
     <string name="endless_start">无尽，上!</string>
+    <string name="gravity_start">下落，上</string>
     <string name="restart">再挑战一次</string>
     <string name="time_out">时间到！</string>
     <string name="speed_success">挑战成功！</string>
@@ -30,12 +31,13 @@
     <string name="rank">排名</string>
     <string name="nicky_name">昵称</string>
     <string name="score">成绩</string>
-    <string name="input_nicky_name">请输入你的昵称, 那样你可以在排行榜中看到你的排名</string>
+    <string name="input_nicky_name">请输入你的昵称, 那样获奖之后，你才可以领奖哦~</string>
     <string name="confirm">确定</string>
     <string name="me">我</string>
     <string name="network_error">网络异常</string>
     <string name="news">新闻</string>
     <string name="check_rank">排行榜</string>
+	<string name="share">截图炫耀</string>
     <string name="back">返回</string>
     <string name="my_rank_of_current_week">本周排名: %d</string>
     <string name="my_rank_of_last_week">上周排名: %d</string>
@@ -61,4 +63,5 @@
     <string name="go_dead">去死</string>
     <string name="recover">复活</string>
     <string name="recover_prompt">下载游戏，原地复活</string>
+    <string name="capture_screen_ok">截图已保存到SD卡了，快去分享吧</string>
 </resources>
