@@ -699,7 +699,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 				x_index = (x_index + 1) % COLUMN;
 			}
 			apples[0][x_index] = CELL_TYPE_APPLE_OK;
-			if (1 == random.nextInt(row)) {
+			if (1 == random.nextInt(row + COLUMN)) {
 				x_index = (x_index + 2) % COLUMN;
 				apples[0][x_index] = CELL_TYPE_APPLE_OK;
 			}
