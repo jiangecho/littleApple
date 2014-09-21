@@ -257,7 +257,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 			if (type == TYPE_CLASSIC_30S || type == TYPE_GRAVITY_30S 
 					|| type == TYPE_CLASSIC_DISCONTINUOUS || type == TYPE_GRAVITY_DISCONTINUOUS
-					|| type == TYPE_GRAVITY_MINE) {
+					|| type == TYPE_GRAVITY_MINE
+					|| type == TYPE_CLASSIC_DOUBLE || type == TYPE_GRAVITY_DOUBLE) {
 				remindTimeSB.setLength(0);
 				remindSeconds = (int) (millisUntilFinished / 1000);
 				remindMillis = (int) (millisUntilFinished % 1000 / 10);
@@ -420,6 +421,33 @@ public class GameActiviy extends Activity implements GameEventListner{
 	}
 
 	public void onStartDoubleButtonClick(View view) {
+		if (countDownTimer == null) {
+			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+		}else {
+			if (countDownTimer.durationMillis != TIME_LENGHT) {
+				countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+			}
+				
+		}
+
+		switch (mode) {
+		case MODE_CLASSIC:
+			type = TYPE_CLASSIC_DOUBLE;
+			bestScore = sharedPreferences.getInt(CLASSIC_DOUBLE_BEST_SCORE, 0);
+			break;
+		case MODE_GRAVITY:
+			type = TYPE_GRAVITY_DOUBLE;
+			bestScore = sharedPreferences.getInt(GRAVITY_DOUBLE_BEST_SCORE, 0);
+			break;
+		}
+
+		currentScore = 0;
+		gameView.setType(type);
+		typeSelectLayer.setVisibility(View.INVISIBLE);
+		timerTV.setText("30:00");
+
+		currentTypeString = getString(R.string.type_double);
+		currentModeTypeTextView.setText(getString(R.string.current_mode_type, currentModeString, currentTypeString));
 		
 	}
 
@@ -493,6 +521,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 		resultLayer.setBackgroundColor(Color.parseColor(colors[colorIndex]));;
 
 		switch (type) {
+		case TYPE_CLASSIC_DOUBLE:
+		case TYPE_GRAVITY_DOUBLE:
 		case TYPE_GRAVITY_MINE:
 		case TYPE_CLASSIC_DISCONTINUOUS:
 		case TYPE_GRAVITY_DISCONTINUOUS:
