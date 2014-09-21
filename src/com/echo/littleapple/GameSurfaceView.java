@@ -51,7 +51,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	private int score;
 	
 	private int moveStepHeight;
-	private int moveStepHeightForGravityDouble;
+	private int moveStepHeightForGravityDoubleAndMine;
 	private int moveYOffset = 0;
 	private Handler handler;
 	private Handler animationHandler;
@@ -201,7 +201,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		}
 		
 		moveStepHeight = cellHeight / 10;
-		moveStepHeightForGravityDouble = cellHeight / 12;
+		moveStepHeightForGravityDoubleAndMine = cellHeight / 12;
 		
 		if (apples == null) {
 			apples = new int[row][COLUMN];
@@ -577,8 +577,9 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 			}
 			if (mode == GameActiviy.MODE_GRAVITY) {
 				if (moveYOffset < cellHeight) {
-					if (type == GameActiviy.TYPE_GRAVITY_DOUBLE) {
-						moveYOffset += moveStepHeightForGravityDouble;
+					if (type == GameActiviy.TYPE_GRAVITY_DOUBLE 
+							|| (type == GameActiviy.TYPE_GRAVITY_MINE && level == GameActiviy.LEVEL_HARD)) {
+						moveYOffset += moveStepHeightForGravityDoubleAndMine;
 					}else {
 						moveYOffset += moveStepHeight;
 					}
