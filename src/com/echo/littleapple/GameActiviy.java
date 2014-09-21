@@ -59,8 +59,6 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private static final String GRAVITY_DISCONTINUOUS_BEST_SCORE = "GRAVITY_DISCONTINUOUS_BEST_SCORE ";
 	private static final String GRAVITY_DOUBLE_BEST_SCORE = "GRAVITY_DOUBLE_BEST_SCORE ";
 
-	//TODO delete
-	private static final String GRAVITY_BEST_SCORE = "GRAVITY_BEST_SCORE";
 	private static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
 
 	private TextView timerTV;
@@ -113,8 +111,6 @@ public class GameActiviy extends Activity implements GameEventListner{
 	public static final int TYPE_GRAVITY_ENDLESS = 7;
 	public static final int TYPE_GRAVITY_DISCONTINUOUS = 8;
 	public static final int TYPE_GRAVITY_DOUBLE = 9;
-
-	public static final int TYPE_CLASSIC_GRAVITY = 5;
 
 	public static final String TYPE = "TYPE";
 	
@@ -248,7 +244,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		@Override
 		public void onTick(long millisUntilFinished) {
 
-			if (type == TYPE_CLASSIC_30S || type == TYPE_CLASSIC_GRAVITY) {
+			if (type == TYPE_CLASSIC_30S || type == TYPE_CLASSIC_DISCONTINUOUS || type == TYPE_GRAVITY_DISCONTINUOUS) {
 				remindTimeSB.setLength(0);
 				remindSeconds = (int) (millisUntilFinished / 1000);
 				remindMillis = (int) (millisUntilFinished % 1000 / 10);
@@ -319,6 +315,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 			
 			break;
 		}
+		currentScore = 0;
+		gameView.setType(type);
 		typeSelectLayer.setVisibility(View.INVISIBLE);
 		timerTV.setText("30:00");
 		
@@ -336,6 +334,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 			break;
 		}
 
+		currentScore = 0;
+		gameView.setType(type);
 		countDownTimer = null;
 		timerTV.setText("0");
 		typeSelectLayer.setVisibility(View.INVISIBLE);
@@ -354,14 +354,39 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 		// speed type is only available in CLASSIC MODE
 		speedBestScore = sharedPreferences.getLong(CLASSIC_SPEED_BEST_SCORE, Long.MAX_VALUE);
+		currentSpeedScore = 0;
 
+		gameView.setType(type);
 		timerTV.setText("0");
 		typeSelectLayer.setVisibility(View.INVISIBLE);
 		
 	}
 
 	public void onStartDiscontinuousButtonClick(View view) {
-		
+		if (countDownTimer == null) {
+			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+		}else {
+			if (countDownTimer.durationMillis != TIME_LENGHT) {
+				countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+			}
+				
+		}
+
+		switch (mode) {
+		case MODE_CLASSIC:
+			type = TYPE_CLASSIC_DISCONTINUOUS;
+			bestScore = sharedPreferences.getInt(CLASSIC_DISCONTINUOUS_BEST_SCORE, 0);
+			break;
+		case MODE_GRAVITY:
+			type = TYPE_GRAVITY_DISCONTINUOUS;
+			bestScore = sharedPreferences.getInt(GRAVITY_DISCONTINUOUS_BEST_SCORE, 0);
+			break;
+		}
+
+		currentScore = 0;
+		gameView.setType(type);
+		typeSelectLayer.setVisibility(View.INVISIBLE);
+		timerTV.setText("30:00");
 	}
 
 	public void onStartDoubleButtonClick(View view) {
@@ -422,6 +447,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 		resultLayer.setBackgroundColor(Color.parseColor(colors[colorIndex]));;
 
 		switch (type) {
+		case TYPE_CLASSIC_DISCONTINUOUS:
+		case TYPE_GRAVITY_DISCONTINUOUS:
 		case TYPE_CLASSIC_ENDLESS:
 		case TYPE_GRAVITY_ENDLESS:
 			//transfer to classic
@@ -756,13 +783,13 @@ public class GameActiviy extends Activity implements GameEventListner{
 	   }
 	   
 	   switch (type) {
-	   	case TYPE_CLASSIC_GRAVITY:
-		   if (currentScore == 0) {
-			   return;
-		   }
-		   scoreString = currentScore + "";
-		   submitUri = "http://littleappleapp.sinaapp.com/new_insert_gravity.php";
-			break;
+//	   	case TYPE_CLASSIC_GRAVITY:
+//		   if (currentScore == 0) {
+//			   return;
+//		   }
+//		   scoreString = currentScore + "";
+//		   submitUri = "http://littleappleapp.sinaapp.com/new_insert_gravity.php";
+//			break;
 
 		case TYPE_CLASSIC_30S:
 		   if (currentScore == 0) {

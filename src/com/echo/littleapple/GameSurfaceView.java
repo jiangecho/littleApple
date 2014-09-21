@@ -80,6 +80,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	boolean animationCancled = false;
 	
 	private int mode = GameActiviy.MODE_CLASSIC;
+	private int type = GameActiviy.TYPE_CLASSIC_DISCONTINUOUS;
 	
 	private int level = GameActiviy.LEVEL_NORMAL;
 
@@ -215,6 +216,10 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		this.mode = mode;
 	}
 	
+	public void setType(int type){
+		this.type = type;
+	}
+	
 	public void recover(){
 		status = STATUS_STOP;
 		moveYOffset = 0;
@@ -232,16 +237,31 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	
 	private void randomApples(){
 		int columnIndex;
+		int lastColumnIndex = -1;
 		for (int i = 0; i < row; i++) {
 			for (int j = 0; j < COLUMN; j++) {
 				apples[i][j] = CELL_TYPE_BLANK;
 			}
 		}
-
-		for (int i = 0; i < row - 1; i++) {
-			columnIndex = random.nextInt(COLUMN);
-			apples[i][columnIndex] = CELL_TYPE_APPLE_OK;
+		
+		if (type == GameActiviy.TYPE_CLASSIC_DISCONTINUOUS 
+				|| type == GameActiviy.TYPE_GRAVITY_DISCONTINUOUS) {
+			for (int i = 0; i < row - 1; i++) {
+				columnIndex = random.nextInt(COLUMN);
+				if (columnIndex == lastColumnIndex) {
+					columnIndex = (columnIndex + 1) % COLUMN;
+				}
+				lastColumnIndex = columnIndex;
+				apples[i][columnIndex] = CELL_TYPE_APPLE_OK;
+			}
+		}else {
+			for (int i = 0; i < row - 1; i++) {
+				columnIndex = random.nextInt(COLUMN);
+				apples[i][columnIndex] = CELL_TYPE_APPLE_OK;
+			}
+			
 		}
+
 	}
 	
 	
@@ -595,7 +615,23 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 			}
 		}
 		int x_index = random.nextInt(COLUMN);
-		apples[0][x_index] = CELL_TYPE_APPLE_OK;
+		
+		if (type == GameActiviy.TYPE_CLASSIC_DISCONTINUOUS || type == GameActiviy.TYPE_GRAVITY_DISCONTINUOUS) {
+			int lastColumnIndex = 0;
+			for (int i = 0; i < COLUMN; i++) {
+				if (apples[1][i] == CELL_TYPE_APPLE_OK) {
+					lastColumnIndex = i;
+					break;
+				}
+			}
+			if (x_index == lastColumnIndex) {
+				x_index = (x_index + 1) % COLUMN;
+			}
+			apples[0][x_index] = CELL_TYPE_APPLE_OK;
+			
+		}else {
+			apples[0][x_index] = CELL_TYPE_APPLE_OK;
+		}
 	}
 	
 	private boolean isBottomAppleRow(int x_index, int y_index){
