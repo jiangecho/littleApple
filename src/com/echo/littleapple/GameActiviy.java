@@ -245,7 +245,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 		public void onTick(long millisUntilFinished) {
 
 			if (type == TYPE_CLASSIC_30S || type == TYPE_GRAVITY_30S 
-					|| type == TYPE_CLASSIC_DISCONTINUOUS || type == TYPE_GRAVITY_DISCONTINUOUS) {
+					|| type == TYPE_CLASSIC_DISCONTINUOUS || type == TYPE_GRAVITY_DISCONTINUOUS
+					|| type == TYPE_GRAVITY_MINE) {
 				remindTimeSB.setLength(0);
 				remindSeconds = (int) (millisUntilFinished / 1000);
 				remindMillis = (int) (millisUntilFinished % 1000 / 10);
@@ -395,13 +396,25 @@ public class GameActiviy extends Activity implements GameEventListner{
 	}
 
 	public void onStartMineButtonClick(View view) {
+		if (countDownTimer == null) {
+			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+		}else {
+			if (countDownTimer.durationMillis != TIME_LENGHT) {
+				countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+			}
+				
+		}
+
+		// mine type only support gravity mode
+		type = TYPE_GRAVITY_MINE;
+		bestScore = sharedPreferences.getInt(GRAVITY_MINE_BEST_SCORE, 0);
+
+		currentScore = 0;
+		gameView.setType(type);
+		typeSelectLayer.setVisibility(View.INVISIBLE);
+		timerTV.setText("30:00");
 		
 	}
-
-	public void onGravityStartButtonClick(View view) {
-
-	}
-
 
 	public void onRestartButtonClick(View view){
 		resultLayer.setVisibility(View.INVISIBLE);
@@ -448,6 +461,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		resultLayer.setBackgroundColor(Color.parseColor(colors[colorIndex]));;
 
 		switch (type) {
+		case TYPE_GRAVITY_MINE:
 		case TYPE_CLASSIC_DISCONTINUOUS:
 		case TYPE_GRAVITY_DISCONTINUOUS:
 		case TYPE_CLASSIC_ENDLESS:
