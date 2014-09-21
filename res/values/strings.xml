@@ -75,5 +75,5 @@
     <string name="mode_classic">经典</string>
     <string name="mode_gravity">重力</string>
     <string name="current_mode">%s模式</string>
-    <string name="current_mode_type">%1$s模式%2$s</string>
+    <string name="current_mode_type">%1$s模式-%2$s</string>
 </resources>

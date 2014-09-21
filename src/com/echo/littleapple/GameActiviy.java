@@ -71,6 +71,10 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private TextView promptTV;
 	private Handler handler;
 	
+	private TextView currentModeTextView;
+	private TextView currentModeTypeTextView;
+	private String currentModeString, currentTypeString;
+	
 	private MyCountDownTimer countDownTimer;
 	private StringBuffer remindTimeSB;
 	private SharedPreferences sharedPreferences;
@@ -154,6 +158,9 @@ public class GameActiviy extends Activity implements GameEventListner{
         
         resultTV = (TextView) findViewById(R.id.resultTV);
         bestTV = (TextView) findViewById(R.id.bestTV);
+        
+        currentModeTextView = (TextView) findViewById(R.id.current_mode_tv);
+        currentModeTypeTextView = (TextView) findViewById(R.id.current_mode_type_tv);
         
         handler = new Handler();
         remindTimeSB = new StringBuffer();
@@ -278,6 +285,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 		startSpeedButton.setVisibility(View.VISIBLE);
 		startMindeButton.setVisibility(View.GONE);
+		
+		currentModeString = getString(R.string.mode_classic);
+		currentModeTextView.setText(getString(R.string.current_mode, currentModeString));
 		typeSelectLayer.setVisibility(View.VISIBLE);
 		
 		gameView.setMode(mode);
@@ -289,6 +299,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 		startSpeedButton.setVisibility(View.GONE);
 		startMindeButton.setVisibility(View.VISIBLE);
+
+		currentModeString = getString(R.string.mode_gravity);
+		currentModeTextView.setText(getString(R.string.current_mode, currentModeString));
 		typeSelectLayer.setVisibility(View.VISIBLE);
 
 		gameView.setMode(mode);
@@ -322,6 +335,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 		typeSelectLayer.setVisibility(View.INVISIBLE);
 		timerTV.setText("30:00");
 		
+		currentTypeString = getString(R.string.type_time_30);
+		currentModeTypeTextView.setText(getString(R.string.current_mode_type, currentModeString, currentTypeString));
+		
 	}
 
 	public void onStartEndlessButtonClick(View view) {
@@ -341,6 +357,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 		countDownTimer = null;
 		timerTV.setText("0");
 		typeSelectLayer.setVisibility(View.INVISIBLE);
+
+		currentTypeString = getString(R.string.type_endless);
+		currentModeTypeTextView.setText(getString(R.string.current_mode_type, currentModeString, currentTypeString));
 		
 	}
 
@@ -362,6 +381,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 		timerTV.setText("0");
 		typeSelectLayer.setVisibility(View.INVISIBLE);
 		
+		currentTypeString = getString(R.string.type_speed);
+		currentModeTypeTextView.setText(getString(R.string.current_mode_type, currentModeString, currentTypeString));
 	}
 
 	public void onStartDiscontinuousButtonClick(View view) {
@@ -389,6 +410,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 		gameView.setType(type);
 		typeSelectLayer.setVisibility(View.INVISIBLE);
 		timerTV.setText("30:00");
+
+		currentTypeString = getString(R.string.type_discontinuous);
+		currentModeTypeTextView.setText(getString(R.string.current_mode_type, currentModeString, currentTypeString));
 	}
 
 	public void onStartDoubleButtonClick(View view) {
@@ -414,6 +438,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 		typeSelectLayer.setVisibility(View.INVISIBLE);
 		timerTV.setText("30:00");
 		
+		currentTypeString = getString(R.string.type_mine);
+		currentModeTypeTextView.setText(getString(R.string.current_mode_type, currentModeString, currentTypeString));
 	}
 
 	public void onRestartButtonClick(View view){
@@ -517,8 +543,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 		resultTV.setText(resultInfo);
 		promptTV.setText(promptInfo);
         bestTV.setText(bestScoreInfo);
+        
 		resultLayer.setVisibility(View.VISIBLE);
-
 		
 	}
 
