@@ -578,7 +578,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 			if (mode == GameActiviy.MODE_GRAVITY) {
 				if (moveYOffset < cellHeight) {
 					if (type == GameActiviy.TYPE_GRAVITY_DOUBLE 
-							|| (type == GameActiviy.TYPE_GRAVITY_MINE && level == GameActiviy.LEVEL_HARD)) {
+							|| (type == GameActiviy.TYPE_GRAVITY_MINE/* && level == GameActiviy.LEVEL_HARD */)) {
 						moveYOffset += moveStepHeightForGravityDoubleAndMine;
 					}else {
 						moveYOffset += moveStepHeight;
