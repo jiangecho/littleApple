@@ -75,6 +75,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private TextView currentModeTypeTextView;
 	private String currentModeString, currentTypeString;
 	
+	private TextView typeIntroTextView;
+	
 	private MyCountDownTimer countDownTimer;
 	private StringBuffer remindTimeSB;
 	private SharedPreferences sharedPreferences;
@@ -161,6 +163,8 @@ public class GameActiviy extends Activity implements GameEventListner{
         
         currentModeTextView = (TextView) findViewById(R.id.current_mode_tv);
         currentModeTypeTextView = (TextView) findViewById(R.id.current_mode_type_tv);
+        
+        typeIntroTextView = (TextView) findViewById(R.id.type_intro_tv);
         
         handler = new Handler();
         remindTimeSB = new StringBuffer();
@@ -556,6 +560,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 		if (countDownTimer != null) {
 			countDownTimer.start();
 		}
+		
+		//typeIntroTextView.setVisibility(View.INVISIBLE);
 	}
 
 	@Override
