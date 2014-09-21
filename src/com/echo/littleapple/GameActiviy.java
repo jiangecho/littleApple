@@ -444,7 +444,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	public void onRestartButtonClick(View view){
 		resultLayer.setVisibility(View.INVISIBLE);
-		if (type == TYPE_CLASSIC_30S || type == TYPE_GRAVITY_30S) {
+		if (type == TYPE_CLASSIC_30S || type == TYPE_GRAVITY_30S
+				|| type == TYPE_GRAVITY_MINE
+				|| type == TYPE_CLASSIC_DISCONTINUOUS || type == TYPE_GRAVITY_DISCONTINUOUS) {
 			timerTV.setText("30.00");
 		}else if(type == TYPE_CLASSIC_SPEED){
 			timerTV.setText("0");
