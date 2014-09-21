@@ -577,7 +577,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 				if (moveYOffset < cellHeight) {
 					moveYOffset += moveStepHeight;
 					doDraw();
-					animationHandler.postDelayed(animationTask, 10);
+					animationHandler.postDelayed(animationTask, 4);
 				}else {
 					// the last one move out
 					for (int i = 0; i < COLUMN; i++) {
@@ -604,7 +604,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 					moveYOffset = 0;
 					addNewCell();
 					doDraw();
-					animationHandler.postDelayed(animationTask, 10);
+					animationHandler.postDelayed(animationTask, 4);
 				}
 				return;
 			}else {
