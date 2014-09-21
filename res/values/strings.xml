@@ -9,7 +9,8 @@
     <string name="strb">吃</string>
     <string name="strc">30秒内看你能吃掉多少个</string>
     <string name="strd">小苹果！</string>
-    <string name="stre">请先选择你喜欢的吃法</string>
+    <string name="stre">请先选择你喜欢的模式</string>
+    <string name="strh">请先选择你喜欢的玩法</string>
     <string name="strg">然后</string>
     <string name="classic_result">呵呵！我吃掉了%d个小苹果！</string>
     <string name="speed_result">吼吼！100个小苹果，我才花了%s秒！</string>
@@ -20,7 +21,7 @@
     <string name="start">经典，上！</string>
     <string name="speed_start">竞速，上!</string>
     <string name="endless_start">无尽，上!</string>
-    <string name="gravity_start">下落，上</string>
+    <string name="gravity_start">下落，上!</string>
     <string name="restart">再挑战一次</string>
     <string name="time_out">时间到！</string>
     <string name="speed_success">挑战成功！</string>
@@ -62,6 +63,23 @@
     <string name="competition_start">小苹果挑战赛已开始，请点击排行榜查看获奖信息</string>
     <string name="go_dead">去死</string>
     <string name="recover">复活</string>
-    <string name="recover_prompt">下载游戏，原地复活</string>
+    <string name="recover_prompt">安装广告，可原地复活</string>
     <string name="capture_screen_ok">截图已保存到SD卡了，快去分享吧</string>
+    <string name="type_time_30">30秒</string>
+    <string name="type_time_15">15秒</string>
+    <string name="type_mine">地雷</string>
+    <string name="type_discontinuous">不连续</string>
+    <string name="type_double">双飞</string>
+    <string name="type_endless">无尽</string>
+    <string name="type_speed">竞速</string>
+    <string name="mode_classic">经典</string>
+    <string name="mode_gravity">重力</string>
+    <string name="current_mode">%s模式</string>
+    <string name="current_mode_type">%1$s模式-%2$s</string>
+    <string name="level_setting">难度设置</string>
+    <string name="level_intro">请选择合适的难度</string>
+    <string name="level_easy_info">简单级别适合练习</string>
+    <string name="level_hard_info">困难级别可参加挑战赛,赢取话费大奖</string>
+    <string name="level_easy">简单</string>
+    <string name="level_hard">困难</string>
 </resources>

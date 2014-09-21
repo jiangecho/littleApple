@@ -88,7 +88,8 @@ public class NewRankAcitivity extends Activity{
 	private String news;
 	
 
-	private int mode;
+	private int type;
+	private static final String RANK_INFO_URL = "http://littleappleapp.sinaapp.com/get_rank_info.php";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +123,7 @@ public class NewRankAcitivity extends Activity{
 		myNickyName = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE)
 				.getString("nickyname", null);
 		
-		mode = getIntent().getIntExtra(GameActiviy.MODE, GameActiviy.MODE_CLASSIC);
+		type = getIntent().getIntExtra(GameActiviy.TYPE, GameActiviy.TYPE_CLASSIC_30S);
 		
 		new LoadDataTask().execute();
 		
@@ -202,7 +203,7 @@ public class NewRankAcitivity extends Activity{
 			rankTextView.setText("" + item.rank);
 			nickyNameTextView.setText(item.nickyName);
 			
-			if (mode == GameActiviy.MODE_SPEED) {
+			if (type == GameActiviy.TYPE_CLASSIC_SPEED) {
 				
 				StringBuffer sb = new StringBuffer();
 				sb.append(Long.parseLong(item.score) / 1000);
@@ -264,7 +265,7 @@ public class NewRankAcitivity extends Activity{
 			//scoreTextView.setText(item.score);
 			awardTextView.setText("" + item.award);
 
-			if (mode == GameActiviy.MODE_SPEED) {
+			if (type == GameActiviy.TYPE_CLASSIC_SPEED) {
 				
 				StringBuffer sb = new StringBuffer();
 				sb.append(Long.parseLong(item.score) / 1000);
@@ -290,25 +291,15 @@ public class NewRankAcitivity extends Activity{
 		@Override
 		protected Void doInBackground(Void... params) {
 
-			String uri = null; 
-			if (mode == GameActiviy.MODE_CLASSIC) {
-				uri = "http://littleappleapp.sinaapp.com/new_rank_str.php";
-			}else if(mode == GameActiviy.MODE_SPEED){
-				uri = "http://littleappleapp.sinaapp.com/new_rank_str_speed.php";
-			}else if (mode == GameActiviy.MODE_ENDLESS) {
-				uri = "http://littleappleapp.sinaapp.com/new_rank_str_endless.php";
-			}else if(mode == GameActiviy.MODE_GRAVITY){
-				uri = "http://littleappleapp.sinaapp.com/new_rank_str_gravity.php";
-				
-			}
 
 			List<NameValuePair> nameValuePairs = null;
 			if (myNickyName != null) {
 				nameValuePairs = new ArrayList<NameValuePair>();
 				nameValuePairs.add(new BasicNameValuePair("nickyname", myNickyName));
+				nameValuePairs.add(new BasicNameValuePair("type", type + ""));
 			}
 
-			String content = Util.httpPost(uri, nameValuePairs, null);
+			String content = Util.httpPost(RANK_INFO_URL, nameValuePairs, null);
 			String line, tmp;
 			if (content == null) {
 				loadDataSuccess = false;

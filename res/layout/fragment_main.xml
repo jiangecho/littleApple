@@ -10,19 +10,45 @@
         android:layout_height="match_parent"
         android:background="#000000"
         />
-    <TextView 
-        android:id="@+id/timerTV" 
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dip"
-        android:layout_gravity="center_horizontal"
-        android:textSize="40sp"
-        android:textColor="@android:color/background_dark"
-        android:text="30.00"
-        />
+	    android:layout_marginTop="50dip"
+	    android:gravity="center_horizontal"
+        android:orientation="vertical" >
+	    <TextView 
+	        android:id="@+id/timerTV" 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_horizontal"
+	        android:textSize="40sp"
+	        android:textColor="@android:color/background_dark"
+	        android:text="30.00"
+	        />
+	
+	    <TextView 
+	        android:id="@+id/type_intro_tv" 
+	        android:visibility="invisible"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center_horizontal"
+	        android:textColor="@color/yellow"
+	        android:textSize="25sp"
+	        android:paddingLeft="5dip"
+	        android:paddingRight="5dip"
+		    android:background="#e0576069"
+	        android:text="点击最下面的小苹果开始,别点到空白"
+	        />
+
+    </LinearLayout>
+
     
-    <include layout="@layout/start_layer"/>
-    <include layout="@layout/result_layer"/>
-    
+    <include layout="@layout/mode_select_layer"/>
+    <include layout="@layout/type_select_layer"
+        android:visibility="invisible"/>
+    <include layout="@layout/result_layer"
+        android:visibility="invisible"/>
+
 
 </FrameLayout>

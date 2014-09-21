@@ -40,6 +40,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	private Bitmap bitmapApple;
 	private Bitmap bitmapError;
 	private Bitmap bitmapClick;
+	private Bitmap bitmapMine;
 	
 	private GameEventListner listner;
 	private int status;
@@ -50,6 +51,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	private int score;
 	
 	private int moveStepHeight;
+	private int moveStepHeightForGravityDoubleAndMine;
 	private int moveYOffset = 0;
 	private Handler handler;
 	private Handler animationHandler;
@@ -76,10 +78,14 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	private static final int CELL_TYPE_APPLE_OK = 1;
 	private static final int CELL_TYPE_APPLE_CLICKED = 2;
 	private static final int CELL_TYPE_ERROR = 3;
+	private static final int CELL_TYPE_MINE = 4;
 	
 	boolean animationCancled = false;
 	
 	private int mode = GameActiviy.MODE_CLASSIC;
+	private int type = GameActiviy.TYPE_CLASSIC_30S;
+	
+	private int level = GameActiviy.LEVEL_NORMAL;
 
 	public GameSurfaceView(Context context) {
 		this(context, null);
@@ -104,6 +110,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		bitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.apple);
 		bitmapError = BitmapFactory.decodeResource(context.getResources(), R.drawable.error);
 		bitmapClick = BitmapFactory.decodeResource(context.getResources(), R.drawable.click);
+		bitmapMine = BitmapFactory.decodeResource(context.getResources(), R.drawable.mine);
 		rect = new Rect();
 		
 		random = new Random();
@@ -165,6 +172,8 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 						canvas.drawBitmap(bitmapError, null, rect, applePaint);
 					}else if(apples[i][j] == CELL_TYPE_APPLE_CLICKED){
 						canvas.drawBitmap(bitmapClick, null, rect, applePaint);
+					}else if (apples[i][j] == CELL_TYPE_MINE) {
+						canvas.drawBitmap(bitmapMine, null, rect, applePaint);
 					}
 				}
 				
@@ -192,6 +201,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		}
 		
 		moveStepHeight = cellHeight / 10;
+		moveStepHeightForGravityDoubleAndMine = cellHeight / 12;
 		
 		if (apples == null) {
 			apples = new int[row][COLUMN];
@@ -213,6 +223,10 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		this.mode = mode;
 	}
 	
+	public void setType(int type){
+		this.type = type;
+	}
+	
 	public void recover(){
 		status = STATUS_STOP;
 		moveYOffset = 0;
@@ -230,16 +244,45 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	
 	private void randomApples(){
 		int columnIndex;
+		int lastColumnIndex = -1;
 		for (int i = 0; i < row; i++) {
 			for (int j = 0; j < COLUMN; j++) {
 				apples[i][j] = CELL_TYPE_BLANK;
 			}
 		}
-
-		for (int i = 0; i < row - 1; i++) {
-			columnIndex = random.nextInt(COLUMN);
-			apples[i][columnIndex] = CELL_TYPE_APPLE_OK;
+		
+		if (type == GameActiviy.TYPE_CLASSIC_DISCONTINUOUS 
+				|| type == GameActiviy.TYPE_GRAVITY_DISCONTINUOUS) {
+			for (int i = 0; i < row - 1; i++) {
+				columnIndex = random.nextInt(COLUMN);
+				if (columnIndex == lastColumnIndex) {
+					columnIndex = (columnIndex + 1) % COLUMN;
+				}
+				lastColumnIndex = columnIndex;
+				apples[i][columnIndex] = CELL_TYPE_APPLE_OK;
+			}
 		}
+		// should not add any mine in the initial state, otherwise, when the user
+		// firstly play mine type, and then play other type, there will be a bug
+//		else if(type == GameActiviy.TYPE_GRAVITY_MINE){
+//			for (int i = 0; i < row - 1; i++) {
+//				columnIndex = random.nextInt(COLUMN);
+//				apples[i][columnIndex] = CELL_TYPE_APPLE_OK;
+//				
+//				if (1 == random.nextInt(row)) {
+//					apples[i][columnIndex] = CELL_TYPE_MINE;
+//				}
+//			}
+//			
+//		}
+		else {
+			for (int i = 0; i < row - 1; i++) {
+				columnIndex = random.nextInt(COLUMN);
+				apples[i][columnIndex] = CELL_TYPE_APPLE_OK;
+			}
+			
+		}
+
 	}
 	
 	
@@ -278,7 +321,8 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 				}
 				
 				//game over
-				if (isBottomAppleRow(x_index, y_index) && apples[y_index][x_index] != CELL_TYPE_APPLE_OK) {
+				if ((isBottomAppleRow(x_index, y_index) && apples[y_index][x_index] != CELL_TYPE_APPLE_OK)
+						|| apples[y_index][x_index] == CELL_TYPE_MINE) {
 					apples[y_index][x_index] = CELL_TYPE_ERROR;
 					playGameSoundEffect(FAIL);
 					status = STATUS_FAIL;
@@ -317,13 +361,37 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 					if (status != STATUS_START) {
 						return true;
 					}
-					if (isBottomAppleRow(x_index, y_index - 1) && apples[y_index - 1][x_index] == CELL_TYPE_APPLE_OK) {
-						score ++;
-						playGameSoundEffect(OK);
-						apples[y_index - 1][x_index] = CELL_TYPE_APPLE_CLICKED;
-						listner.onScoreUpdate(score);
+					
+					// fault-tolerant
+					// very loose
+					if (level == GameActiviy.LEVEL_EASY || level == GameActiviy.LEVEL_NORMAL) {
+						if (isBottomAppleRow(x_index, y_index - 1) && apples[y_index - 1][x_index] == CELL_TYPE_APPLE_OK) {
+							score ++;
+							playGameSoundEffect(OK);
+							apples[y_index - 1][x_index] = CELL_TYPE_APPLE_CLICKED;
+							listner.onScoreUpdate(score);
+						}
+					// very strict
+					}else {
+						apples[y_index][x_index] = CELL_TYPE_ERROR;
+						playGameSoundEffect(FAIL);
+						status = STATUS_FAIL;
+						doDraw();
+						handler.postDelayed(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								if (listner != null) {
+									listner.onGameOver();
+							
+								}
+								
+							}
+						}, 200);
 						
 					}
+
 				}
 	
 				return true;
@@ -340,9 +408,25 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 					doDraw();
 				}
 				
+				//control fault-tolerant
+				if (level == GameActiviy.LEVEL_EASY) {
+					
+				}
 				//game over
-				if (y_index == row - 2 && apples[y_index][x_index] != CELL_TYPE_APPLE_OK) {
-					apples[row - 2][x_index] = CELL_TYPE_ERROR;
+				// very loose
+				if ((level == GameActiviy.LEVEL_EASY && y_index == row - 2 && apples[y_index][x_index] != CELL_TYPE_APPLE_OK)
+						|| (level == GameActiviy.LEVEL_NORMAL && (y_index == row - 2 || y_index == row - 3) && apples[y_index][x_index] != CELL_TYPE_APPLE_OK)
+						// very strict
+						|| (level == GameActiviy.LEVEL_HARD && apples[y_index][x_index] != CELL_TYPE_APPLE_OK)) {
+					
+//				}
+//				// very loose
+////				if (y_index == row - 2 && apples[y_index][x_index] != CELL_TYPE_APPLE_OK) {
+////					apples[row - 2][x_index] = CELL_TYPE_ERROR;
+//				// most strict
+//				if (apples[y_index][x_index] != CELL_TYPE_APPLE_OK) {
+
+					apples[y_index][x_index] = CELL_TYPE_ERROR;
 					playGameSoundEffect(FAIL);
 					status = STATUS_FAIL;
 					doDraw();
@@ -455,6 +539,14 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	public void setScore(int score){
 		this.score = score;
 	}
+	
+	public void setLevel(int level){
+		this.level = level;
+	}
+	
+	public int getLevel(){
+		return this.level;
+	}
 
 
 	@Override
@@ -485,9 +577,14 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 			}
 			if (mode == GameActiviy.MODE_GRAVITY) {
 				if (moveYOffset < cellHeight) {
-					moveYOffset += moveStepHeight;
+					if (type == GameActiviy.TYPE_GRAVITY_DOUBLE 
+							|| (type == GameActiviy.TYPE_GRAVITY_MINE/* && level == GameActiviy.LEVEL_HARD */)) {
+						moveYOffset += moveStepHeightForGravityDoubleAndMine;
+					}else {
+						moveYOffset += moveStepHeight;
+					}
 					doDraw();
-					animationHandler.postDelayed(animationTask, 10);
+					animationHandler.postDelayed(animationTask, 4);
 				}else {
 					// the last one move out
 					for (int i = 0; i < COLUMN; i++) {
@@ -514,22 +611,47 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 					moveYOffset = 0;
 					addNewCell();
 					doDraw();
-					animationHandler.postDelayed(animationTask, 10);
+					animationHandler.postDelayed(animationTask, 4);
 				}
 				return;
 			}else {
-				if (animationCancled) {
-					animationCancled = false;
-					return;
-				}
-				if (moveYOffset < cellHeight) {
-					moveYOffset += moveStepHeight;
-					doDraw();
-					animationHandler.postDelayed(animationTask, 4);
+				if (type == GameActiviy.TYPE_CLASSIC_DOUBLE) {
+					if (animationCancled) {
+						animationCancled = false;
+						return;
+					}
+					if (moveYOffset < cellHeight) {
+						// if the last apple row still has an apple, do nothing
+						for (int i = 0; i < COLUMN; i++) {
+							if (apples[row - 2][i] == CELL_TYPE_APPLE_OK) {
+								doDraw();
+								return;
+							}
+						}
+						moveYOffset += moveStepHeight;
+						doDraw();
+						animationHandler.postDelayed(animationTask, 4);
+					}else {
+						moveYOffset = 0;
+						addNewCell();
+						doDraw();
+					}
+					
 				}else {
-					moveYOffset = 0;
-					addNewCell();
-					doDraw();
+					if (animationCancled) {
+						animationCancled = false;
+						return;
+					}
+					if (moveYOffset < cellHeight) {
+						moveYOffset += moveStepHeight;
+						doDraw();
+						animationHandler.postDelayed(animationTask, 4);
+					}else {
+						moveYOffset = 0;
+						addNewCell();
+						doDraw();
+					}
+					
 				}
 				
 			}
@@ -545,7 +667,47 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 			}
 		}
 		int x_index = random.nextInt(COLUMN);
-		apples[0][x_index] = CELL_TYPE_APPLE_OK;
+		
+		if (type == GameActiviy.TYPE_CLASSIC_DISCONTINUOUS || type == GameActiviy.TYPE_GRAVITY_DISCONTINUOUS) {
+			int lastColumnIndex = 0;
+			for (int i = 0; i < COLUMN; i++) {
+				if (apples[1][i] == CELL_TYPE_APPLE_OK) {
+					lastColumnIndex = i;
+					break;
+				}
+			}
+			if (x_index == lastColumnIndex) {
+				x_index = (x_index + 1) % COLUMN;
+			}
+			apples[0][x_index] = CELL_TYPE_APPLE_OK;
+			
+		} else if (type == GameActiviy.TYPE_GRAVITY_MINE) {
+			if (1 == random.nextInt(row)) {
+				apples[0][x_index] = CELL_TYPE_MINE;
+			}else {
+				apples[0][x_index] = CELL_TYPE_APPLE_OK;
+			}
+		} else if (type == GameActiviy.TYPE_CLASSIC_DOUBLE || type == GameActiviy.TYPE_GRAVITY_DOUBLE) {
+			int lastColumnIndex = 0;
+			for (int i = 0; i < COLUMN; i++) {
+				if (apples[1][i] == CELL_TYPE_APPLE_OK) {
+					lastColumnIndex = i;
+					break;
+				}
+			}
+			if (x_index == lastColumnIndex) {
+				x_index = (x_index + 1) % COLUMN;
+			}
+			apples[0][x_index] = CELL_TYPE_APPLE_OK;
+			if (1 == random.nextInt(row + COLUMN)) {
+				x_index = (x_index + 2) % COLUMN;
+				apples[0][x_index] = CELL_TYPE_APPLE_OK;
+			}
+			
+		}
+		else {
+			apples[0][x_index] = CELL_TYPE_APPLE_OK;
+		}
 	}
 	
 	private boolean isBottomAppleRow(int x_index, int y_index){
