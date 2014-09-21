@@ -96,7 +96,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	private String nickyName;
 	private String scoreString;
-	private String submitUri;
+	private final String submitUri = "http://littleappleapp.sinaapp.com/submit_score.php";;
 	private static final String NICKY_NAME = "nickyname";
 	private static final String HAVE_SUBMITED = "haveSubmited";
 	private boolean haveSubmited = false;
@@ -106,6 +106,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 	public static final int MODE_CLASSIC = 0;
 	public static final int MODE_GRAVITY = 1;
 
+	//attention: the type value should not be the same!!!!!
+	// when add new type, no matter which mode it is,
+	// we should add it at the end
 	public static final int TYPE_CLASSIC_30S = 0;
 	public static final int TYPE_CLASSIC_SPEED = 1;
 	public static final int TYPE_CLASSIC_ENDLESS = 2;
@@ -117,6 +120,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	public static final int TYPE_GRAVITY_ENDLESS = 7;
 	public static final int TYPE_GRAVITY_DISCONTINUOUS = 8;
 	public static final int TYPE_GRAVITY_DOUBLE = 9;
+	// add new type here
 
 	public static final String TYPE = "TYPE";
 	
@@ -515,6 +519,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		gameView.reset();
 	}
 	
+	//TODO bugs
 	public void onRankButtonClick(View view){
 		Intent intent = new Intent(this, NewRankAcitivity.class);
 		intent.putExtra(TYPE, type);
@@ -879,30 +884,16 @@ public class GameActiviy extends Activity implements GameEventListner{
    //TODO bug, different uri
    private void submitScore(){
 	   
-	   // TODO just for debug
-	   if (true) {
-		return;
-	   }
-
 	   if (nickyName == null) {
 		   return;
 	   }
 	   
 	   switch (type) {
-//	   	case TYPE_CLASSIC_GRAVITY:
-//		   if (currentScore == 0) {
-//			   return;
-//		   }
-//		   scoreString = currentScore + "";
-//		   submitUri = "http://littleappleapp.sinaapp.com/new_insert_gravity.php";
-//			break;
-
 		case TYPE_CLASSIC_30S:
 		   if (currentScore == 0) {
 			   return;
 		   }
 		   scoreString = currentScore + "";
-		   submitUri = "http://littleappleapp.sinaapp.com/new_insert.php";
 			break;
 	
 		case TYPE_CLASSIC_SPEED:
@@ -910,7 +901,6 @@ public class GameActiviy extends Activity implements GameEventListner{
 				return;
 			}
 			
-			submitUri = "http://littleappleapp.sinaapp.com/new_insert_speed.php";
 			scoreString = escapeMillis + "";
 			break;
 			//TODO 
@@ -919,10 +909,22 @@ public class GameActiviy extends Activity implements GameEventListner{
 			   return;
 		   }
 		   scoreString = currentScore + "";
-		   submitUri = "http://littleappleapp.sinaapp.com/new_insert_endless.php";
 			break;
 		}
-
+	   
+	   if (type == TYPE_CLASSIC_SPEED) {
+		   if (currentSpeedScore == 0) {
+			   return;
+		   }else {
+			scoreString = currentSpeedScore + "";
+		}
+	   }else {
+		if (currentScore == 0) {
+			return;
+		}else {
+			scoreString = currentScore + "";
+		}
+	   }
 
 	   new Thread(new Runnable() {
 		@Override
@@ -931,6 +933,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 			  List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 			  nameValuePairs.add(new BasicNameValuePair("nickyname", nickyName));
 			  nameValuePairs.add(new BasicNameValuePair("score", scoreString));
+			  nameValuePairs.add(new BasicNameValuePair("type", type + ""));
 			  Util.httpPost(submitUri, nameValuePairs, postResultCallBack);
 		}
 	}).start();
