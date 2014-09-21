@@ -49,6 +49,16 @@
 	        android:text="@string/mode_gravity"
 	        android:textColor="@color/white" />
 	    
+	    <Button
+	        android:id="@+id/settingButton"
+	        android:layout_width="150dip"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_horizontal"
+	        android:layout_marginTop="15dip"
+	        android:background="#993366"
+	        android:onClick="onSettingButtonClick"
+	        android:text="@string/level_setting"
+	        android:textColor="@color/white" />
 	    <View 
 	        android:layout_width="fill_parent"
 	        android:layout_height="1dip"

@@ -76,4 +76,10 @@
     <string name="mode_gravity">重力</string>
     <string name="current_mode">%s模式</string>
     <string name="current_mode_type">%1$s模式-%2$s</string>
+    <string name="level_setting">难度设置</string>
+    <string name="level_intro">请选择合适的难度</string>
+    <string name="level_easy_info">简单级别适合练习</string>
+    <string name="level_hard_info">困难级别可参加挑战赛,赢取话费大奖</string>
+    <string name="level_easy">简单</string>
+    <string name="level_hard">困难</string>
 </resources>

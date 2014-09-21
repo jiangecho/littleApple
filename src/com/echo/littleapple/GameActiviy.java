@@ -312,6 +312,33 @@ public class GameActiviy extends Activity implements GameEventListner{
 		gameView.setMode(mode);
 	}
 	
+	public void onSettingButtonClick(View view){
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        final View alertView = layoutInflater.inflate(R.layout.level_setting, null);
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.level_setting);
+		builder.setView(alertView);
+		AlertDialog dialog = builder.create();
+		dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.level_easy), new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				gameView.setLevel(GameActiviy.LEVEL_EASY);
+				
+			}
+		});
+
+		dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.level_hard), new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				gameView.setLevel(GameActiviy.LEVEL_HARD);
+			}
+		});
+		
+		dialog.show();
+	}
+	
 	//select type
 	public void onStart30sButtonClick(View view) {
 		if (countDownTimer == null) {
