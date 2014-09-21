@@ -22,8 +22,10 @@
         />
     
     <include layout="@layout/mode_select_layer"/>
-    <include layout="@layout/type_select_layer"/>
-    <include layout="@layout/result_layer"/>
+    <include layout="@layout/type_select_layer"
+        android:visibility="invisible"/>
+    <include layout="@layout/result_layer"
+        android:visibility="invisible"/>
     
 
 </FrameLayout>
