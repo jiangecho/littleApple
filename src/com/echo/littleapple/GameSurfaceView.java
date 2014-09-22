@@ -211,6 +211,10 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
 	}
 	
+	public void stop() {
+		status = STATUS_STOP;
+	}
+	
 	public void reset(){
 		this.score = 0;
 		status = STATUS_STOP;

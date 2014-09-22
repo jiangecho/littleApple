@@ -243,6 +243,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		@Override
 		public void onFinish() {
 			gameView.playGameSoundEffect(GameSurfaceView.TIME_OUT);
+			gameView.stop();
 			timerTV.setText(getResources().getString(R.string.time_out));
 			
 			if (type == TYPE_CLASSIC_SPEED) {
@@ -716,6 +717,7 @@ level = LEVEL_HARD;
 			timerTV.setText("" + score);
 			if (score == SPEED_SUCCESS_SCORE) {
 				gameView.playGameSoundEffect(GameSurfaceView.TIME_OUT);
+				gameView.stop();
 				timerTV.setText(getResources().getString(R.string.speed_success));
 
 				currentSpeedScore = escapeMillis;
