@@ -83,4 +83,7 @@
     <string name="level_easy">简单</string>
     <string name="level_hard">困难</string>
     <string name="level_normal">一般</string>
+    <string name="classic_intro">只能点倒数第二排的小苹果哦,否则~</string>
+    <string name="gravity_intro">从下往上收割，别错过任何小苹果~</string>
+    <string name="gravity_mine_intro">从下往上收割，千万别点到地雷~</string>
 </resources>

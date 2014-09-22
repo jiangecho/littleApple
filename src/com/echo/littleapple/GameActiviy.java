@@ -366,11 +366,15 @@ level = LEVEL_HARD;
 			type = TYPE_CLASSIC_30S;
 			bestScore = sharedPreferences.getInt(CLASSIC_30S_BEST_SCORE, 0);
 			
+			typeIntroTextView.setText(R.string.classic_intro);
+			typeIntroTextView.setVisibility(View.VISIBLE);
 			break;
 		case MODE_GRAVITY:
 			type = TYPE_GRAVITY_30S;
 			bestScore = sharedPreferences.getInt(GRAVITY_30S_BEST_SCORE, 0);
 			
+			typeIntroTextView.setText(R.string.gravity_intro);
+			typeIntroTextView.setVisibility(View.VISIBLE);
 			break;
 		}
 		currentScore = 0;
@@ -389,10 +393,14 @@ level = LEVEL_HARD;
 		case MODE_CLASSIC:
 			type = TYPE_CLASSIC_ENDLESS;
 			bestScore = sharedPreferences.getInt(CLASSIC_ENDLESS_BEST_SCORE, 0);
+			typeIntroTextView.setText(R.string.classic_intro);
+			typeIntroTextView.setVisibility(View.VISIBLE);
 			break;
 		case MODE_GRAVITY:
 			type = TYPE_GRAVITY_ENDLESS;
 			bestScore = sharedPreferences.getInt(GRAVITY_ENDLESS_BEST_SCORE, 0);
+			typeIntroTextView.setText(R.string.gravity_intro);
+			typeIntroTextView.setVisibility(View.VISIBLE);
 			break;
 		}
 
@@ -425,6 +433,8 @@ level = LEVEL_HARD;
 		gameView.setType(type);
 		timerTV.setText("0");
 		typeSelectLayer.setVisibility(View.INVISIBLE);
+		typeIntroTextView.setText(R.string.gravity_intro);
+		typeIntroTextView.setVisibility(View.VISIBLE);
 		
 		currentTypeString = getString(R.string.type_speed);
 		currentModeTypeLevelTextView.setText(getString(R.string.current_mode_type_level, currentModeString, 
@@ -445,10 +455,14 @@ level = LEVEL_HARD;
 		case MODE_CLASSIC:
 			type = TYPE_CLASSIC_DISCONTINUOUS;
 			bestScore = sharedPreferences.getInt(CLASSIC_DISCONTINUOUS_BEST_SCORE, 0);
+			typeIntroTextView.setText(R.string.classic_intro);
+			typeIntroTextView.setVisibility(View.VISIBLE);
 			break;
 		case MODE_GRAVITY:
 			type = TYPE_GRAVITY_DISCONTINUOUS;
 			bestScore = sharedPreferences.getInt(GRAVITY_DISCONTINUOUS_BEST_SCORE, 0);
+			typeIntroTextView.setText(R.string.gravity_intro);
+			typeIntroTextView.setVisibility(View.VISIBLE);
 			break;
 		}
 
@@ -476,10 +490,14 @@ level = LEVEL_HARD;
 		case MODE_CLASSIC:
 			type = TYPE_CLASSIC_DOUBLE;
 			bestScore = sharedPreferences.getInt(CLASSIC_DOUBLE_BEST_SCORE, 0);
+			typeIntroTextView.setText(R.string.classic_intro);
+			typeIntroTextView.setVisibility(View.VISIBLE);
 			break;
 		case MODE_GRAVITY:
 			type = TYPE_GRAVITY_DOUBLE;
 			bestScore = sharedPreferences.getInt(GRAVITY_DOUBLE_BEST_SCORE, 0);
+			typeIntroTextView.setText(R.string.gravity_intro);
+			typeIntroTextView.setVisibility(View.VISIBLE);
 			break;
 		}
 
@@ -512,6 +530,8 @@ level = LEVEL_HARD;
 		gameView.setType(type);
 		typeSelectLayer.setVisibility(View.INVISIBLE);
 		timerTV.setText("30:00");
+		typeIntroTextView.setText(R.string.gravity_mine_intro);
+		typeIntroTextView.setVisibility(View.VISIBLE);
 		
 		currentTypeString = getString(R.string.type_mine);
 		currentModeTypeLevelTextView.setText(getString(R.string.current_mode_type_level, currentModeString, 
@@ -636,7 +656,7 @@ level = LEVEL_HARD;
 			countDownTimer.start();
 		}
 		
-		//typeIntroTextView.setVisibility(View.INVISIBLE);
+		typeIntroTextView.setVisibility(View.INVISIBLE);
 	}
 
 	@Override
