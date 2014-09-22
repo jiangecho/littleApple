@@ -4,6 +4,12 @@ package com.echo.littleapple;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import org.apache.http.util.ByteArrayBuffer;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -18,9 +24,11 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnKeyListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -137,6 +145,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	
 	private Button startSpeedButton, startMindeButton;
+	
+	private boolean newVersionAvailable = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -209,6 +219,8 @@ public class GameActiviy extends Activity implements GameEventListner{
         haveSubmited = sharedPreferences.getBoolean(HAVE_SUBMITED, false);
         
         postResultCallBack = new CallBack();
+        
+        asyncGetOnlineConfig();
 
 	}
 
@@ -719,9 +731,13 @@ public class GameActiviy extends Activity implements GameEventListner{
 				if (currentMillis - lastPressMillis < 2000) {
 				 	finish();
 				}else {
-					lastPressMillis = currentMillis;
-					Toast toast = Toast.makeText(this, getResources().getString(R.string.press_twice_to_exit) , Toast.LENGTH_SHORT);
-					toast.show();
+					if (newVersionAvailable) {
+						showUpdateDialog();
+					}else {
+//						lastPressMillis = currentMillis;
+						showExitDialog();
+						
+					}
 				}
 				
 			}
@@ -797,6 +813,60 @@ public class GameActiviy extends Activity implements GameEventListner{
 
         oks.show(this);
    }
+   
+   private void checkUpdate(int versionCode){
+	   try {
+		   int currentVersionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+		   if (versionCode > currentVersionCode) {
+			   newVersionAvailable = true;
+		   }
+
+	   } catch (NameNotFoundException e) {
+		   e.printStackTrace();
+	   }
+   }
+   
+	 private void getOnlineConfig(){
+		try {
+			URL url = new URL("http://littleappleapp.sinaapp.com/config.txt");
+			HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+			InputStream inputStream = urlConnection.getInputStream();
+			byte[] bytes = new byte[1024];
+			int count;
+			ByteArrayBuffer byteArrayBuffer = new ByteArrayBuffer(1024);
+			count = inputStream.read(bytes);
+			while (count != -1) {
+				byteArrayBuffer.append(bytes, 0, count);
+				count = inputStream.read(bytes);
+			}
+			String config = new String(byteArrayBuffer.toByteArray());
+			String[] tmp = config.split("\\s+");
+
+			for (String str : tmp) {
+				if (str.startsWith("version")) {
+					int versionCode = Integer.parseInt(str.substring("version".length()));
+					checkUpdate(versionCode);
+					break;
+				}
+			}
+
+			urlConnection.disconnect();
+			inputStream.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+	 } 
+	 
+	 private void asyncGetOnlineConfig(){
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				getOnlineConfig();
+			}
+		}).start(); 
+	 }
    
    // TODO optimize do not need to check the mode, can just use type
    private void updateBestScore(){
@@ -947,5 +1017,56 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	}
 	   
+   }
+   
+   private void showUpdateDialog(){
+	  AlertDialog.Builder builder = new AlertDialog.Builder(this); 
+	  builder.setTitle(getString(R.string.update_title));
+	  builder.setMessage(getString(R.string.update_text));
+	  AlertDialog dialog = builder.create();
+	  dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.update_cancel), new DialogInterface.OnClickListener() {
+		
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			dialog.dismiss();
+			finish();
+		}
+	});
+	  dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.update_ok), new DialogInterface.OnClickListener() {
+		
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			Uri uri = Uri.parse(APP_URL);
+			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+			startActivity(intent);
+			Toast toast = Toast.makeText(GameActiviy.this, getString(R.string.update_prompt) , Toast.LENGTH_SHORT);
+			toast.show();
+			finish();
+		}
+	});
+	  dialog.show();
+   }
+   
+   private void showExitDialog(){
+	  AlertDialog dialog = new AlertDialog.Builder(this)
+	  	.setTitle(getString(R.string.exit_title))
+	  	.setMessage(getString(R.string.exit_text))
+	  	.create();
+	  dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.exit_cancel), new DialogInterface.OnClickListener() {
+		
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			dialog.dismiss();
+		}
+	});
+	  dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.exit_ok), new DialogInterface.OnClickListener() {
+		
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			dialog.dismiss();
+			finish();
+		}
+	});
+	  dialog.show();
    }
 }
