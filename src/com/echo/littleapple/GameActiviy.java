@@ -70,9 +70,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private TextView bestTV;
 	private TextView promptTV;
 	private Handler handler;
-	
-	private TextView currentModeTextView;
-	private TextView currentModeTypeTextView;
+
+	private TextView currentModeLevelTextView;
+	private TextView currentModeTypeLevelTextView;
 	private String currentModeString, currentTypeString;
 	
 	private TextView typeIntroTextView;
@@ -134,6 +134,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 	public static final int LEVEL_EASY = 0;
 	public static final int LEVEL_NORMAL = 1;
 	public static final int LEVEL_HARD = 2;
+	
+	private int level = LEVEL_NORMAL;
+	private String currentLevelString;
 
 	
 	private Button startSpeedButton, startMindeButton;
@@ -165,11 +168,11 @@ public class GameActiviy extends Activity implements GameEventListner{
         resultTV = (TextView) findViewById(R.id.resultTV);
         bestTV = (TextView) findViewById(R.id.bestTV);
         
-        currentModeTextView = (TextView) findViewById(R.id.current_mode_tv);
-        currentModeTypeTextView = (TextView) findViewById(R.id.current_mode_type_tv);
+		currentModeLevelTextView = (TextView) findViewById(R.id.current_mode_level_tv);
+		currentModeTypeLevelTextView = (TextView) findViewById(R.id.current_mode_type_level_tv);
         
         typeIntroTextView = (TextView) findViewById(R.id.type_intro_tv);
-        
+        currentLevelString = getString(R.string.level_normal);
         handler = new Handler();
         remindTimeSB = new StringBuffer();
         
@@ -296,7 +299,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		startMindeButton.setVisibility(View.GONE);
 		
 		currentModeString = getString(R.string.mode_classic);
-		currentModeTextView.setText(getString(R.string.current_mode, currentModeString));
+		currentModeLevelTextView.setText(getString(R.string.current_mode_level, currentModeString, currentLevelString));
 		typeSelectLayer.setVisibility(View.VISIBLE);
 		
 		gameView.setMode(mode);
@@ -310,7 +313,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 		startMindeButton.setVisibility(View.VISIBLE);
 
 		currentModeString = getString(R.string.mode_gravity);
-		currentModeTextView.setText(getString(R.string.current_mode, currentModeString));
+		currentModeLevelTextView.setText(getString(R.string.current_mode_level, currentModeString, currentLevelString));
 		typeSelectLayer.setVisibility(View.VISIBLE);
 
 		gameView.setMode(mode);
@@ -327,7 +330,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				gameView.setLevel(GameActiviy.LEVEL_EASY);
+						level = LEVEL_EASY;
+						currentLevelString = getString(R.string.level_easy);
+						gameView.setLevel(GameActiviy.LEVEL_EASY);
 				
 			}
 		});
@@ -336,6 +341,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
+level = LEVEL_HARD;
+						currentLevelString = getString(R.string.level_hard);
 				gameView.setLevel(GameActiviy.LEVEL_HARD);
 			}
 		});
@@ -372,8 +379,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 		timerTV.setText("30:00");
 		
 		currentTypeString = getString(R.string.type_time_30);
-		currentModeTypeTextView.setText(getString(R.string.current_mode_type, currentModeString, currentTypeString));
-		
+		currentModeTypeLevelTextView.setText(getString(R.string.current_mode_type_level, currentModeString, 
+				currentTypeString, currentLevelString));
+
 	}
 
 	public void onStartEndlessButtonClick(View view) {
@@ -395,8 +403,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 		typeSelectLayer.setVisibility(View.INVISIBLE);
 
 		currentTypeString = getString(R.string.type_endless);
-		currentModeTypeTextView.setText(getString(R.string.current_mode_type, currentModeString, currentTypeString));
-		
+		currentModeTypeLevelTextView.setText(getString(R.string.current_mode_type_level, currentModeString, 
+				currentTypeString, currentLevelString));
+
 	}
 
 	public void onStartSpeedButtonClick(View view) {
@@ -418,7 +427,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 		typeSelectLayer.setVisibility(View.INVISIBLE);
 		
 		currentTypeString = getString(R.string.type_speed);
-		currentModeTypeTextView.setText(getString(R.string.current_mode_type, currentModeString, currentTypeString));
+		currentModeTypeLevelTextView.setText(getString(R.string.current_mode_type_level, currentModeString, 
+				currentTypeString, currentLevelString));
 	}
 
 	public void onStartDiscontinuousButtonClick(View view) {
@@ -448,7 +458,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 		timerTV.setText("30:00");
 
 		currentTypeString = getString(R.string.type_discontinuous);
-		currentModeTypeTextView.setText(getString(R.string.current_mode_type, currentModeString, currentTypeString));
+		currentModeTypeLevelTextView.setText(getString(R.string.current_mode_type_level, currentModeString, 
+				currentTypeString, currentLevelString));
 	}
 
 	public void onStartDoubleButtonClick(View view) {
@@ -478,8 +489,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 		timerTV.setText("30:00");
 
 		currentTypeString = getString(R.string.type_double);
-		currentModeTypeTextView.setText(getString(R.string.current_mode_type, currentModeString, currentTypeString));
-		
+		currentModeTypeLevelTextView.setText(getString(R.string.current_mode_type_level, currentModeString, 
+				currentTypeString, currentLevelString));
+
 	}
 
 	public void onStartMineButtonClick(View view) {
@@ -502,7 +514,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 		timerTV.setText("30:00");
 		
 		currentTypeString = getString(R.string.type_mine);
-		currentModeTypeTextView.setText(getString(R.string.current_mode_type, currentModeString, currentTypeString));
+		currentModeTypeLevelTextView.setText(getString(R.string.current_mode_type_level, currentModeString, 
+				currentTypeString, currentLevelString));
 	}
 
 	public void onRestartButtonClick(View view){
