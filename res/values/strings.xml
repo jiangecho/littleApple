@@ -11,7 +11,7 @@
     <string name="strd">小苹果！</string>
     <string name="stre">请先选择你喜欢的模式</string>
     <string name="strh">请先选择你喜欢的玩法</string>
-    <string name="strg">然后</string>
+    <string name="strg">为了大奖</string>
     <string name="classic_result">呵呵！我吃掉了%d个小苹果！</string>
     <string name="speed_result">吼吼！100个小苹果，我才花了%s秒！</string>
     <string name="strf">亲加油哦！</string>
@@ -98,4 +98,7 @@
     <string name="classic_intro">只能点倒数第二排的小苹果哦,否则~</string>
     <string name="gravity_intro">从下往上收割，别错过任何小苹果~</string>
     <string name="gravity_mine_intro">从下往上收割，千万别点到地雷~</string>
+    <string name="award_intro">高分可赢话费大奖哦，加油!!!</string>
+    <string name="mode_classic_intro">经典模式下，小苹果不会自动下落，点击时才下落</string>
+    <string name="mode_gravity_intro">重力模式下，小苹果会自动下落</string>
 </resources>

@@ -559,6 +559,7 @@ level = LEVEL_HARD;
 
 	public void onRestartButtonClick(View view){
 		timerTV.setVisibility(View.VISIBLE);
+		typeIntroTextView.setVisibility(View.VISIBLE);
 		resultLayer.setVisibility(View.INVISIBLE);
 		if (type == TYPE_CLASSIC_30S || type == TYPE_GRAVITY_30S
 				|| type == TYPE_GRAVITY_MINE

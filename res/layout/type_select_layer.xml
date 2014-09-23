@@ -41,7 +41,7 @@
 	        android:layout_marginTop="10dip"
 	        android:layout_gravity="center_horizontal"
 	        android:text="@string/strg"
-	        android:textColor="@color/white"
+	        android:textColor="@color/yellow"
 	        />
 
 	    <TextView 
