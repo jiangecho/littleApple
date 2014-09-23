@@ -86,6 +86,11 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	private int type = GameActiviy.TYPE_CLASSIC_30S;
 	
 	private int level = GameActiviy.LEVEL_NORMAL;
+	private boolean isUserLevel = false;
+	private boolean autoAdjustLevel = true;
+	
+	private int failCount = 0;
+	private int successCount = 0;
 
 	public GameSurfaceView(Context context) {
 		this(context, null);
@@ -211,7 +216,35 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
 	}
 	
+	public void stop() {
+		status = STATUS_STOP;
+	}
+	
 	public void reset(){
+		if ((!isUserLevel) && autoAdjustLevel) {
+			if (score < 50) {
+				failCount ++;
+				if (failCount > 3) {
+					failCount = 0;
+					if (level == GameActiviy.LEVEL_HARD) {
+						level = GameActiviy.LEVEL_NORMAL;
+					}else {
+						level = GameActiviy.LEVEL_EASY;
+					}
+				}
+			}else if (score > 100) {
+				successCount ++;
+				if (successCount > 3) {
+					successCount = 0;
+					if (level == GameActiviy.LEVEL_EASY) {
+						level = GameActiviy.LEVEL_NORMAL;
+					}else {
+						level = GameActiviy.LEVEL_HARD;
+					}
+				}
+			}
+			
+		}
 		this.score = 0;
 		status = STATUS_STOP;
 		randomApples();
@@ -542,6 +575,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	
 	public void setLevel(int level){
 		this.level = level;
+		isUserLevel = true;
 	}
 	
 	public int getLevel(){

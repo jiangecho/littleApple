@@ -7,13 +7,13 @@
     android:background="#e0576069"
     >
     <TextView 
-        android:id="@+id/current_mode_tv"
+        android:id="@+id/current_mode_level_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dip"
         android:layout_marginLeft="10dip"
         android:textAppearance="?android:attr/textAppearanceMedium" 
-        android:text="@string/current_mode"
+        android:text="@string/current_mode_level"
         android:textColor="@color/yellow"
         />
 
@@ -41,7 +41,7 @@
 	        android:layout_marginTop="10dip"
 	        android:layout_gravity="center_horizontal"
 	        android:text="@string/strg"
-	        android:textColor="@color/white"
+	        android:textColor="@color/yellow"
 	        />
 
 	    <TextView 
