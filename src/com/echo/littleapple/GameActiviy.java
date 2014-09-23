@@ -603,6 +603,8 @@ level = LEVEL_HARD;
 			random = new Random();
 		}
 
+		timerTV.setVisibility(View.INVISIBLE);
+
 		int colorIndex = random.nextInt(colors.length);
 		resultLayer.setBackgroundColor(Color.parseColor(colors[colorIndex]));;
 
@@ -683,7 +685,6 @@ level = LEVEL_HARD;
 	@Override
 	public void onGameOver() {
 		
-		timerTV.setVisibility(View.INVISIBLE);
 		typeIntroTextView.setVisibility(View.INVISIBLE);
 		//TODO endless mode
 		if (type == TYPE_CLASSIC_ENDLESS || type == TYPE_GRAVITY_ENDLESS) {
