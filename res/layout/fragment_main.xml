@@ -25,6 +25,7 @@
 	        android:textSize="40sp"
 	        android:textColor="@android:color/background_dark"
 	        android:text="30.00"
+	        android:visibility="invisible"
 	        />
 	
 	    <TextView 

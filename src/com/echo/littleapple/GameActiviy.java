@@ -393,6 +393,7 @@ level = LEVEL_HARD;
 		currentScore = 0;
 		gameView.setType(type);
 		typeSelectLayer.setVisibility(View.INVISIBLE);
+		timerTV.setVisibility(View.VISIBLE);
 		timerTV.setText("30:00");
 		
 		currentTypeString = getString(R.string.type_time_30);
@@ -420,6 +421,7 @@ level = LEVEL_HARD;
 		currentScore = 0;
 		gameView.setType(type);
 		countDownTimer = null;
+		timerTV.setVisibility(View.VISIBLE);
 		timerTV.setText("0");
 		typeSelectLayer.setVisibility(View.INVISIBLE);
 
@@ -444,6 +446,7 @@ level = LEVEL_HARD;
 		currentSpeedScore = 0;
 
 		gameView.setType(type);
+		timerTV.setVisibility(View.VISIBLE);
 		timerTV.setText("0");
 		typeSelectLayer.setVisibility(View.INVISIBLE);
 		typeIntroTextView.setText(R.string.gravity_intro);
@@ -482,6 +485,7 @@ level = LEVEL_HARD;
 		currentScore = 0;
 		gameView.setType(type);
 		typeSelectLayer.setVisibility(View.INVISIBLE);
+		timerTV.setVisibility(View.VISIBLE);
 		timerTV.setText("30:00");
 
 		currentTypeString = getString(R.string.type_discontinuous);
@@ -517,6 +521,7 @@ level = LEVEL_HARD;
 		currentScore = 0;
 		gameView.setType(type);
 		typeSelectLayer.setVisibility(View.INVISIBLE);
+		timerTV.setVisibility(View.VISIBLE);
 		timerTV.setText("30:00");
 
 		currentTypeString = getString(R.string.type_double);
@@ -542,6 +547,7 @@ level = LEVEL_HARD;
 		currentScore = 0;
 		gameView.setType(type);
 		typeSelectLayer.setVisibility(View.INVISIBLE);
+		timerTV.setVisibility(View.VISIBLE);
 		timerTV.setText("30:00");
 		typeIntroTextView.setText(R.string.gravity_mine_intro);
 		typeIntroTextView.setVisibility(View.VISIBLE);
@@ -552,6 +558,7 @@ level = LEVEL_HARD;
 	}
 
 	public void onRestartButtonClick(View view){
+		timerTV.setVisibility(View.VISIBLE);
 		resultLayer.setVisibility(View.INVISIBLE);
 		if (type == TYPE_CLASSIC_30S || type == TYPE_GRAVITY_30S
 				|| type == TYPE_GRAVITY_MINE
@@ -675,6 +682,8 @@ level = LEVEL_HARD;
 	@Override
 	public void onGameOver() {
 		
+		timerTV.setVisibility(View.INVISIBLE);
+		typeIntroTextView.setVisibility(View.INVISIBLE);
 		//TODO endless mode
 		if (type == TYPE_CLASSIC_ENDLESS || type == TYPE_GRAVITY_ENDLESS) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
