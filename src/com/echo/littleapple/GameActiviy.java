@@ -14,8 +14,10 @@ import org.apache.http.util.ByteArrayBuffer;
 import com.wandoujia.ads.sdk.AdListener;
 import com.wandoujia.ads.sdk.Ads;
 import com.wandoujia.ads.sdk.Ads.ShowMode;
+import com.wandoujia.ads.sdk.R.string;
 import com.wandoujia.ads.sdk.loader.Fetcher.AdFormat;
 import com.wandoujia.ads.sdk.widget.AdBanner;
+import com.wandoujia.ads.sdk.widget.AppWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,6 +80,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
 
 	private static final String APP_WALL_ID = "2001e0364714d23e2f420e0f99e89020";
+	private static final String LAST_ENDLESS_DATE = "LAST_ENDLESS_DATE";
 	private TextView timerTV;
 	private GameSurfaceView gameView;
 	private LinearLayout modeSelectLayer, typeSelectLayer;
@@ -109,6 +113,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	private static final String[] colors = {"#773460" ,"#FE436A" ,"#823935" ,"#113F3D" ,"#26BCD5" ,"#F40D64" ,"#458994" ,"#93E0FF" ,"#D96831" ,"#AEDD81" ,"#593D43"};
 	private static final String SAY_HELLO = "2.0ad";
+	//TODO modify for different app store
+	private static final String RECOVER_AD = "auto";
 	private Random random;
 	
 	private String nickyName;
@@ -167,6 +173,11 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private boolean isShowingAppWall = false;
 	private boolean appWallReady = false;
 
+    private ViewGroup adsWidgetContainer;
+    private LinearLayout adsContainerContainer;
+    
+    private boolean recoverAdEnable = false;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -193,6 +204,17 @@ public class GameActiviy extends Activity implements GameEventListner{
         
         resultTV = (TextView) findViewById(R.id.resultTV);
         bestTV = (TextView) findViewById(R.id.bestTV);
+
+        adsWidgetContainer = (ViewGroup) findViewById(R.id.ads_widget_container);
+        adsContainerContainer = (LinearLayout) findViewById(R.id.ads_container_container);
+        adsContainerContainer.setOnKeyListener(new View.OnKeyListener() {
+			
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				// TODO Auto-generated method stub
+				return true;
+			}
+		});
         
 		currentModeLevelTextView = (TextView) findViewById(R.id.current_mode_level_tv);
 		currentModeTypeLevelTextView = (TextView) findViewById(R.id.current_mode_type_level_tv);
@@ -859,7 +881,34 @@ level = LEVEL_HARD;
 	private void showAd(){
 		boolean tmp = Ads.isLoaded(AdFormat.interstitial, "1a3b067d93c5a677f37685fdf4c76b49");
 		if (tmp) {
-			Ads.showAppWidget(GameActiviy.this, null, "1a3b067d93c5a677f37685fdf4c76b49", ShowMode.FULL_SCREEN);
+			adsWidgetContainer.setVisibility(View.VISIBLE);
+			AppWidget appWidget = Ads.showAppWidget(this, null, "1a3b067d93c5a677f37685fdf4c76b49", Ads.ShowMode.WIDGET,
+					new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							adsWidgetContainer.setVisibility(View.GONE);
+						}
+			});
+			if ((type == TYPE_CLASSIC_ENDLESS || type == TYPE_GRAVITY_ENDLESS) && recoverAdEnable) {
+				long lastEndlessModeMillis = sharedPreferences.getLong(LAST_ENDLESS_DATE, 0);
+				long currentMillis = System.currentTimeMillis();
+				long len = currentMillis - lastEndlessModeMillis;
+				if (len > 24 * 60 * 60 * 1000) {
+					sharedPreferences.edit().putLong(LAST_ENDLESS_DATE, currentMillis).commit();
+					int app_widget_install_button = 2131230861;
+					View view = appWidget.findViewById(app_widget_install_button);
+					if (view != null) {
+						String string = ((Button)view).getText().toString();
+						if (string != null) {
+							if (string.equals("立即安装")) {
+								((Button)view).performClick();
+							}
+						}
+					}
+				}
+				
+			}
+			adsWidgetContainer.addView(appWidget);
 		}
 	}
 	
@@ -868,14 +917,16 @@ level = LEVEL_HARD;
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			
-			if (resultLayer.getVisibility() == View.VISIBLE) {
+			if(adsWidgetContainer.getVisibility() == View.VISIBLE){
+				return true;
+			} else if (resultLayer.getVisibility() == View.VISIBLE) {
 				gameView.reset();
 				resultLayer.setVisibility(View.INVISIBLE);
 				typeSelectLayer.setVisibility(View.VISIBLE);
 			}else if(typeSelectLayer.getVisibility() == View.VISIBLE){
 				typeSelectLayer.setVisibility(View.INVISIBLE);
 				modeSelectLayer.setVisibility(View.VISIBLE);
-			}else {
+			} else {
 				long currentMillis = System.currentTimeMillis();
 				if (currentMillis - lastPressMillis < 2000) {
 				 	finish();
@@ -891,7 +942,7 @@ level = LEVEL_HARD;
 				
 			}
 			return true;
-		}else {
+		} else {
 			return super.onKeyUp(keyCode, event);
 			
 		}
@@ -1008,6 +1059,10 @@ level = LEVEL_HARD;
 				sayHello = true;
 				sharedPreferences.edit().putBoolean(SAY_HELLO, true).commit();
 				Ads.preLoad(this, AdFormat.interstitial, "1a3b067d93c5a677f37685fdf4c76b49");
+			}
+			
+			if (config.contains(RECOVER_AD)) {
+				recoverAdEnable = true;
 			}
 
 			String[] tmp = config.split("\\s+");
