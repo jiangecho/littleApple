@@ -14,6 +14,7 @@ import android.media.SoundPool;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -50,9 +51,12 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	
 	private int score;
 	
-	private int moveStepHeight;
-	private int moveStepHeightForGravityDoubleAndMine;
-	private int moveYOffset = 0;
+	private float moveStepHeight;
+	private float gravityMoveStepHeight;
+	private boolean isGravitySpeedUp = false;
+	private static float gravityMaxMoveStepHeight, gravityMinMoveStepHeight;
+	//private int moveStepHeightForGravityDoubleAndMine;
+	private float moveYOffset = 0;
 	private Handler handler;
 	private Handler animationHandler;
 	private HandlerThread animationHandlerThread;
@@ -91,7 +95,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	
 	private int failCount = 0;
 	private int successCount = 0;
-
+	
 	public GameSurfaceView(Context context) {
 		this(context, null);
 		
@@ -164,9 +168,9 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 			for (i = 0; i < row; i++) {
 				for (j = 0; j < COLUMN; j++) {
 					left = j * cellWidth;
-					top = moveYOffset + ((i >= 1) ? (firstCellHeight + (i - 1) * cellHeight) : (firstCellHeight - cellHeight)); 
+					top = (int) (moveYOffset + ((i >= 1) ? (firstCellHeight + (i - 1) * cellHeight) : (firstCellHeight - cellHeight))); 
 					right = (j + 1) * cellWidth;
-					bottom = moveYOffset + firstCellHeight + i * cellHeight;
+					bottom = (int) (moveYOffset + firstCellHeight + i * cellHeight);
 					rect.set(left, top, right, bottom);
 
 					if (apples[i][j] == CELL_TYPE_BLANK) {
@@ -206,7 +210,10 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		}
 		
 		moveStepHeight = cellHeight / 10;
-		moveStepHeightForGravityDoubleAndMine = cellHeight / 12;
+		gravityMinMoveStepHeight = cellHeight / 20;
+		gravityMaxMoveStepHeight = (float) (cellHeight / 7.8);
+		gravityMoveStepHeight = gravityMinMoveStepHeight;
+		//moveStepHeightForGravityDoubleAndMine = cellHeight / 11;
 		
 		if (apples == null) {
 			apples = new int[row][COLUMN];
@@ -248,6 +255,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		this.score = 0;
 		status = STATUS_STOP;
 		randomApples();
+		gravityMoveStepHeight = gravityMinMoveStepHeight;
 		moveYOffset = 0;
 		doDraw();
 	}
@@ -611,12 +619,14 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 			}
 			if (mode == GameActiviy.MODE_GRAVITY) {
 				if (moveYOffset < cellHeight) {
-					if (type == GameActiviy.TYPE_GRAVITY_DOUBLE 
-							|| (type == GameActiviy.TYPE_GRAVITY_MINE/* && level == GameActiviy.LEVEL_HARD */)) {
-						moveYOffset += moveStepHeightForGravityDoubleAndMine;
-					}else {
-						moveYOffset += moveStepHeight;
-					}
+//					if (type == GameActiviy.TYPE_GRAVITY_DOUBLE 
+//							|| (type == GameActiviy.TYPE_GRAVITY_MINE/* && level == GameActiviy.LEVEL_HARD */)) {
+//						//moveYOffset += moveStepHeightForGravityDoubleAndMine;
+//						moveYOffset += gravityMoveStepHeight;
+//					}else {
+//						moveYOffset += gravityMoveStepHeight;
+//					}
+					moveYOffset += gravityMoveStepHeight;
 					doDraw();
 					animationHandler.postDelayed(animationTask, 4);
 				}else {
@@ -642,7 +652,20 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 							return;
 						}
 					}
-					moveYOffset = 0;
+					if (gravityMoveStepHeight <= gravityMinMoveStepHeight) {
+						isGravitySpeedUp = true;
+					}
+					if(gravityMoveStepHeight >= gravityMaxMoveStepHeight){
+						isGravitySpeedUp = false;
+					}
+					if (isGravitySpeedUp) {
+						gravityMoveStepHeight += 0.5;
+					}else {
+						gravityMoveStepHeight -= 0.5;
+					}
+					
+					
+					moveYOffset = moveYOffset - cellHeight;
 					addNewCell();
 					doDraw();
 					animationHandler.postDelayed(animationTask, 4);
@@ -666,7 +689,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 						doDraw();
 						animationHandler.postDelayed(animationTask, 4);
 					}else {
-						moveYOffset = 0;
+						moveYOffset = moveYOffset - cellHeight;
 						addNewCell();
 						doDraw();
 					}
@@ -681,7 +704,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 						doDraw();
 						animationHandler.postDelayed(animationTask, 4);
 					}else {
-						moveYOffset = 0;
+						moveYOffset = moveYOffset - cellHeight;
 						addNewCell();
 						doDraw();
 					}
