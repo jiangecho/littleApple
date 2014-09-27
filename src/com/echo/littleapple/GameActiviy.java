@@ -1110,6 +1110,7 @@ level = LEVEL_HARD;
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
 			dialog.dismiss();
+			finish();
 		}
 	});
 	  dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.exit_ok), new DialogInterface.OnClickListener() {
@@ -1117,7 +1118,6 @@ level = LEVEL_HARD;
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
 			dialog.dismiss();
-			finish();
 		}
 	});
 	  dialog.show();

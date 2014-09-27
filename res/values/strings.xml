@@ -85,10 +85,10 @@
     <string name="sd_not_found">SD卡不存在</string>
     <string name="share_title">哈哈，来挑战我吧!你是我的小苹果:%s</string>
     <string name="share_comment">呵呵，我吃了%d个小苹果</string>
-    <string name="exit_title">退出</string>
-    <string name="exit_text">亲，不玩了？</string>
-    <string name="exit_cancel">再玩一会</string>
-    <string name="exit_ok">不玩了</string>
+    <string name="exit_title">亲，玩累了</string>
+    <string name="exit_text">最近新出了很多好玩的游戏哦，去不去看看？</string>
+    <string name="exit_cancel">不看了</string>
+    <string name="exit_ok">去看看</string>
     <string name="update_title">发现新版本</string>
     <string name="update_text">新版本更好玩，升级？</string>
     <string name="update_cancel">不了</string>
