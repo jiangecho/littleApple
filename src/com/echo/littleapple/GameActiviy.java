@@ -817,7 +817,6 @@ level = LEVEL_HARD;
 					//TODO show appwall
 					//TODO just for test
 					if (appWallReady) {
-						//Ads.showAppWall(GameActiviy.this, APP_WALL_ID);
 						showAd();
 					}
 					isShowingAppWall = true;
@@ -1297,6 +1296,7 @@ level = LEVEL_HARD;
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
 			dialog.dismiss();
+			Ads.showAppWall(GameActiviy.this, APP_WALL_ID);
 		}
 	});
 	  dialog.show();
