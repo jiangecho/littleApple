@@ -56,7 +56,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	private static final int TIME_LENGHT = 30 * 1000;
 	private static final String CLASSIC_30S_BEST_SCORE = "CLASSIC_30S_BEST_SCORE";
-	private static final String CLASSIC_SPEED_BEST_SCORE = "CLASSIC_SPEED_BEST_SCORE";
+	//fix bug
+	private static final String CLASSIC_SPEED_BEST_SCORE = "CLASSIC_SPEED_BEST_SCORE_EX";
 	private static final String CLASSIC_ENDLESS_BEST_SCORE = "CLASSIC_ENDLESS_BEST_SCORE";
 	private static final String CLASSIC_DISCONTINUOUS_BEST_SCORE = "CLASSIC_DISCONTINUOUS_BEST_SCORE ";
 	private static final String CLASSIC_DOUBLE_BEST_SCORE = "CLASSIC_DOUBLE_BEST_SCORE ";
@@ -444,6 +445,8 @@ level = LEVEL_HARD;
 		// speed type is only available in CLASSIC MODE
 		speedBestScore = sharedPreferences.getLong(CLASSIC_SPEED_BEST_SCORE, Long.MAX_VALUE);
 		currentSpeedScore = 0;
+		currentScore = 0;
+		escapeMillis = 0;
 
 		gameView.setType(type);
 		timerTV.setVisibility(View.VISIBLE);
@@ -570,6 +573,10 @@ level = LEVEL_HARD;
 		}else if(type == TYPE_CLASSIC_ENDLESS || type == TYPE_GRAVITY_ENDLESS){
 			timerTV.setText("0");
 		}
+
+		currentScore = 0;
+		currentSpeedScore = 0;
+		escapeMillis = 0;
 		gameView.reset();
 	}
 	
@@ -931,9 +938,9 @@ level = LEVEL_HARD;
 				}
 				break;
 			case TYPE_CLASSIC_SPEED:
-		  		if (currentSpeedScore > speedBestScore) {
+		  		if (currentSpeedScore > 0 && currentSpeedScore < speedBestScore) {
 					speedBestScore = currentSpeedScore;
-					sharedPreferences.edit().putLong(CLASSIC_SPEED_BEST_SCORE, bestScore).commit();
+					sharedPreferences.edit().putLong(CLASSIC_SPEED_BEST_SCORE, speedBestScore).commit();
 				}
 				break;
 			case TYPE_CLASSIC_DISCONTINUOUS:
