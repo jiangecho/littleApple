@@ -101,4 +101,5 @@
     <string name="award_intro">高分可赢话费大奖哦，加油!!!</string>
     <string name="mode_classic_intro">经典模式下，小苹果不会自动下落，点击时才下落</string>
     <string name="mode_gravity_intro">重力模式下，小苹果会自动下落</string>
+    <string name="flappy_bird">小鸟爱你吃苹果</string>
 </resources>

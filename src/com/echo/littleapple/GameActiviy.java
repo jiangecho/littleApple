@@ -17,6 +17,7 @@ import java.util.Random;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -362,6 +363,11 @@ level = LEVEL_HARD;
 		});
 		
 		dialog.show();
+	}
+	
+	public void onMoreGameButtonClick(View view){
+		Intent intent = new Intent(this, com.jucyzhang.flappybatta.GameActivity.class);
+		startActivity(intent);
 	}
 	
 	//select type
