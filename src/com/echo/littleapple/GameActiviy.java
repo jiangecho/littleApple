@@ -835,13 +835,15 @@ level = LEVEL_HARD;
 				}
 			});
 			dialog.show();
-			dialog.setOnKeyListener(new OnKeyListener() {
-				
-				@Override
-				public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-					return true;
-				}
-			});
+			dialog.setCancelable(false);
+			dialog.setCanceledOnTouchOutside(false);
+//			dialog.setOnKeyListener(new OnKeyListener() {
+//				
+//				@Override
+//				public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+//					return true;
+//				}
+//			});
 			
 			return;
 		}
