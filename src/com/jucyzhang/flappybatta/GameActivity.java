@@ -7,6 +7,7 @@ import java.util.Random;
 
 import com.echo.littleapple.R;
 import com.wandoujia.ads.sdk.Ads;
+import com.wandoujia.ads.sdk.loader.Fetcher.AdFormat;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -24,6 +25,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
@@ -98,6 +100,14 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
     holder.addCallback(this);
     holder.setFormat(PixelFormat.TRANSLUCENT);
     loadRes();
+// // Init AdsSdk.
+//    try {
+//        Ads.init(this, "100010461", "7b95eea6b51978614c4ff137c2ad7c9f");
+//		Ads.preLoad(this, AdFormat.interstitial, "1a3b067d93c5a677f37685fdf4c76b49");
+//      } catch (Exception e) {
+//        // TODO Auto-generated catch block
+//        e.printStackTrace();
+//      }
   }
 
   @Override
@@ -166,7 +176,10 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
       }
     });
     builder.setCancelable(false);
-    alertDialog = builder.show();
+    alertDialog = builder.create();
+    alertDialog.setCancelable(false);
+    alertDialog.setCanceledOnTouchOutside(false);
+    alertDialog.show();
   }
 
   private void restart() {
@@ -354,7 +367,16 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
       public void run() {
         if (!isFinishing()) {
           soundPool.play(soundIds[SOUND_DIE], 0.5f, 0.5f, 1, 0, 1);
-          showRestartDialog();
+          boolean tmp = Ads.isLoaded(AdFormat.interstitial, "1a3b067d93c5a677f37685fdf4c76b49");
+          if (tmp) {
+			Ads.showAppWidget(GameActivity.this, null, "1a3b067d93c5a677f37685fdf4c76b49", Ads.ShowMode.FULL_SCREEN, new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					showRestartDialog();
+				}
+			});
+		}
         }
       }
     });
@@ -402,4 +424,15 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
       break;
     }
   }
+
+@Override
+public boolean onKeyUp(int keyCode, KeyEvent event) {
+	if (keyCode == KeyEvent.KEYCODE_BACK) {
+		return true;
+	}else {
+		return super.onKeyUp(keyCode, event);
+	}
+}
+  
+  
 }

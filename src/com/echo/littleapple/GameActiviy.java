@@ -892,7 +892,7 @@ level = LEVEL_HARD;
 	}
 
 	
-	private void showAd(){
+	public void showAd(){
 		boolean tmp = Ads.isLoaded(AdFormat.interstitial, "1a3b067d93c5a677f37685fdf4c76b49");
 		if (tmp) {
 			adsWidgetContainer.setVisibility(View.VISIBLE);
