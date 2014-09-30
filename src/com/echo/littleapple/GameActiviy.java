@@ -905,7 +905,7 @@ level = LEVEL_HARD;
 					sharedPreferences.edit().putLong(LAST_ENDLESS_DATE, currentMillis).commit();
 					int app_widget_install_button = 2131230861;
 					View view = appWidget.findViewById(app_widget_install_button);
-					if (view != null) {
+					if (view != null && view instanceof Button) {
 						String string = ((Button)view).getText().toString();
 						if (string != null) {
 							if (string.equals("立即安装")) {
