@@ -64,9 +64,6 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 	
 	private SoundPool soundPool;
 	private int[] sounds;
-	private float audioMaxVolumn;
-	private float audioCurrentVolumn;
-	private float volumnRatio;
 	private Context context;
 	
 	private HandlerThread soundPoolThread;
@@ -538,18 +535,13 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		soundPoolThread = new HandlerThread("test");
 		soundPoolThread.start();
 		soundPoolHandler = new Handler(soundPoolThread.getLooper(), null);
-		soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
+		soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		
 		sounds = new int[3];
 		sounds[0] = soundPool.load(context, R.raw.ok, 1);
 		sounds[1] = soundPool.load(context, R.raw.fail, 1);
 		sounds[2] = soundPool.load(context, R.raw.time_out, 1);
 
-		AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-		audioMaxVolumn = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-		audioCurrentVolumn = am.getStreamVolume(AudioManager.STREAM_MUSIC);
-		
-		volumnRatio = audioCurrentVolumn / audioMaxVolumn;
 	}
 	
 	
@@ -559,7 +551,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 			
 			@Override
 			public void run() {
-				soundPool.play(sounds[type], volumnRatio, volumnRatio, 1, 0, 1);
+				soundPool.play(sounds[type], 0.5f, 0.5f, 1, 0, 1);
 				
 			}
 		});
@@ -607,6 +599,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
+		soundPool.release();
 	}
 	
 	private class AnimationTask implements Runnable{

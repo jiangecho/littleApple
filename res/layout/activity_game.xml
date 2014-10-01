@@ -1,0 +1,28 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GameActivity" >
+
+    <ImageView
+        android:id="@+id/iv_background"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_general_day"
+        android:visibility="visible" />
+
+    <SurfaceView
+        android:id="@+id/surface_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="visible" />
+
+    <include layout="@layout/result_layer"
+        android:id="@+id/resultLayer"
+        android:visibility="invisible"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        />
+
+</FrameLayout>

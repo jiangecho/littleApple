@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -120,7 +121,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	private String nickyName;
 	private String scoreString;
-	private final String submitUri = "http://littleappleapp.sinaapp.com/submit_score.php";;
+	private final String submitUri = "http://littleappleapp.sinaapp.com/submit_score.php";
 	private static final String NICKY_NAME = "nickyname";
 	private static final String HAVE_SUBMITED = "haveSubmited";
 	private boolean haveSubmited = false;
@@ -443,6 +444,12 @@ level = LEVEL_HARD;
 		});
 		
 		dialog.show();
+	}
+	
+	public void onMoreGameButtonClick(View view){
+		Intent intent = new Intent(this, com.jucyzhang.flappybatta.GameActivity.class);
+		intent.putExtra("NICKYNAME", nickyName);
+		startActivity(intent);
 	}
 	
 	//select type
