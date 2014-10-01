@@ -1,21 +1,28 @@
 package com.jucyzhang.flappybatta;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import com.echo.littleapple.Constant;
+import com.echo.littleapple.GameActiviy;
 import com.echo.littleapple.R;
-import com.wandoujia.ads.sdk.Ads;
+import com.echo.littleapple.Util;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
@@ -30,7 +37,12 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.echo.littleapple.NewRankAcitivity;
 
 public class GameActivity extends Activity implements Callback, OnClickListener {
   /**
@@ -83,6 +95,15 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
   private volatile int currentStatus = Sprite.STATUS_NOT_STARTED;
 
   private Random random = new Random();
+  
+  private LinearLayout resultLayer;
+  private Button shareButton;
+
+    private TextView resultTV;
+    private TextView bestTV;
+    private TextView currentModeTypeLevelTV;
+    
+    private String nickyName;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -90,20 +111,32 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     setContentView(R.layout.activity_game);
     ivBackground = (ImageView) findViewById(R.id.iv_background);
+    shareButton = (Button) findViewById(R.id.sharetButton);
+    shareButton.setVisibility(View.GONE);
     surfaceView = (SurfaceView) findViewById(R.id.surface_view);
     surfaceView.setKeepScreenOn(true);
+    resultLayer = (LinearLayout) findViewById(R.id.resultLayer);
+    surfaceView.setSoundEffectsEnabled(false);
     holder = surfaceView.getHolder();
     surfaceView.setZOrderOnTop(true);
     surfaceView.setOnClickListener(this);
     holder.addCallback(this);
     holder.setFormat(PixelFormat.TRANSLUCENT);
+    
+    resultTV = (TextView) findViewById(R.id.resultTV);
+    bestTV = (TextView) findViewById(R.id.bestTV);
+    currentModeTypeLevelTV = (TextView) findViewById(R.id.current_mode_type_level_tv);
+    currentModeTypeLevelTV.setVisibility(View.INVISIBLE);
+    
+    nickyName = getIntent().getStringExtra("NICKYNAME");
+
     loadRes();
+    restart();
   }
 
   @Override
   protected void onResume() {
     super.onResume();
-    restart();
   }
 
   @Override
@@ -137,37 +170,6 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
     stopDrawingThread();
   }
 
-  public void showRestartDialog() {
-    int highest = PrefUtil.getHighestScore(this);
-    String text = null;
-    if (currentPoint > highest) {
-      highest = currentPoint;
-      PrefUtil.setHighestScore(this, currentPoint);
-    } else {
-    }
-    text = "本次分数:" + currentPoint + "\n历史高分:" + highest;
-    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setTitle("Game Over");
-    builder.setMessage(text);
-    builder.setPositiveButton("再玩一次", new DialogInterface.OnClickListener() {
-
-      @Override
-      public void onClick(DialogInterface dialog, int which) {
-        playSwooshing();
-        restart();
-      }
-    });
-    builder.setNegativeButton("退出游戏", new DialogInterface.OnClickListener() {
-
-      @Override
-      public void onClick(DialogInterface dialog, int which) {
-        playSwooshing();
-        finish();
-      }
-    });
-    builder.setCancelable(false);
-    alertDialog = builder.show();
-  }
 
   private void restart() {
     if (!isFinishing()) {
@@ -195,10 +197,10 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
       currentPoint = 0;
       lastBlockY = 0;
       currentStatus = Sprite.STATUS_NOT_STARTED;
-      if (alertDialog != null && alertDialog.isShowing()) {
-        alertDialog.dismiss();
-        alertDialog = null;
-      }
+//      if (alertDialog != null && alertDialog.isShowing()) {
+//        alertDialog.dismiss();
+//        alertDialog = null;
+//      }
       if (surfaceCreated) {
         startDrawingThread();
       }
@@ -254,8 +256,15 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
       while (!Thread.interrupted()) {
         long startTime = System.currentTimeMillis();
         Canvas canvas = holder.lockCanvas();
+        if (canvas == null) {
+        	Log.e(TAG, "canvas == null");
+			continue;
+		}
         try {
           cleanCanvas(canvas);
+          if (sprites.size() == 0) {
+			break;
+          }
           Iterator<Sprite> iterator = sprites.iterator();
           while (iterator.hasNext()) {
             Sprite sprite = iterator.next();
@@ -284,7 +293,8 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
         if (currentStatus == Sprite.STATUS_GAME_OVER) {
           if (battaSprite.isHit(battaSprite) && !splashSprite.isAlive()) {
             onGameOver();
-            break;
+            sprites.clear();
+            continue;
           } else {
             continue;
           }
@@ -346,6 +356,19 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
       }
     });
   }
+  
+  private void showAndUpdateResultLayer(){
+	  
+	resultLayer.setBackgroundColor(Color.parseColor("#773460"));
+	resultLayer.setVisibility(View.VISIBLE);
+    int highest = PrefUtil.getHighestScore(this);
+    if (currentPoint > highest) {
+      highest = currentPoint;
+      PrefUtil.setHighestScore(this, currentPoint);
+    } 
+	bestTV.setText(getString(R.string.best, highest));
+	resultTV.setText(getString(R.string.flappy_bird_result, currentPoint));
+  }
 
   private void onGameOver() {
     runOnUiThread(new Runnable() {
@@ -354,7 +377,8 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
       public void run() {
         if (!isFinishing()) {
           soundPool.play(soundIds[SOUND_DIE], 0.5f, 0.5f, 1, 0, 1);
-          showRestartDialog();
+          showAndUpdateResultLayer();
+          submitScore();
         }
       }
     });
@@ -402,4 +426,44 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
       break;
     }
   }
+  
+  
+	public void onRestartButtonClick(View view){
+		resultLayer.setVisibility(View.INVISIBLE);
+        //surfaceView.setVisibility(View.VISIBLE);
+        playSwooshing();
+        restart();
+	}
+	
+	//TODO bugs
+	public void onRankButtonClick(View view){
+		Intent intent = new Intent(this, NewRankAcitivity.class);
+		intent.putExtra(GameActiviy.TYPE, Constant.TYPE_FLAPPY_BIRD);
+		startActivity(intent);
+	}
+
+	public void onBackButtonClick(View view){
+        playSwooshing();
+		finish();
+	}
+	
+	private void submitScore(){
+
+		if (nickyName == null || currentPoint == 0) {
+			return;
+		}
+
+	   new Thread(new Runnable() {
+		@Override
+		public void run() {
+			// TODO the uri should base on the mode;
+			  String submitUri = "http://littleappleapp.sinaapp.com/submit_score.php";
+			  List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+			  nameValuePairs.add(new BasicNameValuePair("nickyname", nickyName));
+			  nameValuePairs.add(new BasicNameValuePair("score", "" + currentPoint));
+			  nameValuePairs.add(new BasicNameValuePair("type", + Constant.TYPE_FLAPPY_BIRD + ""));
+			  Util.httpPost(submitUri, nameValuePairs, null);
+		}
+	}).start();
+	}
 }

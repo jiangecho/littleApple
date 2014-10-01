@@ -107,7 +107,7 @@ public class BlockerSprite implements Sprite {
   public int getScore() {
     if (!scored && currentX < X) {
       scored = true;
-      return 1;
+      return 5;
     } else {
       return 0;
     }

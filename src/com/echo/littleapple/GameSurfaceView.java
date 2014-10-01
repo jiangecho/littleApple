@@ -535,7 +535,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		soundPoolThread = new HandlerThread("test");
 		soundPoolThread.start();
 		soundPoolHandler = new Handler(soundPoolThread.getLooper(), null);
-		soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
+		soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		
 		sounds = new int[3];
 		sounds[0] = soundPool.load(context, R.raw.ok, 1);

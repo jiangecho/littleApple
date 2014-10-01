@@ -79,7 +79,7 @@ public class CoinSprite implements Sprite {
 
   @Override
   public int getScore() {
-    return getPoint ? 5 : 0;
+    return getPoint ? 10 : 0;
   }
 
 }
