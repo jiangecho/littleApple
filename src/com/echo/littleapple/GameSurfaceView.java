@@ -531,7 +531,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		animationHandler.post(animationTask);
 	}
 	
-	private void initSoundPool(){
+	public void initSoundPool(){
 		soundPoolThread = new HandlerThread("test");
 		soundPoolThread.start();
 		soundPoolHandler = new Handler(soundPoolThread.getLooper(), null);

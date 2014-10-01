@@ -242,6 +242,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	@Override
 	public void onResume() {
 		super.onResume();
+		gameView.initSoundPool();
 	}
 	
 	private class MyCountDownTimer extends CountDownTimer{
