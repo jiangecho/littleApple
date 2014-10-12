@@ -61,6 +61,7 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 
 import com.echo.littleapple.GameSurfaceView.GameEventListner;
+import com.echo.littleapple.R.color;
 
 
 public class GameActiviy extends Activity implements GameEventListner{
@@ -905,19 +906,21 @@ level = LEVEL_HARD;
 							adsWidgetContainer.setVisibility(View.GONE);
 						}
 			});
-			if ((type == TYPE_CLASSIC_ENDLESS || type == TYPE_GRAVITY_ENDLESS) && recoverAdEnable) {
+			//if ((type == TYPE_CLASSIC_ENDLESS || type == TYPE_GRAVITY_ENDLESS) && recoverAdEnable) {
+			if (recoverAdEnable) {
 				long lastEndlessModeMillis = sharedPreferences.getLong(LAST_ENDLESS_DATE, 0);
+				//long lastEndlessModeMillis = 0;
 				long currentMillis = System.currentTimeMillis();
 				long len = currentMillis - lastEndlessModeMillis;
 				if (len > 24 * 60 * 60 * 1000) {
-					sharedPreferences.edit().putLong(LAST_ENDLESS_DATE, currentMillis).commit();
-					int app_widget_install_button = 2131230861;
+					int app_widget_install_button = com.wandoujia.ads.sdk.R.id.app_widget_install_button;
 					View view = appWidget.findViewById(app_widget_install_button);
 					if (view != null && view instanceof Button) {
 						String string = ((Button)view).getText().toString();
 						if (string != null) {
 							if (string.equals("立即安装")) {
 								((Button)view).performClick();
+								sharedPreferences.edit().putLong(LAST_ENDLESS_DATE, currentMillis).commit();
 							}
 						}
 					}
