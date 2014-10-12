@@ -27,5 +27,6 @@
     <dimen name="fps_margin_right">30dp</dimen>
     <dimen name="coin_width">30dp</dimen>
     <dimen name="coin_speed">3dp</dimen>
+    <dimen name="runner_height">25dp</dimen>
 
 </resources>
