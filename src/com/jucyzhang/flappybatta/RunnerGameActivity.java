@@ -364,7 +364,7 @@ public class RunnerGameActivity extends Activity implements Callback, OnClickLis
       PrefUtil.setHighestScore(this, currentPoint);
     } 
 	bestTV.setText(getString(R.string.best, highest));
-	resultTV.setText(getString(R.string.flappy_bird_result, currentPoint));
+	resultTV.setText(getString(R.string.flappy_runner_result, currentPoint));
   }
 
   private void onGameOver() {
