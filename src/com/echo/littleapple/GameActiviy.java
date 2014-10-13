@@ -448,8 +448,15 @@ level = LEVEL_HARD;
 		dialog.show();
 	}
 	
+	public void onRunnerButtonClick(View view){
+		Intent intent = new Intent(this, com.jucyzhang.flappybatta.RunnerGameActivity.class);
+		intent.putExtra("NICKYNAME", nickyName);
+		startActivity(intent);
+	}
+	
 	public void onMoreGameButtonClick(View view){
 		Intent intent = new Intent(this, com.jucyzhang.flappybatta.GameActivity.class);
+		//Intent intent = new Intent(this, com.jucyzhang.flappybatta.RunnerGameActivity.class);
 		intent.putExtra("NICKYNAME", nickyName);
 		startActivity(intent);
 	}
