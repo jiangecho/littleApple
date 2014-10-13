@@ -43,6 +43,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.echo.littleapple.NewRankAcitivity;
+import com.wandoujia.ads.sdk.Ads;
+import com.wandoujia.ads.sdk.Ads.ShowMode;
+import com.wandoujia.ads.sdk.loader.Fetcher.AdFormat;
 
 public class RunnerGameActivity extends Activity implements Callback, OnClickListener {
   /**
@@ -131,6 +134,8 @@ public class RunnerGameActivity extends Activity implements Callback, OnClickLis
 
     loadRes();
     restart();
+
+	Ads.preLoad(this, AdFormat.interstitial, "d6ed8c42459ed0bfba7c21a1487d4765");
   }
 
   @Override
@@ -375,10 +380,17 @@ public class RunnerGameActivity extends Activity implements Callback, OnClickLis
         if (!isFinishing()) {
           soundPool.play(soundIds[SOUND_DIE], 0.5f, 0.5f, 1, 0, 1);
           showAndUpdateResultLayer();
+          showAd();
           submitScore();
         }
       }
     });
+  }
+
+  private void showAd(){
+	  if (Ads.isLoaded(AdFormat.interstitial, "d6ed8c42459ed0bfba7c21a1487d4765")) {
+		Ads.showAppWidget(this, null, "d6ed8c42459ed0bfba7c21a1487d4765", ShowMode.FULL_SCREEN);
+	}
   }
 
   private void onHit() {
