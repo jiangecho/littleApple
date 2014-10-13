@@ -18,7 +18,7 @@ public class RoadBlockSprite implements Sprite{
 	private float speed;
 	
 	// X, the x position of the runner sprite
-	public static RoadBlockSprite obtainRandomRoadBlockSprite(Context context, int X){
+	public static RoadBlockSprite obtainRandom(Context context, int X){
 		
 		return new RoadBlockSprite(context, X);
 	}
@@ -28,14 +28,15 @@ public class RoadBlockSprite implements Sprite{
 		groundHeight = ViewUtil.dipResourceToPx(context, R.dimen.ground_height);
 		
 		// TODO random width and height
-		blockWidth = ViewUtil.dipResourceToPx(context, R.dimen.block_width);
-		blockHeight = blockWidth;
+		int defaultHeight = ViewUtil.dipResourceToPx(context, R.dimen.block_width);
+		blockHeight = defaultHeight  - RANDOM.nextInt((int) (defaultHeight / 2));
+		blockWidth = defaultHeight / 2 + RANDOM.nextInt(defaultHeight / 2);
 
 		speed = ViewUtil.dipResourceToFloat(context, R.dimen.block_speed);
 
 		width = ViewUtil.getScreenWidth(context);
 		height = ViewUtil.getScreenHeight(context);
-		currentX = width;
+		currentX = width + RANDOM.nextInt(width / 5);
 		currentY = height - groundHeight - blockHeight;
 		this.X = X;
 
@@ -71,6 +72,7 @@ public class RoadBlockSprite implements Sprite{
 			int rRight = r.getHitRight();
 			
 			if((rBottom > currentY) && ((rRight > currentX) && (rLeft < currentX)) 
+					|| ((rBottom > currentY) && ((rLeft > currentX) && rRight < currentX + blockWidth))
 					|| ((rBottom > currentY) && ((rRight > currentX + blockWidth) && (rLeft < currentX + blockWidth)))) {
 				return true;
 			}else {

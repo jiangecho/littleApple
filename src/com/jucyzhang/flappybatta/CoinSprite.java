@@ -81,5 +81,9 @@ public class CoinSprite implements Sprite {
   public int getScore() {
     return getPoint ? 10 : 0;
   }
+  
+  public void setCurrentY(int currentY) {
+	this.currentY = currentY;
+  }
 
 }

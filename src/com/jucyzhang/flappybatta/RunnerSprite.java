@@ -14,6 +14,7 @@ public class RunnerSprite implements Sprite{
 	private final int X;
 	private int currentY;
 	private int maxY;
+	private int minY;
 	
 	private int runnerHeight;
 	private int runnerWidth;
@@ -29,12 +30,15 @@ public class RunnerSprite implements Sprite{
 	private int hitPaddingBottom;
 	private int hitPaddingTop;
 	
+	private boolean isHitted = false;
+	
 	public RunnerSprite(Context context) {
 		int width = ViewUtil.getScreenWidth(context);
 		int heith = ViewUtil.getScreenHeight(context);
 		
 		Resources resource = context.getResources();
-		runner = resource.getDrawable(R.drawable.img_bird_blue_1);
+		// TODO change the image, it is too ugly.
+		runner = resource.getDrawable(R.drawable.img_coin);
 		
 		runnerHeight = ViewUtil.dipResourceToPx(context, R.dimen.runner_height);
 		runnerWidth = runnerHeight * (runner.getIntrinsicWidth() / runner.getIntrinsicHeight());
@@ -43,11 +47,13 @@ public class RunnerSprite implements Sprite{
 		maxY = heith - groundHeight;
 		currentY = heith - groundHeight - runnerHeight;
 		
+		int maxJumpHeight = ViewUtil.dipResourceToPx(context, R.dimen.runner_max_jump_height);
+		minY = heith - groundHeight - runnerHeight - maxJumpHeight;
+
 		int xPosition = ViewUtil.dipResourceToPx(context, R.dimen.bird_position_x);
 		X = width / 2 - runnerWidth / 2 - xPosition;
 		acceleration = ViewUtil.dipResourceToPx(context, R.dimen.bird_acceleration);
-		//tapSpeed = ViewUtil.dipResourceToPx(context, R.dimen.bird_tap_speed);
-		tapSpeed = -25;
+		tapSpeed = ViewUtil.dipResourceToPx(context, R.dimen.runner_tap_speed);
 		
 		hitPaddingBottom = ViewUtil.dipResourceToPx(context, R.dimen.bird_hit_padding_bottom);
 		hitPaddingTop = ViewUtil.dipResourceToPx(context, R.dimen.bird_hit_padding_top);
@@ -60,14 +66,21 @@ public class RunnerSprite implements Sprite{
 	@Override
 	public void onDraw(Canvas canvas, Paint globalPaint, int status) {
 		if (status != Sprite.STATUS_NOT_STARTED) {
-			currentY += currentSpeed;
-			synchronized (this) {
-				currentSpeed += acceleration;
+			if (!isHitted) {
+				currentY += currentSpeed;
+				synchronized (this) {
+					currentSpeed += acceleration;
+				}
+				
 			}
 		}
 		
 		if (currentY + runnerHeight > maxY) {
 			currentY = maxY - runnerHeight;
+		}
+		
+		if (currentY < minY) {
+			currentY = minY;
 		}
 		
 		runner.setBounds(X, currentY, X + runnerWidth, currentY + runnerHeight);
@@ -90,6 +103,10 @@ public class RunnerSprite implements Sprite{
 	public int getHitRight(){
 		return X + runnerWidth - hitPaddingRight;
 	}
+	
+	public int getX(){
+		return X;
+	}
 
 	@Override
 	public boolean isAlive() {
@@ -98,7 +115,11 @@ public class RunnerSprite implements Sprite{
 
 	@Override
 	public boolean isHit(Sprite sprite) {
-		return false;
+		return isHitted;
+	}
+	
+	public void setHitted(boolean isHitted){
+		this.isHitted = isHitted;
 	}
 
 	@Override
