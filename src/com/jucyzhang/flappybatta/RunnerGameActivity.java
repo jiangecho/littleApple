@@ -447,7 +447,7 @@ public class RunnerGameActivity extends Activity implements Callback, OnClickLis
 	//TODO bugs
 	public void onRankButtonClick(View view){
 		Intent intent = new Intent(this, NewRankAcitivity.class);
-		intent.putExtra(GameActiviy.TYPE, Constant.TYPE_FLAPPY_BIRD);
+		intent.putExtra(GameActiviy.TYPE, Constant.TYPE_FLAPPY_RUNNER);
 		startActivity(intent);
 	}
 
@@ -470,7 +470,7 @@ public class RunnerGameActivity extends Activity implements Callback, OnClickLis
 			  List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 			  nameValuePairs.add(new BasicNameValuePair("nickyname", nickyName));
 			  nameValuePairs.add(new BasicNameValuePair("score", "" + currentPoint));
-			  nameValuePairs.add(new BasicNameValuePair("type", + Constant.TYPE_FLAPPY_BIRD + ""));
+			  nameValuePairs.add(new BasicNameValuePair("type", + Constant.TYPE_FLAPPY_RUNNER+ ""));
 			  Util.httpPost(submitUri, nameValuePairs, null);
 		}
 	}).start();
