@@ -22,8 +22,8 @@ public class RunnerSprite implements Sprite{
 
 	private float currentSpeed;
 
-	private final int acceleration;
-	private final int tapSpeed;
+	private final float acceleration;
+	private final float tapSpeed;
 	
 	private int hitPaddingLeft;
 	private int hitPaddingRight;
@@ -52,8 +52,8 @@ public class RunnerSprite implements Sprite{
 
 		int xPosition = ViewUtil.dipResourceToPx(context, R.dimen.bird_position_x);
 		X = width / 2 - runnerWidth / 2 - xPosition;
-		acceleration = ViewUtil.dipResourceToPx(context, R.dimen.bird_acceleration);
-		tapSpeed = ViewUtil.dipResourceToPx(context, R.dimen.runner_tap_speed);
+		acceleration = ViewUtil.dipResourceToFloat(context, R.dimen.bird_acceleration);
+		tapSpeed = ViewUtil.dipResourceToFloat(context, R.dimen.runner_tap_speed);
 		
 		hitPaddingBottom = ViewUtil.dipResourceToPx(context, R.dimen.bird_hit_padding_bottom);
 		hitPaddingTop = ViewUtil.dipResourceToPx(context, R.dimen.bird_hit_padding_top);
