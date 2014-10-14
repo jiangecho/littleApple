@@ -30,7 +30,7 @@ public class RoadBlockSprite implements Sprite{
 		// TODO random width and height
 		int defaultHeight = ViewUtil.dipResourceToPx(context, R.dimen.block_width);
 		blockHeight = defaultHeight  - RANDOM.nextInt((int) (defaultHeight / 2));
-		blockWidth = defaultHeight / 2 + RANDOM.nextInt(defaultHeight / 2);
+		blockWidth = defaultHeight / 3 + RANDOM.nextInt(defaultHeight / 2);
 
 		speed = ViewUtil.dipResourceToFloat(context, R.dimen.block_speed);
 
@@ -73,7 +73,7 @@ public class RoadBlockSprite implements Sprite{
 			
 			if((rBottom > currentY) && ((rRight > currentX) && (rLeft < currentX)) 
 					|| ((rBottom > currentY) && ((rLeft > currentX) && rRight < currentX + blockWidth))
-					|| ((rBottom > currentY) && ((rRight > currentX + blockWidth) && (rLeft < currentX + blockWidth)))) {
+					/*|| ((rBottom > currentY) && ((rRight > currentX + blockWidth) && (rLeft < currentX + blockWidth)))*/) {
 				return true;
 			}else {
 				return false;
