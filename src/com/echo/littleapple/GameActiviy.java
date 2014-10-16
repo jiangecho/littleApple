@@ -371,12 +371,15 @@ level = LEVEL_HARD;
 		intent.putExtra("NICKYNAME", nickyName);
 		startActivity(intent);
 	}
-	
-	public void onMoreGameButtonClick(View view){
+	public void onBirdButtonClick(View view){
 		Intent intent = new Intent(this, com.jucyzhang.flappybatta.GameActivity.class);
 		//Intent intent = new Intent(this, com.jucyzhang.flappybatta.RunnerGameActivity.class);
 		intent.putExtra("NICKYNAME", nickyName);
 		startActivity(intent);
+	}
+	
+	public void onMoreGameButtonClick(View view){
+
 	}
 	
 	//select type
