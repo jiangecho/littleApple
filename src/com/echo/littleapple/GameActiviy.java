@@ -1301,14 +1301,13 @@ level = LEVEL_HARD;
    private void showExitDialog(){
 	  AlertDialog dialog = new AlertDialog.Builder(this)
 	  	.setTitle(getString(R.string.exit_title))
-	  	.setMessage(getString(R.string.exit_text))
+	  	//.setMessage(getString(R.string.exit_text))
 	  	.create();
 	  dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.exit_cancel), new DialogInterface.OnClickListener() {
 		
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
 			dialog.dismiss();
-			finish();
 		}
 	});
 	  dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.exit_ok), new DialogInterface.OnClickListener() {
@@ -1316,7 +1315,7 @@ level = LEVEL_HARD;
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
 			dialog.dismiss();
-			Ads.showAppWall(GameActiviy.this, APP_WALL_ID);
+			finish();
 		}
 	});
 	  dialog.show();
