@@ -461,7 +461,7 @@ level = LEVEL_HARD;
 	}
 	
 	public void onMoreGameButtonClick(View view){
-
+		Ads.showAppWall(this, APP_WALL_ID);
 	}
 	
 	//select type
