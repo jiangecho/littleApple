@@ -105,4 +105,5 @@
     <string name="flappy_bird_result">吼吼，我的小鸟赢了%d分</string>
     <string name="flappy_runner_result">吼吼，我的小苹果会跨栏哦，得了%d分</string>
     <string name="runner">小苹果爱跨栏</string>
+    <string name="more_games">更多游戏</string>
 </resources>
