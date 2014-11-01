@@ -89,7 +89,7 @@ public class NewRankAcitivity extends Activity{
 	
 
 	private int type;
-	private static final String RANK_INFO_URL = "http://littleappleapp.sinaapp.com/get_rank_info.php";
+	private static final String RANK_INFO_URL = "http://littleappleapp.sinaapp.com/get_rank_info_v_2_7.php";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -324,8 +324,8 @@ public class NewRankAcitivity extends Activity{
 					}else if (line.startsWith(AWARD_VALUES)) {
 						tmp = line.substring(AWARD_VALUES.length()).trim();
 						itemFields = tmp.split(" ");
-						awardValues = new int[3];
-						for (int i = 0; i < 3; i++) {
+						awardValues = new int[itemFields.length];
+						for (int i = 0; i < itemFields.length; i++) {
 							awardValues[i] = Integer.parseInt(itemFields[i]);
 						}
 					}else if(line.startsWith(LAST_WEEK_AWARD_STATUS)){
@@ -366,7 +366,11 @@ public class NewRankAcitivity extends Activity{
 									nickyName = nickyName.substring(0, index);
 								}
 								score = itemFields[1];
-								award = awardValues[i] + "";
+								if (i < awardValues.length) {
+									award = awardValues[i] + "";
+								}else {
+									award = awardValues[awardValues.length - 1] + "";
+								}
 								awardListItems.add(new AwardItem(nickyName, score, award));
 							}
 						}
@@ -502,68 +506,52 @@ public class NewRankAcitivity extends Activity{
 	
 	
 	public void onAcceptAwardButtonClick(View v){
-        	LayoutInflater layoutInflater = LayoutInflater.from(this);
-        	final View view = layoutInflater.inflate(R.layout.accept_award_dialog, null);
-        	int award = 0;
-        	if (lastWeekAwardStatus == ON_GOING) {
-        		switch (myLastWeekRank) {
-				case 1:
-					award = 50;
-					break;
-				case 2:
-					award = 30;
-					break;
-				case 3:
-					award = 20;
-					break;
-
-				default:
-					break;
-				}
-				
-			}
-        	AlertDialog dialog = new AlertDialog.Builder(this)
-        		.setTitle(getString(R.string.award_value, award))
-        		.setView(view)
-        		.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						EditText editText = (EditText) view.findViewById(R.id.editText);
-						final String phoneNum = editText.getText().toString().trim();
-						if (isPhoneNumber(phoneNum)) {
-							new Thread(new Runnable() {
-								
-								@Override
-								public void run() {
-	                                String uri = "http://littleappleapp.sinaapp.com/accept_award.php";
-	                                List<NameValuePair> nameValuePairs = null;
-	                                if (myNickyName != null) {
-	                                        nameValuePairs = new ArrayList<NameValuePair>();
-	                                        nameValuePairs.add(new BasicNameValuePair("nickyname", myNickyName));
-	                                        nameValuePairs.add(new BasicNameValuePair("phone_number", phoneNum));
-	                                        nameValuePairs.add(new BasicNameValuePair("award", awardValues[myLastWeekRank - 1] + ""));
-	                                }
-	
-	                                String content = Util.httpPost(uri, nameValuePairs, null);
-	                                if (content == null) {
-	                                        return ;
-	                                }
-										
-									}
-								}).start();
-							acceptAwardButton.setText(getString(R.string.have_accept_award));
-							Toast.makeText(NewRankAcitivity.this, getString(R.string.accept_award_success), Toast.LENGTH_LONG).show();
-							
-						}else {
-							Toast.makeText(NewRankAcitivity.this, getString(R.string.invalid_phone_number), Toast.LENGTH_LONG)
-								.show();;
-						}
-
-					}
-				})
-				.create();
-        	dialog.show();
+//        	LayoutInflater layoutInflater = LayoutInflater.from(this);
+//        	final View view = layoutInflater.inflate(R.layout.accept_award_dialog, null);
+//        	AlertDialog dialog = new AlertDialog.Builder(this)
+//        		.setTitle(getString(R.string.award_value, awardValues[myLastWeekRank - 1]))
+//        		.setView(view)
+//        		.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
+//					
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+//						EditText editText = (EditText) view.findViewById(R.id.editText);
+//						final String phoneNum = editText.getText().toString().trim();
+//						if (isPhoneNumber(phoneNum)) {
+//							new Thread(new Runnable() {
+//								
+//								@Override
+//								public void run() {
+//	                                String uri = "http://littleappleapp.sinaapp.com/accept_award.php";
+//	                                List<NameValuePair> nameValuePairs = null;
+//	                                if (myNickyName != null) {
+//	                                        nameValuePairs = new ArrayList<NameValuePair>();
+//	                                        nameValuePairs.add(new BasicNameValuePair("nickyname", myNickyName));
+//	                                        nameValuePairs.add(new BasicNameValuePair("phone_number", phoneNum));
+//	                                        nameValuePairs.add(new BasicNameValuePair("award", awardValues[myLastWeekRank - 1] + ""));
+//	                                }
+//	
+//	                                String content = Util.httpPost(uri, nameValuePairs, null);
+//	                                if (content == null) {
+//	                                        return ;
+//	                                }
+//										
+//									}
+//								}).start();
+//							acceptAwardButton.setText(getString(R.string.have_accept_award));
+//							Toast.makeText(NewRankAcitivity.this, getString(R.string.accept_award_success), Toast.LENGTH_LONG).show();
+//							
+//						}else {
+//							Toast.makeText(NewRankAcitivity.this, getString(R.string.invalid_phone_number), Toast.LENGTH_LONG)
+//								.show();;
+//						}
+//
+//					}
+//				})
+//				.create();
+//        	dialog.show();
+		
+		Toast.makeText(this, getString(R.string.accept_award_toast), Toast.LENGTH_LONG).show();
 	}
 	
 	//TODO more strict
