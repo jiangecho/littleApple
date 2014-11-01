@@ -73,7 +73,7 @@ public class RoadBlockSprite implements Sprite{
 			
 			if((rBottom > currentY) && ((rRight > currentX) && (rLeft < currentX)) 
 					|| ((rBottom > currentY) && ((rLeft > currentX) && rRight < currentX + blockWidth))
-					/*|| ((rBottom > currentY) && ((rRight > currentX + blockWidth) && (rLeft < currentX + blockWidth)))*/) {
+					|| ((rBottom > currentY) && ((rRight > currentX + blockWidth ) && (rLeft < currentX + blockWidth - ((RunnerSprite)sprite).getWidth() / 2)))) {
 				return true;
 			}else {
 				return false;

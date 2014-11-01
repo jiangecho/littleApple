@@ -208,7 +208,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 		
 		moveStepHeight = cellHeight / 10;
 		gravityMinMoveStepHeight = cellHeight / 20;
-		gravityMaxMoveStepHeight = (float) (cellHeight / 7.8);
+		gravityMaxMoveStepHeight = (float) (cellHeight / 8);
 		gravityMoveStepHeight = gravityMinMoveStepHeight;
 		//moveStepHeightForGravityDoubleAndMine = cellHeight / 11;
 		

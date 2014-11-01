@@ -104,6 +104,10 @@ public class RunnerSprite implements Sprite{
 		return X + runnerWidth - hitPaddingRight;
 	}
 	
+	public int getWidth(){
+		return runnerWidth;
+	}
+	
 	public int getX(){
 		return X;
 	}
