@@ -107,4 +107,9 @@
     <string name="runner">小苹果爱跨栏</string>
     <string name="more_games">更多游戏</string>
     <string name="accept_award_toast">请加QQ群领奖</string>
+    <string name="block_row_count">请选择你喜欢的栏数</string>
+    <string name="run_start">点击开始</string>
+    <string name="run_caution">别撞到栏杆哦</string>
+    <string name="block_row_one">单排</string>
+    <string name="block_row_double">双排</string>
 </resources>

@@ -86,4 +86,10 @@ public class CoinSprite implements Sprite {
 	this.currentY = currentY;
   }
 
+@Override
+public void setY(int y) {
+	// TODO Auto-generated method stub
+	
+}
+
 }

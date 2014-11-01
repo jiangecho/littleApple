@@ -73,7 +73,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	private TextView timerTV;
 	private GameSurfaceView gameView;
-	private LinearLayout modeSelectLayer, typeSelectLayer;
+	private LinearLayout modeSelectLayer, typeSelectLayer, runnerSelectLayer;
 
 	private LinearLayout resultLayer;
 	private TextView resultTV;
@@ -168,6 +168,7 @@ public class GameActiviy extends Activity implements GameEventListner{
         gameView.setGameEventListener(this);
         modeSelectLayer = (LinearLayout) findViewById(R.id.mode_select_layer);
         typeSelectLayer = (LinearLayout)findViewById(R.id.type_select_layer);
+        runnerSelectLayer = (LinearLayout) findViewById(R.id.runner_select_layer);
         typeSelectLayer.setOnTouchListener(blockOnTouchEvent);
         modeSelectLayer.setOnTouchListener(blockOnTouchEvent);
         
@@ -367,10 +368,24 @@ level = LEVEL_HARD;
 	}
 	
 	public void onRunnerButtonClick(View view){
+		
+		modeSelectLayer.setVisibility(View.INVISIBLE);
+		runnerSelectLayer.setVisibility(View.VISIBLE);
+		
+	}
+	
+	public void onSingleRowButtonClick(View view){
 		Intent intent = new Intent(this, com.jucyzhang.flappybatta.RunnerGameActivity.class);
 		intent.putExtra("NICKYNAME", nickyName);
 		startActivity(intent);
 	}
+	
+	public void onDoubleRowButtonClick(View view){
+		Intent intent = new Intent(this, com.jucyzhang.flappybatta.TwoRunnerGameActivity.class);
+		intent.putExtra("NICKYNAME", nickyName);
+		startActivity(intent);
+	}
+
 	public void onBirdButtonClick(View view){
 		Intent intent = new Intent(this, com.jucyzhang.flappybatta.GameActivity.class);
 		//Intent intent = new Intent(this, com.jucyzhang.flappybatta.RunnerGameActivity.class);
@@ -606,15 +621,21 @@ level = LEVEL_HARD;
 	}
 
 	public void onBackButtonClick(View view){
-		if (typeSelectLayer.getVisibility() == View.VISIBLE) {
-			typeSelectLayer.setVisibility(View.INVISIBLE);
+		if (runnerSelectLayer.getVisibility() == View.VISIBLE) {
 			modeSelectLayer.setVisibility(View.VISIBLE);
+			runnerSelectLayer.setVisibility(View.INVISIBLE);
 		}else {
-			gameView.reset();
-			typeSelectLayer.setVisibility(View.VISIBLE);
-			resultLayer.setVisibility(View.INVISIBLE);
+			if (typeSelectLayer.getVisibility() == View.VISIBLE) {
+				typeSelectLayer.setVisibility(View.INVISIBLE);
+				modeSelectLayer.setVisibility(View.VISIBLE);
+			}else {
+				gameView.reset();
+				typeSelectLayer.setVisibility(View.VISIBLE);
+				resultLayer.setVisibility(View.INVISIBLE);
+			}
 			
 		}
+		
 	}
 
 	

@@ -51,6 +51,12 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.jucyzhang.flappybatta.TwoRunnerGameActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
 			  android:name="cn.sharesdk.framework.ShareSDKUIShell"
 			  android:theme="@android:style/Theme.Translucent.NoTitleBar"
 			  android:configChanges="keyboardHidden|orientation|screenSize"

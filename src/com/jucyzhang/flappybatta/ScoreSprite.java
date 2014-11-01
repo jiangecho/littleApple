@@ -72,4 +72,10 @@ public class ScoreSprite implements Sprite {
     this.currentScore = currentScore;
   }
 
+@Override
+public void setY(int y) {
+	// TODO Auto-generated method stub
+	
+}
+
 }
