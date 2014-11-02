@@ -117,7 +117,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private static final String[] colors = {"#773460" ,"#FE436A" ,"#823935" ,"#113F3D" ,"#26BCD5" ,"#F40D64" ,"#458994" ,"#93E0FF" ,"#D96831" ,"#AEDD81" ,"#593D43"};
 	private static final String SAY_HELLO = "2.0ad";
 	//TODO modify for different app store
-	private static final String RECOVER_AD = "auto2.6";
+	private static final String RECOVER_AD = "auto2.7";
 	private Random random;
 	
 	private String nickyName;
