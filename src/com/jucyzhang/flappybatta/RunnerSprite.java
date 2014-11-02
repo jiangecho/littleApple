@@ -29,6 +29,7 @@ public class RunnerSprite implements Sprite{
 	private int hitPaddingRight;
 	private int hitPaddingBottom;
 	private int hitPaddingTop;
+	private int maxJumpHeight;
 	
 	private boolean isHitted = false;
 	
@@ -47,7 +48,7 @@ public class RunnerSprite implements Sprite{
 		maxY = heith - groundHeight;
 		currentY = heith - groundHeight - runnerHeight;
 		
-		int maxJumpHeight = ViewUtil.dipResourceToPx(context, R.dimen.runner_max_jump_height);
+		maxJumpHeight = ViewUtil.dipResourceToPx(context, R.dimen.runner_max_jump_height);
 		minY = heith - groundHeight - runnerHeight - maxJumpHeight;
 
 		int xPosition = ViewUtil.dipResourceToPx(context, R.dimen.bird_position_x);
@@ -104,6 +105,10 @@ public class RunnerSprite implements Sprite{
 		return X + runnerWidth - hitPaddingRight;
 	}
 	
+	public int getWidth(){
+		return runnerWidth;
+	}
+	
 	public int getX(){
 		return X;
 	}
@@ -134,6 +139,13 @@ public class RunnerSprite implements Sprite{
 			}
 			
 		}
+	}
+
+	@Override
+	public void setY(int y) {
+		currentY = y - runnerHeight;
+		maxY = y; 
+		minY = currentY - maxJumpHeight; 
 	}
 
 }

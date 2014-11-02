@@ -69,4 +69,10 @@ public class GroundSprite implements Sprite {
     return 0;
   }
 
+@Override
+public void setY(int y) {
+	topY = y;
+	
+}
+
 }

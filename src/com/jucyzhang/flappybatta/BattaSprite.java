@@ -138,4 +138,10 @@ public class BattaSprite implements Sprite {
     return X;
   }
 
+@Override
+public void setY(int y) {
+	// TODO Auto-generated method stub
+	
+}
+
 }

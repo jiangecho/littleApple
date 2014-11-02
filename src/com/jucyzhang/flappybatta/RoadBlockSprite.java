@@ -71,9 +71,10 @@ public class RoadBlockSprite implements Sprite{
 			int rLeft = r.getHitLeft();
 			int rRight = r.getHitRight();
 			
-			if((rBottom > currentY) && ((rRight > currentX) && (rLeft < currentX)) 
-					|| ((rBottom > currentY) && ((rLeft > currentX) && rRight < currentX + blockWidth))
-					/*|| ((rBottom > currentY) && ((rRight > currentX + blockWidth) && (rLeft < currentX + blockWidth)))*/) {
+			if((rBottom > currentY && rBottom <= currentY + blockHeight) 
+					&& (((rRight > currentX) && (rLeft < currentX)) 
+					|| ((rLeft > currentX) && rRight < currentX + blockWidth)
+					|| ((rRight > currentX + blockWidth ) && (rLeft < currentX + blockWidth - ((RunnerSprite)sprite).getWidth() / 2)))) {
 				return true;
 			}else {
 				return false;
@@ -93,6 +94,12 @@ public class RoadBlockSprite implements Sprite{
 		}else {
 			return 0;
 		}
+	}
+
+	@Override
+	public void setY(int y) {
+		currentY = y - blockHeight;
+		
 	}
 
 }

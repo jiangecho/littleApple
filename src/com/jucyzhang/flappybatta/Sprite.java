@@ -20,4 +20,6 @@ public interface Sprite {
   boolean isHit(Sprite sprite);
 
   int getScore();
+  
+  void setY(int y);
 }

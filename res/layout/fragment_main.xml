@@ -50,6 +50,8 @@
         android:visibility="invisible"/>
     <include layout="@layout/result_layer"
         android:visibility="invisible"/>
+    <include layout="@layout/runner_select_layer"
+        android:visibility="invisible"/>
 
     <LinearLayout 
         android:id="@+id/ads_container_container"

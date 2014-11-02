@@ -36,4 +36,10 @@ public class SplashSprite implements Sprite {
     return 0;
   }
 
+@Override
+public void setY(int y) {
+	// TODO Auto-generated method stub
+	
+}
+
 }
