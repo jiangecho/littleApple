@@ -68,6 +68,7 @@ public class TwoRunnerGameActivity extends Activity implements Callback, OnTouch
   private Drawable coin;
   private static final long GAP = 20;
   private static final long NEW_BLOCKER_COUNT = 60;
+  private static final long NEW_BLOCKER_COUNT_2 = 80;
   private static final long NEW_COIN_COUNT = 60;
   private static final int[] BACKGROUND = new int[] {
       R.drawable.bg_general_day, R.drawable.bg_general_night };
@@ -92,6 +93,7 @@ public class TwoRunnerGameActivity extends Activity implements Callback, OnTouch
   private FpsSprite fpsSprite;
 
   private int blockerCount = 0;
+  private int blockerCount2 = 0;
   private int coinCount = 0;
   private volatile int currentPoint = 0;
   private volatile int currentStatus = Sprite.STATUS_NOT_STARTED;
@@ -207,6 +209,7 @@ public class TwoRunnerGameActivity extends Activity implements Callback, OnTouch
       HintSprite hintSprite = new HintSprite(this);
       sprites.add(hintSprite);
       blockerCount = 0;
+      blockerCount2 = 0;
       coinCount = (int) (NEW_COIN_COUNT / 2);
       currentPoint = 0;
       currentStatus = Sprite.STATUS_NOT_STARTED;
@@ -329,14 +332,21 @@ public class TwoRunnerGameActivity extends Activity implements Callback, OnTouch
         }
         if (blockerCount > NEW_BLOCKER_COUNT) {
           blockerCount = 0;
-          RoadBlockSprite sprite = RoadBlockSprite.obtainRandom(getBaseContext(), runnerSprite.getX() + 2 * random.nextInt(runnerSprite.getWidth()));
-          sprites.addFirst(sprite);
-          sprite = RoadBlockSprite.obtainRandom(getBaseContext(), runnerSprite.getX());
-          sprite.setY(firstGroundY);
+          RoadBlockSprite sprite = RoadBlockSprite.obtainRandom(getBaseContext(), runnerSprite.getX());
           sprites.addFirst(sprite);
           // Log.d(TAG, "new sprite");
         } else {
           blockerCount++;
+        }
+
+        if (blockerCount2 > NEW_BLOCKER_COUNT_2) {
+          blockerCount2 = 0;
+          RoadBlockSprite sprite = RoadBlockSprite.obtainRandom(getBaseContext(), runnerSprite2.getX());
+          sprite.setY(firstGroundY);
+          sprites.addFirst(sprite);
+          // Log.d(TAG, "new sprite");
+        } else {
+          blockerCount2 ++;
         }
         if (ENABLE_COIN) {
           if (coinCount > NEW_COIN_COUNT) {

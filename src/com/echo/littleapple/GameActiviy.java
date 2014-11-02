@@ -171,6 +171,7 @@ public class GameActiviy extends Activity implements GameEventListner{
         runnerSelectLayer = (LinearLayout) findViewById(R.id.runner_select_layer);
         typeSelectLayer.setOnTouchListener(blockOnTouchEvent);
         modeSelectLayer.setOnTouchListener(blockOnTouchEvent);
+        runnerSelectLayer.setOnTouchListener(blockOnTouchEvent);
         
         startSpeedButton = (Button) findViewById(R.id.startSpeedButton);
         startMindeButton = (Button) findViewById(R.id.startMineButton);
