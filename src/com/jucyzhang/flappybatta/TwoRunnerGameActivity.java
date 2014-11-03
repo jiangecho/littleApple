@@ -489,7 +489,7 @@ public class TwoRunnerGameActivity extends Activity implements Callback, OnTouch
 	//TODO bugs
 	public void onRankButtonClick(View view){
 		Intent intent = new Intent(this, NewRankAcitivity.class);
-		intent.putExtra(GameActiviy.TYPE, Constant.TYPE_FLAPPY_RUNNER);
+		intent.putExtra(GameActiviy.TYPE, Constant.TYPE_FLAPPY_RUNNER_DOUBLE);
 		startActivity(intent);
 	}
 
@@ -512,7 +512,7 @@ public class TwoRunnerGameActivity extends Activity implements Callback, OnTouch
 			  List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 			  nameValuePairs.add(new BasicNameValuePair("nickyname", nickyName));
 			  nameValuePairs.add(new BasicNameValuePair("score", "" + currentPoint));
-			  nameValuePairs.add(new BasicNameValuePair("type", + Constant.TYPE_FLAPPY_RUNNER+ ""));
+			  nameValuePairs.add(new BasicNameValuePair("type", + Constant.TYPE_FLAPPY_RUNNER_DOUBLE + ""));
 			  Util.httpPost(submitUri, nameValuePairs, null);
 		}
 	}).start();
