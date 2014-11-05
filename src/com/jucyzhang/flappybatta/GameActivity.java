@@ -356,8 +356,14 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
       }
     });
   }
+
   
-  private void showAndUpdateResultLayer(){
+  @Override
+public void onBackPressed() {
+	super.onBackPressed();
+}
+
+private void showAndUpdateResultLayer(){
 	  
 	resultLayer.setBackgroundColor(Color.parseColor("#773460"));
 	resultLayer.setVisibility(View.VISIBLE);

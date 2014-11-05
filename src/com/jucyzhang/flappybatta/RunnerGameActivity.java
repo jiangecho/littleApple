@@ -366,8 +366,15 @@ public class RunnerGameActivity extends Activity implements Callback, OnClickLis
 	bestTV.setText(getString(R.string.best, highest));
 	resultTV.setText(getString(R.string.flappy_runner_result, currentPoint));
   }
+  
+  
 
-  private void onGameOver() {
+  @Override
+public void onBackPressed() {
+	super.onBackPressed();
+}
+
+private void onGameOver() {
     runOnUiThread(new Runnable() {
 
       @Override
