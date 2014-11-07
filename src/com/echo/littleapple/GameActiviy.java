@@ -56,6 +56,7 @@ import com.echo.littleapple.GameSurfaceView.GameEventListner;
 public class GameActiviy extends Activity implements GameEventListner{
 
 	private static final int TIME_LENGHT = 30 * 1000;
+	private static final int TIME_LENGHT_20 = 20 * 1000;
 	private static final String CLASSIC_30S_BEST_SCORE = "CLASSIC_30S_BEST_SCORE";
 	//fix bug
 	private static final String CLASSIC_SPEED_BEST_SCORE = "CLASSIC_SPEED_BEST_SCORE_EX";
@@ -68,6 +69,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private static final String GRAVITY_ENDLESS_BEST_SCORE = "GRAVITY_ENDLESS_BEST_SCORE";
 	private static final String GRAVITY_DISCONTINUOUS_BEST_SCORE = "GRAVITY_DISCONTINUOUS_BEST_SCORE ";
 	private static final String GRAVITY_DOUBLE_BEST_SCORE = "GRAVITY_DOUBLE_BEST_SCORE ";
+	
+	private static final String TERRIBLE_RELAY_BSET_SCORE = "TERRIBLE_RELAY_BEST_SCORE";
 
 	private static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
 
@@ -115,6 +118,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	public static final int MODE_CLASSIC = 0;
 	public static final int MODE_GRAVITY = 1;
+	public static final int MODE_TERRIBLE = 2;
 
 	//attention: the type value should not be the same!!!!!
 	// when add new type, no matter which mode it is,
@@ -131,6 +135,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 	public static final int TYPE_GRAVITY_DISCONTINUOUS = 8;
 	public static final int TYPE_GRAVITY_DOUBLE = 9;
 	// add new type here
+	
+	public static final int TYPE_TERIBLE_RELAY = 10;
 
 	public static final String TYPE = "TYPE";
 	
@@ -152,7 +158,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private Button startSpeedButton, startMindeButton;
 	
 	private boolean newVersionAvailable = false;
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -283,7 +289,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 			if (type == TYPE_CLASSIC_30S || type == TYPE_GRAVITY_30S 
 					|| type == TYPE_CLASSIC_DISCONTINUOUS || type == TYPE_GRAVITY_DISCONTINUOUS
 					|| type == TYPE_GRAVITY_MINE
-					|| type == TYPE_CLASSIC_DOUBLE || type == TYPE_GRAVITY_DOUBLE) {
+					|| type == TYPE_CLASSIC_DOUBLE || type == TYPE_GRAVITY_DOUBLE
+					|| type == TYPE_TERIBLE_RELAY) {
 				remindTimeSB.setLength(0);
 				remindSeconds = (int) (millisUntilFinished / 1000);
 				remindMillis = (int) (millisUntilFinished % 1000 / 10);
@@ -299,6 +306,11 @@ public class GameActiviy extends Activity implements GameEventListner{
 				remindTimeSB.append(remindMillis);
 				
 				timerTV.setText(remindTimeSB);
+				
+				//TERRIBLE type
+				if (type == TYPE_TERIBLE_RELAY && millisUntilFinished < TIME_LENGHT_20 ) {
+					gameView.setMode(MODE_GRAVITY);
+				}
 			}else if(type == TYPE_CLASSIC_SPEED){
 				//do nothing
 				escapeMillis = SPEED_MAX_TIME_LENGHT - millisUntilFinished;
@@ -395,7 +407,7 @@ level = LEVEL_HARD;
 	}
 	
 	public void onMoreGameButtonClick(View view){
-
+		startRelay();
 	}
 	
 	//select type
@@ -606,6 +618,9 @@ level = LEVEL_HARD;
 			timerTV.setText("0");
 		}else if(type == TYPE_CLASSIC_ENDLESS || type == TYPE_GRAVITY_ENDLESS){
 			timerTV.setText("0");
+		}else if(type == TYPE_TERIBLE_RELAY){
+			timerTV.setText("40:00");
+			gameView.setMode(MODE_CLASSIC);
 		}
 
 		currentScore = 0;
@@ -631,12 +646,39 @@ level = LEVEL_HARD;
 				modeSelectLayer.setVisibility(View.VISIBLE);
 			}else {
 				gameView.reset();
-				typeSelectLayer.setVisibility(View.VISIBLE);
+				if (type == TYPE_TERIBLE_RELAY) {
+					modeSelectLayer.setVisibility(View.VISIBLE);
+				}else {
+					typeSelectLayer.setVisibility(View.VISIBLE);
+				}
 				resultLayer.setVisibility(View.INVISIBLE);
 			}
 			
 		}
 		
+	}
+	
+	private void startRelay(){
+		if (countDownTimer == null) {
+			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+		}else {
+			if (countDownTimer.durationMillis != TIME_LENGHT) {
+				countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+			}
+		}
+		
+		type = TYPE_TERIBLE_RELAY;
+		gameView.setMode(MODE_CLASSIC);
+
+		bestScore = sharedPreferences.getInt(TERRIBLE_RELAY_BSET_SCORE, 0);
+		typeIntroTextView.setText(R.string.relay_intro);
+		typeIntroTextView.setVisibility(View.VISIBLE);
+		currentScore = 0;
+		timerTV.setVisibility(View.VISIBLE);
+		timerTV.setText("40:00");
+		
+		typeSelectLayer.setVisibility(View.INVISIBLE);
+		modeSelectLayer.setVisibility(View.INVISIBLE);
 	}
 
 	

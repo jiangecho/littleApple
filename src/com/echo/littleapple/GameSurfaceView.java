@@ -386,7 +386,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 					if (status == STATUS_STOP) {
 						status = STATUS_START;
 						// move down
-						startMoveAnimation();
+						//startMoveAnimation();
 						if (listner != null) {
 							listner.onGameStart();
 							listner.onScoreUpdate(score);
@@ -394,6 +394,7 @@ public class GameSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 					}else {
 						listner.onScoreUpdate(score);
 					}
+					startMoveAnimation();
 					
 				}else {
 					if (status != STATUS_START) {

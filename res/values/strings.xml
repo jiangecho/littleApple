@@ -112,4 +112,5 @@
     <string name="run_caution">别撞到栏杆哦</string>
     <string name="block_row_one">单排</string>
     <string name="block_row_double">双排</string>
+    <string name="relay_intro">10s能吃掉40个小苹果，将获得30s的重力时间奖励</string>
 </resources>
