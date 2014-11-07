@@ -68,7 +68,7 @@ public class TwoRunnerGameActivity extends Activity implements Callback, OnTouch
   private Drawable coin;
   private static final long GAP = 20;
   private static final long NEW_BLOCKER_COUNT = 60;
-  private static final long NEW_BLOCKER_COUNT_2 = 80;
+  private static final long NEW_BLOCKER_COUNT_2 = 100;
   private static final long NEW_COIN_COUNT = 60;
   private static final int[] BACKGROUND = new int[] {
       R.drawable.bg_general_day, R.drawable.bg_general_night };
