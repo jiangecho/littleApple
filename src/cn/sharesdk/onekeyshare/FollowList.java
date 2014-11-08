@@ -42,7 +42,8 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 /** 获取好友或关注列表 */
-public class FollowList extends FakeActivity implements OnClickListener, OnItemClickListener {
+public class FollowList extends FakeActivity implements OnClickListener,
+		OnItemClickListener {
 	private TitleLayout llTitle;
 	private Platform platform;
 	private FollowAdapter adapter;
@@ -146,7 +147,8 @@ public class FollowList extends FakeActivity implements OnClickListener, OnItemC
 		finish();
 	}
 
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
 		Following following = adapter.getItem(position);
 		following.checked = !following.checked;
 		adapter.notifyDataSetChanged();
@@ -178,11 +180,13 @@ public class FollowList extends FakeActivity implements OnClickListener, OnItemC
 
 			int resId = getBitmapRes(getContext(), "auth_follow_cb_chd");
 			if (resId > 0) {
-				bmChd = BitmapFactory.decodeResource(view.getResources(), resId);
+				bmChd = BitmapFactory
+						.decodeResource(view.getResources(), resId);
 			}
 			resId = getBitmapRes(getContext(), "auth_follow_cb_unc");
 			if (resId > 0) {
-				bmUnch = BitmapFactory.decodeResource(view.getResources(), resId);
+				bmUnch = BitmapFactory.decodeResource(view.getResources(),
+						resId);
 			}
 		}
 
@@ -206,10 +210,14 @@ public class FollowList extends FakeActivity implements OnClickListener, OnItemC
 				convertView = llItem;
 
 				item.aivIcon = new AsyncImageView(getContext());
-				int dp_52 = cn.sharesdk.framework.utils.R.dipToPx(getContext(), 52);
-				int dp_10 = cn.sharesdk.framework.utils.R.dipToPx(parent.getContext(), 10);
-				int dp_5 = cn.sharesdk.framework.utils.R.dipToPx(parent.getContext(), 5);
-				LinearLayout.LayoutParams lpIcon = new LinearLayout.LayoutParams(dp_52, dp_52);
+				int dp_52 = cn.sharesdk.framework.utils.R.dipToPx(getContext(),
+						52);
+				int dp_10 = cn.sharesdk.framework.utils.R.dipToPx(
+						parent.getContext(), 10);
+				int dp_5 = cn.sharesdk.framework.utils.R.dipToPx(
+						parent.getContext(), 5);
+				LinearLayout.LayoutParams lpIcon = new LinearLayout.LayoutParams(
+						dp_52, dp_52);
 				lpIcon.gravity = Gravity.CENTER_VERTICAL;
 				lpIcon.setMargins(dp_10, dp_5, dp_10, dp_5);
 				item.aivIcon.setLayoutParams(lpIcon);
@@ -257,7 +265,8 @@ public class FollowList extends FakeActivity implements OnClickListener, OnItemC
 				if (bm != null && !bm.isRecycled()) {
 					item.aivIcon.setImageBitmap(bm);
 				} else {
-					item.aivIcon.execute(null, AsyncImageView.DEFAULT_TRANSPARENT);
+					item.aivIcon.execute(null,
+							AsyncImageView.DEFAULT_TRANSPARENT);
 				}
 			} else {
 				item.aivIcon.execute(following.icon);
@@ -301,7 +310,8 @@ public class FollowList extends FakeActivity implements OnClickListener, OnItemC
 			UIHandler.sendEmptyMessage(-1, this);
 		}
 
-		public void onComplete(Platform plat, int action, HashMap<String, Object> res) {
+		public void onComplete(Platform plat, int action,
+				HashMap<String, Object> res) {
 			ArrayList<Following> data = parseList(res);
 			if (data != null && data.size() > 0) {
 				curPage++;
@@ -325,28 +335,29 @@ public class FollowList extends FakeActivity implements OnClickListener, OnItemC
 			if ("SinaWeibo".equals(platform.getName())) {
 				// users[id, name, description]
 				@SuppressWarnings("unchecked")
-				ArrayList<HashMap<String, Object>> users
-						= (ArrayList<HashMap<String,Object>>) res.get("users");
+				ArrayList<HashMap<String, Object>> users = (ArrayList<HashMap<String, Object>>) res
+						.get("users");
 				for (HashMap<String, Object> user : users) {
 					String uid = String.valueOf(user.get("id"));
 					if (!map.containsKey(uid)) {
 						Following following = new Following();
 						following.uid = uid;
 						following.screeName = String.valueOf(user.get("name"));
-						following.description = String.valueOf(user.get("description"));
-						following.icon = String.valueOf(user.get("profile_image_url"));
+						following.description = String.valueOf(user
+								.get("description"));
+						following.icon = String.valueOf(user
+								.get("profile_image_url"));
 						map.put(following.uid, following);
 						data.add(following);
 					}
 				}
 				hasNext = (Integer) res.get("total_number") > map.size();
-			}
-			else if ("TencentWeibo".equals(platform.getName())) {
-				hasNext = ((Integer)res.get("hasnext") == 0);
+			} else if ("TencentWeibo".equals(platform.getName())) {
+				hasNext = ((Integer) res.get("hasnext") == 0);
 				// info[nick, name, tweet[text]]
 				@SuppressWarnings("unchecked")
-				ArrayList<HashMap<String, Object>> infos
-						= (ArrayList<HashMap<String,Object>>) res.get("info");
+				ArrayList<HashMap<String, Object>> infos = (ArrayList<HashMap<String, Object>>) res
+						.get("info");
 				for (HashMap<String, Object> info : infos) {
 					String uid = String.valueOf(info.get("name"));
 					if (!map.containsKey(uid)) {
@@ -354,24 +365,25 @@ public class FollowList extends FakeActivity implements OnClickListener, OnItemC
 						following.screeName = String.valueOf(info.get("nick"));
 						following.uid = uid;
 						@SuppressWarnings("unchecked")
-						ArrayList<HashMap<String, Object>> tweets
-								= (ArrayList<HashMap<String,Object>>) info.get("tweet");
+						ArrayList<HashMap<String, Object>> tweets = (ArrayList<HashMap<String, Object>>) info
+								.get("tweet");
 						for (int i = 0; i < tweets.size();) {
 							HashMap<String, Object> tweet = tweets.get(i);
-							following.description = String.valueOf(tweet.get("text"));
+							following.description = String.valueOf(tweet
+									.get("text"));
 							break;
 						}
-						following.icon = String.valueOf(info.get("head")) + "/100";
+						following.icon = String.valueOf(info.get("head"))
+								+ "/100";
 						map.put(following.uid, following);
 						data.add(following);
 					}
 				}
-			}
-			else if ("Facebook".equals(platform.getName())) {
+			} else if ("Facebook".equals(platform.getName())) {
 				// data[id, name]
 				@SuppressWarnings("unchecked")
-				ArrayList<HashMap<String, Object>> datas
-						= (ArrayList<HashMap<String,Object>>) res.get("data");
+				ArrayList<HashMap<String, Object>> datas = (ArrayList<HashMap<String, Object>>) res
+						.get("data");
 				for (HashMap<String, Object> d : datas) {
 					String uid = String.valueOf(d.get("id"));
 					if (!map.containsKey(uid)) {
@@ -379,12 +391,15 @@ public class FollowList extends FakeActivity implements OnClickListener, OnItemC
 						following.uid = uid;
 						following.screeName = String.valueOf(d.get("name"));
 						@SuppressWarnings("unchecked")
-						HashMap<String, Object> picture = (HashMap<String, Object>) d.get("picture");
+						HashMap<String, Object> picture = (HashMap<String, Object>) d
+								.get("picture");
 						if (picture != null) {
 							@SuppressWarnings("unchecked")
-							HashMap<String, Object> pData = (HashMap<String, Object>) picture.get("data");
+							HashMap<String, Object> pData = (HashMap<String, Object>) picture
+									.get("data");
 							if (d != null) {
-								following.icon = String.valueOf(pData.get("url"));
+								following.icon = String.valueOf(pData
+										.get("url"));
 							}
 						}
 						map.put(following.uid, following);
@@ -392,22 +407,24 @@ public class FollowList extends FakeActivity implements OnClickListener, OnItemC
 					}
 				}
 				@SuppressWarnings("unchecked")
-				HashMap<String, Object> paging = (HashMap<String, Object>) res.get("paging");
+				HashMap<String, Object> paging = (HashMap<String, Object>) res
+						.get("paging");
 				hasNext = paging.containsKey("next");
-			}
-			else if ("Twitter".equals(platform.getName())) {
+			} else if ("Twitter".equals(platform.getName())) {
 				// users[screen_name, name, description]
 				@SuppressWarnings("unchecked")
-				ArrayList<HashMap<String, Object>> users
-						= (ArrayList<HashMap<String,Object>>) res.get("users");
+				ArrayList<HashMap<String, Object>> users = (ArrayList<HashMap<String, Object>>) res
+						.get("users");
 				for (HashMap<String, Object> user : users) {
 					String uid = String.valueOf(user.get("screen_name"));
 					if (!map.containsKey(uid)) {
 						Following following = new Following();
 						following.uid = uid;
 						following.screeName = String.valueOf(user.get("name"));
-						following.description = String.valueOf(user.get("description"));
-						following.icon = String.valueOf(user.get("profile_image_url"));
+						following.description = String.valueOf(user
+								.get("description"));
+						following.icon = String.valueOf(user
+								.get("profile_image_url"));
 						map.put(following.uid, following);
 						data.add(following);
 					}
@@ -488,8 +505,8 @@ public class FollowList extends FakeActivity implements OnClickListener, OnItemC
 			int dp_10 = cn.sharesdk.framework.utils.R.dipToPx(getContext(), 10);
 			tvHeader.setPadding(dp_10, dp_10, dp_10, dp_10);
 			tvHeader.setTextColor(0xff000000);
-			LayoutParams lpTv = new LayoutParams(
-					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			LayoutParams lpTv = new LayoutParams(LayoutParams.WRAP_CONTENT,
+					LayoutParams.WRAP_CONTENT);
 			lpTv.gravity = Gravity.CENTER_VERTICAL;
 			llInner.addView(tvHeader, lpTv);
 		}

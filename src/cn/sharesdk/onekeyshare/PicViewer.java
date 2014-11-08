@@ -6,7 +6,6 @@
  * Copyright (c) 2013年 ShareSDK.cn. All rights reserved.
  */
 
-
 package cn.sharesdk.onekeyshare;
 
 import android.graphics.Bitmap;

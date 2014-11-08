@@ -51,8 +51,8 @@ import cn.sharesdk.framework.utils.UIHandler;
  * <p>
  * 通过不同的setter设置参数，然后调用{@link #show(Context)}方法启动快捷分享
  */
-public class OnekeyShare extends FakeActivity implements
-		OnClickListener, PlatformActionListener, Callback {
+public class OnekeyShare extends FakeActivity implements OnClickListener,
+		PlatformActionListener, Callback {
 	private static final int MSG_TOAST = 1;
 	private static final int MSG_ACTION_CCALLBACK = 2;
 	private static final int MSG_CANCEL_NOTIFY = 3;
@@ -104,8 +104,7 @@ public class OnekeyShare extends FakeActivity implements
 	}
 
 	/**
-	 * title标题，在印象笔记、邮箱、信息、微信（包括好友、朋友圈和收藏）、
-	 * 易信（包括好友、朋友圈）、人人网和QQ空间使用，否则可以不提供
+	 * title标题，在印象笔记、邮箱、信息、微信（包括好友、朋友圈和收藏）、 易信（包括好友、朋友圈）、人人网和QQ空间使用，否则可以不提供
 	 */
 	public void setTitle(String title) {
 		reqMap.put("title", title);
@@ -123,12 +122,13 @@ public class OnekeyShare extends FakeActivity implements
 
 	/** 获取text字段的值 */
 	public String getText() {
-		return reqMap.containsKey("text") ? String.valueOf(reqMap.get("text")) : null;
+		return reqMap.containsKey("text") ? String.valueOf(reqMap.get("text"))
+				: null;
 	}
 
 	/** imagePath是本地的图片路径，除Linked-In外的所有平台都支持这个字段 */
 	public void setImagePath(String imagePath) {
-		if(!TextUtils.isEmpty(imagePath))
+		if (!TextUtils.isEmpty(imagePath))
 			reqMap.put("imagePath", imagePath);
 	}
 
@@ -139,7 +139,7 @@ public class OnekeyShare extends FakeActivity implements
 	}
 
 	/** url在微信（包括好友、朋友圈收藏）和易信（包括好友和朋友圈）中使用，否则可以不提供 */
- 	public void setUrl(String url) {
+	public void setUrl(String url) {
 		reqMap.put("url", url);
 	}
 
@@ -204,7 +204,8 @@ public class OnekeyShare extends FakeActivity implements
 	}
 
 	/** 设置用于分享过程中，根据不同平台自定义分享内容的回调 */
-	public void setShareContentCustomizeCallback(ShareContentCustomizeCallback callback) {
+	public void setShareContentCustomizeCallback(
+			ShareContentCustomizeCallback callback) {
 		customizeCallback = callback;
 	}
 
@@ -214,7 +215,8 @@ public class OnekeyShare extends FakeActivity implements
 	}
 
 	/** 设置自己图标和点击事件，可以重复调用添加多次 */
-	public void setCustomerLogo(Bitmap logo, String label, OnClickListener ocListener) {
+	public void setCustomerLogo(Bitmap logo, String label,
+			OnClickListener ocListener) {
 		CustomerLogo cl = new CustomerLogo();
 		cl.label = label;
 		cl.logo = logo;
@@ -223,7 +225,7 @@ public class OnekeyShare extends FakeActivity implements
 	}
 
 	/** 设置一个总开关，用于在分享前若需要授权，则禁用sso功能 */
- 	public void disableSSOWhenAuthorize() {
+	public void disableSSOWhenAuthorize() {
 		disableSSO = true;
 	}
 
@@ -241,7 +243,8 @@ public class OnekeyShare extends FakeActivity implements
 	/** 设置一个将被截图分享的View */
 	public void setViewToShare(View viewToShare) {
 		try {
-			Bitmap bm = captureView(viewToShare, viewToShare.getWidth(), viewToShare.getHeight());
+			Bitmap bm = captureView(viewToShare, viewToShare.getWidth(),
+					viewToShare.getHeight());
 			reqMap.put("viewToShare", bm);
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -265,20 +268,17 @@ public class OnekeyShare extends FakeActivity implements
 		if (copy.containsKey("platform")) {
 			String name = String.valueOf(copy.get("platform"));
 			if (silent) {
-				HashMap<Platform, HashMap<String, Object>> shareData
-						= new HashMap<Platform, HashMap<String,Object>>();
+				HashMap<Platform, HashMap<String, Object>> shareData = new HashMap<Platform, HashMap<String, Object>>();
 				shareData.put(ShareSDK.getPlatform(name), copy);
 				share(shareData);
 			} else if (ShareCore.isUseClientToShare(name)) {
-				HashMap<Platform, HashMap<String, Object>> shareData
-						= new HashMap<Platform, HashMap<String,Object>>();
+				HashMap<Platform, HashMap<String, Object>> shareData = new HashMap<Platform, HashMap<String, Object>>();
 				shareData.put(ShareSDK.getPlatform(name), copy);
 				share(shareData);
 			} else {
 				Platform pp = ShareSDK.getPlatform(name);
 				if (pp instanceof CustomPlatform) {
-					HashMap<Platform, HashMap<String, Object>> shareData
-							= new HashMap<Platform, HashMap<String,Object>>();
+					HashMap<Platform, HashMap<String, Object>> shareData = new HashMap<Platform, HashMap<String, Object>>();
 					shareData.put(ShareSDK.getPlatform(name), copy);
 					share(shareData);
 				} else {
@@ -355,13 +355,15 @@ public class OnekeyShare extends FakeActivity implements
 		if (resId > 0) {
 			btnCancel.setText(resId);
 		}
-		btnCancel.setPadding(0, 0, 0, cn.sharesdk.framework.utils.R.dipToPx(getContext(), 5));
+		btnCancel.setPadding(0, 0, 0,
+				cn.sharesdk.framework.utils.R.dipToPx(getContext(), 5));
 		resId = getBitmapRes(getContext(), "btn_cancel_back");
 		if (resId > 0) {
 			btnCancel.setBackgroundResource(resId);
 		}
 		LinearLayout.LayoutParams lpBtn = new LinearLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, cn.sharesdk.framework.utils.R.dipToPx(getContext(), 45));
+				LayoutParams.MATCH_PARENT,
+				cn.sharesdk.framework.utils.R.dipToPx(getContext(), 45));
 		int dp_10 = cn.sharesdk.framework.utils.R.dipToPx(getContext(), 10);
 		lpBtn.setMargins(dp_10, dp_10, dp_10, dp_10);
 		btnCancel.setLayoutParams(lpBtn);
@@ -369,17 +371,13 @@ public class OnekeyShare extends FakeActivity implements
 	}
 
 	private void initAnim() {
-		animShow = new TranslateAnimation(
-				Animation.RELATIVE_TO_SELF, 0,
-				Animation.RELATIVE_TO_SELF, 0,
-				Animation.RELATIVE_TO_SELF, 1,
+		animShow = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0,
+				Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 1,
 				Animation.RELATIVE_TO_SELF, 0);
 		animShow.setDuration(300);
 
-		animHide = new TranslateAnimation(
-				Animation.RELATIVE_TO_SELF, 0,
-				Animation.RELATIVE_TO_SELF, 0,
-				Animation.RELATIVE_TO_SELF, 0,
+		animHide = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0,
+				Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0,
 				Animation.RELATIVE_TO_SELF, 1);
 		animHide.setDuration(300);
 	}
@@ -442,16 +440,18 @@ public class OnekeyShare extends FakeActivity implements
 	/** 循环执行分享 */
 	public void share(HashMap<Platform, HashMap<String, Object>> shareData) {
 		boolean started = false;
-		for (Entry<Platform, HashMap<String, Object>> ent : shareData.entrySet()) {
+		for (Entry<Platform, HashMap<String, Object>> ent : shareData
+				.entrySet()) {
 			Platform plat = ent.getKey();
 			plat.SSOSetting(disableSSO);
 			String name = plat.getName();
-			boolean isWechat = "WechatMoments".equals(name) || "Wechat".equals(name)
-					|| "WechatFavorite".equals(name);
+			boolean isWechat = "WechatMoments".equals(name)
+					|| "Wechat".equals(name) || "WechatFavorite".equals(name);
 			if (isWechat && !plat.isValid()) {
 				Message msg = new Message();
 				msg.what = MSG_TOAST;
-				int resId = getStringRes(getContext(), "wechat_client_inavailable");
+				int resId = getStringRes(getContext(),
+						"wechat_client_inavailable");
 				msg.obj = activity.getString(resId);
 				UIHandler.sendMessage(msg, this);
 				continue;
@@ -461,7 +461,8 @@ public class OnekeyShare extends FakeActivity implements
 			if (isGooglePlus && !plat.isValid()) {
 				Message msg = new Message();
 				msg.what = MSG_TOAST;
-				int resId = getStringRes(getContext(), "google_plus_client_inavailable");
+				int resId = getStringRes(getContext(),
+						"google_plus_client_inavailable");
 				msg.obj = activity.getString(resId);
 				UIHandler.sendMessage(msg, this);
 				continue;
@@ -481,7 +482,8 @@ public class OnekeyShare extends FakeActivity implements
 			if (isPinterest && !plat.isValid()) {
 				Message msg = new Message();
 				msg.what = MSG_TOAST;
-				int resId = getStringRes(getContext(), "pinterest_client_inavailable");
+				int resId = getStringRes(getContext(),
+						"pinterest_client_inavailable");
 				msg.obj = activity.getString(resId);
 				UIHandler.sendMessage(msg, this);
 				continue;
@@ -491,22 +493,26 @@ public class OnekeyShare extends FakeActivity implements
 				Intent test = new Intent(Intent.ACTION_SEND);
 				test.setPackage("com.instagram.android");
 				test.setType("image/*");
-				ResolveInfo ri = activity.getPackageManager().resolveActivity(test, 0);
+				ResolveInfo ri = activity.getPackageManager().resolveActivity(
+						test, 0);
 				if (ri == null) {
 					Message msg = new Message();
 					msg.what = MSG_TOAST;
-					int resId = getStringRes(getContext(), "instagram_client_inavailable");
+					int resId = getStringRes(getContext(),
+							"instagram_client_inavailable");
 					msg.obj = activity.getString(resId);
 					UIHandler.sendMessage(msg, this);
 					continue;
 				}
 			}
 
-			boolean isYixin = "YixinMoments".equals(name) || "Yixin".equals(name);
+			boolean isYixin = "YixinMoments".equals(name)
+					|| "Yixin".equals(name);
 			if (isYixin && !plat.isValid()) {
 				Message msg = new Message();
 				msg.what = MSG_TOAST;
-				int resId = getStringRes(getContext(), "yixin_client_inavailable");
+				int resId = getStringRes(getContext(),
+						"yixin_client_inavailable");
 				msg.obj = activity.getString(resId);
 				UIHandler.sendMessage(msg, this);
 				continue;
@@ -519,7 +525,8 @@ public class OnekeyShare extends FakeActivity implements
 				shareType = Platform.SHARE_IMAGE;
 				if (imagePath.endsWith(".gif")) {
 					shareType = Platform.SHARE_EMOJI;
-				} else if (data.containsKey("url") && !TextUtils.isEmpty(data.get("url").toString())) {
+				} else if (data.containsKey("url")
+						&& !TextUtils.isEmpty(data.get("url").toString())) {
 					shareType = Platform.SHARE_WEBPAGE;
 				}
 			} else {
@@ -534,13 +541,15 @@ public class OnekeyShare extends FakeActivity implements
 					}
 				} else {
 					Object imageUrl = data.get("imageUrl");
-					if (imageUrl != null && !TextUtils.isEmpty(String.valueOf(imageUrl))) {
+					if (imageUrl != null
+							&& !TextUtils.isEmpty(String.valueOf(imageUrl))) {
 						shareType = Platform.SHARE_IMAGE;
 						if (String.valueOf(imageUrl).endsWith(".gif")) {
 							shareType = Platform.SHARE_EMOJI;
 						} else if (data.containsKey("url")) {
 							Object url = data.get("url");
-							if (url != null && !TextUtils.isEmpty(url.toString())) {
+							if (url != null
+									&& !TextUtils.isEmpty(url.toString())) {
 								shareType = Platform.SHARE_WEBPAGE;
 							}
 						}
@@ -600,73 +609,79 @@ public class OnekeyShare extends FakeActivity implements
 	}
 
 	public boolean handleMessage(Message msg) {
-		switch(msg.what) {
-			case MSG_TOAST: {
-				String text = String.valueOf(msg.obj);
-				Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
-			}
+		switch (msg.what) {
+		case MSG_TOAST: {
+			String text = String.valueOf(msg.obj);
+			Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
+		}
 			break;
-			case MSG_ACTION_CCALLBACK: {
-				switch (msg.arg1) {
-					case 1: {
-						// 成功
-						int resId = getStringRes(getContext(), "share_completed");
-						if (resId > 0) {
-							showNotification(2000, getContext().getString(resId));
-						}
-					}
-					break;
-					case 2: {
-						// 失败
-						String expName = msg.obj.getClass().getSimpleName();
-						if ("WechatClientNotExistException".equals(expName)
-								|| "WechatTimelineNotSupportedException".equals(expName)
-								|| "WechatFavoriteNotSupportedException".equals(expName)) {
-							int resId = getStringRes(getContext(), "wechat_client_inavailable");
-							if (resId > 0) {
-								showNotification(2000, getContext().getString(resId));
-							}
-						} else if ("GooglePlusClientNotExistException".equals(expName)) {
-							int resId = getStringRes(getContext(), "google_plus_client_inavailable");
-							if (resId > 0) {
-								showNotification(2000, getContext().getString(resId));
-							}
-						} else if ("QQClientNotExistException".equals(expName)) {
-							int resId = getStringRes(getContext(), "qq_client_inavailable");
-							if (resId > 0) {
-								showNotification(2000, getContext().getString(resId));
-							}
-						} else if ("YixinClientNotExistException".equals(expName)
-								|| "YixinTimelineNotSupportedException".equals(expName)) {
-							int resId = getStringRes(getContext(), "yixin_client_inavailable");
-							if (resId > 0) {
-								showNotification(2000, getContext().getString(resId));
-							}
-						} else {
-							int resId = getStringRes(getContext(), "share_failed");
-							if (resId > 0) {
-								showNotification(2000, getContext().getString(resId));
-							}
-						}
-					}
-					break;
-					case 3: {
-						// 取消
-						int resId = getStringRes(getContext(), "share_canceled");
-						if (resId > 0) {
-							showNotification(2000, getContext().getString(resId));
-						}
-					}
-					break;
+		case MSG_ACTION_CCALLBACK: {
+			switch (msg.arg1) {
+			case 1: {
+				// 成功
+				int resId = getStringRes(getContext(), "share_completed");
+				if (resId > 0) {
+					showNotification(2000, getContext().getString(resId));
 				}
 			}
-			break;
-			case MSG_CANCEL_NOTIFY: {
-				NotificationManager nm = (NotificationManager) msg.obj;
-				if (nm != null) {
-					nm.cancel(msg.arg1);
+				break;
+			case 2: {
+				// 失败
+				String expName = msg.obj.getClass().getSimpleName();
+				if ("WechatClientNotExistException".equals(expName)
+						|| "WechatTimelineNotSupportedException"
+								.equals(expName)
+						|| "WechatFavoriteNotSupportedException"
+								.equals(expName)) {
+					int resId = getStringRes(getContext(),
+							"wechat_client_inavailable");
+					if (resId > 0) {
+						showNotification(2000, getContext().getString(resId));
+					}
+				} else if ("GooglePlusClientNotExistException".equals(expName)) {
+					int resId = getStringRes(getContext(),
+							"google_plus_client_inavailable");
+					if (resId > 0) {
+						showNotification(2000, getContext().getString(resId));
+					}
+				} else if ("QQClientNotExistException".equals(expName)) {
+					int resId = getStringRes(getContext(),
+							"qq_client_inavailable");
+					if (resId > 0) {
+						showNotification(2000, getContext().getString(resId));
+					}
+				} else if ("YixinClientNotExistException".equals(expName)
+						|| "YixinTimelineNotSupportedException".equals(expName)) {
+					int resId = getStringRes(getContext(),
+							"yixin_client_inavailable");
+					if (resId > 0) {
+						showNotification(2000, getContext().getString(resId));
+					}
+				} else {
+					int resId = getStringRes(getContext(), "share_failed");
+					if (resId > 0) {
+						showNotification(2000, getContext().getString(resId));
+					}
 				}
 			}
+				break;
+			case 3: {
+				// 取消
+				int resId = getStringRes(getContext(), "share_canceled");
+				if (resId > 0) {
+					showNotification(2000, getContext().getString(resId));
+				}
+			}
+				break;
+			}
+		}
+			break;
+		case MSG_CANCEL_NOTIFY: {
+			NotificationManager nm = (NotificationManager) msg.obj;
+			if (nm != null) {
+				nm.cancel(msg.arg1);
+			}
+		}
 			break;
 		}
 		return false;
@@ -683,7 +698,8 @@ public class OnekeyShare extends FakeActivity implements
 
 			long when = System.currentTimeMillis();
 			Notification notification = new Notification(notifyIcon, text, when);
-			PendingIntent pi = PendingIntent.getActivity(app, 0, new Intent(), 0);
+			PendingIntent pi = PendingIntent.getActivity(app, 0, new Intent(),
+					0);
 			notification.setLatestEventInfo(app, notifyTitle, text, pi);
 			notification.flags = Notification.FLAG_AUTO_CANCEL;
 			nm.notify(id, notification);

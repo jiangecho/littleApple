@@ -38,8 +38,8 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.framework.utils.UIHandler;
 
 /** 平台宫格列表显示工具。 */
-public class PlatformGridView extends LinearLayout implements
-		OnClickListener, Callback {
+public class PlatformGridView extends LinearLayout implements OnClickListener,
+		Callback {
 	private static final int MIN_CLICK_INTERVAL = 1000;
 	private static final int MSG_PLATFORM_LIST_GOT = 1;
 	// 每行显示的格数
@@ -82,7 +82,8 @@ public class PlatformGridView extends LinearLayout implements
 
 		pager = new ViewPagerClassic(context);
 		disableOverScrollMode(pager);
-		pager.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		pager.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.WRAP_CONTENT));
 		addView(pager);
 
 		// 为了更好的ui效果，开启子线程获取平台列表
@@ -92,14 +93,16 @@ public class PlatformGridView extends LinearLayout implements
 				if (platformList == null) {
 					platformList = new Platform[0];
 				}
-				UIHandler.sendEmptyMessage(MSG_PLATFORM_LIST_GOT, PlatformGridView.this);
+				UIHandler.sendEmptyMessage(MSG_PLATFORM_LIST_GOT,
+						PlatformGridView.this);
 			}
 		}.start();
 	}
 
 	private void calPageSize() {
 		float scrW = cn.sharesdk.framework.utils.R.getScreenWidth(getContext());
-		float scrH = cn.sharesdk.framework.utils.R.getScreenHeight(getContext());
+		float scrH = cn.sharesdk.framework.utils.R
+				.getScreenHeight(getContext());
 		float whR = scrW / scrH;
 		if (whR < 0.6) {
 			COLUMN_PER_LINE = 3;
@@ -124,9 +127,9 @@ public class PlatformGridView extends LinearLayout implements
 
 	public boolean handleMessage(Message msg) {
 		switch (msg.what) {
-			case MSG_PLATFORM_LIST_GOT: {
-				afterPlatformListGot();
-			}
+		case MSG_PLATFORM_LIST_GOT: {
+			afterPlatformListGot();
+		}
 			break;
 		}
 		return false;
@@ -141,7 +144,7 @@ public class PlatformGridView extends LinearLayout implements
 			int cusSize = customers == null ? 0 : customers.size();
 			int platSize = platformList == null ? 0 : platformList.length;
 			int hideSize = hiddenPlatforms == null ? 0 : hiddenPlatforms.size();
-			platSize = platSize-hideSize;
+			platSize = platSize - hideSize;
 			int size = platSize + cusSize;
 			pageCount = size / PAGE_SIZE;
 			if (size % PAGE_SIZE > 0) {
@@ -156,9 +159,9 @@ public class PlatformGridView extends LinearLayout implements
 		Context context = getContext();
 		LinearLayout llPoints = new LinearLayout(context);
 		// 如果页面总数超过1，则设置页面指示器
-		llPoints.setVisibility(pageCount > 1 ? View.VISIBLE: View.GONE);
-		LayoutParams lpLl = new LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		llPoints.setVisibility(pageCount > 1 ? View.VISIBLE : View.GONE);
+		LayoutParams lpLl = new LayoutParams(LayoutParams.WRAP_CONTENT,
+				LayoutParams.WRAP_CONTENT);
 		lpLl.gravity = Gravity.CENTER_HORIZONTAL;
 		llPoints.setLayoutParams(lpLl);
 		addView(llPoints);
@@ -230,8 +233,7 @@ public class PlatformGridView extends LinearLayout implements
 		Platform plat = (Platform) v.getTag();
 		if (plat != null) {
 			if (silent) {
-				HashMap<Platform, HashMap<String, Object>> shareData
-						= new HashMap<Platform, HashMap<String,Object>>();
+				HashMap<Platform, HashMap<String, Object>> shareData = new HashMap<Platform, HashMap<String, Object>>();
 				shareData.put(plat, reqData);
 				parent.share(shareData);
 				return;
@@ -242,8 +244,7 @@ public class PlatformGridView extends LinearLayout implements
 			// EditPage不支持微信平台、Google+、QQ分享、Pinterest、信息和邮件，总是执行直接分享
 			if ((plat instanceof CustomPlatform)
 					|| ShareCore.isUseClientToShare(name)) {
-				HashMap<Platform, HashMap<String, Object>> shareData
-						= new HashMap<Platform, HashMap<String,Object>>();
+				HashMap<Platform, HashMap<String, Object>> shareData = new HashMap<Platform, HashMap<String, Object>>();
 				shareData.put(plat, reqData);
 				parent.share(shareData);
 				return;
@@ -400,8 +401,8 @@ public class PlatformGridView extends LinearLayout implements
 			if (size % COLUMN_PER_LINE > 0) {
 				lineSize++;
 			}
-			LayoutParams lp = new LayoutParams(
-					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+			LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,
+					LayoutParams.MATCH_PARENT);
 			lp.weight = 1;
 			for (int i = 0; i < lines; i++) {
 				LinearLayout llLine = new LinearLayout(getContext());
@@ -422,7 +423,8 @@ public class PlatformGridView extends LinearLayout implements
 						continue;
 					}
 
-					final LinearLayout llItem = getView(index, callback, getContext());
+					final LinearLayout llItem = getView(index, callback,
+							getContext());
 					llItem.setTag(beans[index]);
 					llItem.setLayoutParams(lp);
 					llLine.addView(llItem);
@@ -430,7 +432,8 @@ public class PlatformGridView extends LinearLayout implements
 			}
 		}
 
-		private LinearLayout getView(int position, OnClickListener ocL, Context context) {
+		private LinearLayout getView(int position, OnClickListener ocL,
+				Context context) {
 			Bitmap logo;
 			String label;
 			OnClickListener listener;
@@ -502,7 +505,8 @@ public class PlatformGridView extends LinearLayout implements
 				return "";
 			}
 
-			int resId = cn.sharesdk.framework.utils.R.getStringRes(getContext(), plat.getName());
+			int resId = cn.sharesdk.framework.utils.R.getStringRes(
+					getContext(), plat.getName());
 			if (resId > 0) {
 				return getContext().getString(resId);
 			}
