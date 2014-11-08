@@ -68,6 +68,7 @@ public class GameActiviy extends Activity implements GameEventListner {
 	private static final String GRAVITY_DOUBLE_BEST_SCORE = "GRAVITY_DOUBLE_BEST_SCORE ";
 
 	private static final String TERRIBLE_RELAY_BSET_SCORE = "TERRIBLE_RELAY_BEST_SCORE";
+	private static final String TERRIBLE_LOOM_BSET_SCORE = "TERRIBLE_LOOM_BEST_SCORE";
 
 	private static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
 
@@ -135,6 +136,7 @@ public class GameActiviy extends Activity implements GameEventListner {
 	// add new type here
 
 	public static final int TYPE_TERIBLE_RELAY = 10;
+	public static final int TYPE_TERRIBLE_LOOM = 11;
 
 	public static final String TYPE = "TYPE";
 
@@ -302,12 +304,38 @@ public class GameActiviy extends Activity implements GameEventListner {
 		@Override
 		public void onTick(long millisUntilFinished) {
 
-			if (type == TYPE_CLASSIC_30S || type == TYPE_GRAVITY_30S
-					|| type == TYPE_CLASSIC_DISCONTINUOUS
-					|| type == TYPE_GRAVITY_DISCONTINUOUS
-					|| type == TYPE_GRAVITY_MINE || type == TYPE_CLASSIC_DOUBLE
-					|| type == TYPE_GRAVITY_DOUBLE
-					|| type == TYPE_TERIBLE_RELAY) {
+			// if (type == TYPE_CLASSIC_30S || type == TYPE_GRAVITY_30S
+			// || type == TYPE_CLASSIC_DISCONTINUOUS
+			// || type == TYPE_GRAVITY_DISCONTINUOUS
+			// || type == TYPE_GRAVITY_MINE || type == TYPE_CLASSIC_DOUBLE
+			// || type == TYPE_GRAVITY_DOUBLE
+			// || type == TYPE_TERIBLE_RELAY) {
+			// remindTimeSB.setLength(0);
+			// remindSeconds = (int) (millisUntilFinished / 1000);
+			// remindMillis = (int) (millisUntilFinished % 1000 / 10);
+			// if (remindSeconds < 10) {
+			// remindTimeSB.append("0");
+			// }
+			// remindTimeSB.append(remindSeconds);
+			// remindTimeSB.append(".");
+			//
+			// if (remindMillis < 10) {
+			// remindTimeSB.append("0");
+			// }
+			// remindTimeSB.append(remindMillis);
+			//
+			// timerTV.setText(remindTimeSB);
+			//
+			// // TERRIBLE type
+			// if (type == TYPE_TERIBLE_RELAY
+			// && millisUntilFinished < TIME_LENGHT_20) {
+			// gameView.setMode(MODE_GRAVITY);
+			// }
+			// } else
+			if (type == TYPE_CLASSIC_SPEED) {
+				// do nothing
+				escapeMillis = SPEED_MAX_TIME_LENGHT - millisUntilFinished;
+			} else {
 				remindTimeSB.setLength(0);
 				remindSeconds = (int) (millisUntilFinished / 1000);
 				remindMillis = (int) (millisUntilFinished % 1000 / 10);
@@ -329,9 +357,7 @@ public class GameActiviy extends Activity implements GameEventListner {
 						&& millisUntilFinished < TIME_LENGHT_20) {
 					gameView.setMode(MODE_GRAVITY);
 				}
-			} else if (type == TYPE_CLASSIC_SPEED) {
-				// do nothing
-				escapeMillis = SPEED_MAX_TIME_LENGHT - millisUntilFinished;
+
 			}
 
 		}
@@ -386,6 +412,35 @@ public class GameActiviy extends Activity implements GameEventListner {
 
 	public void onStartRelayButtonClick(View view) {
 		startRelay();
+	}
+
+	public void onStartLoomButtonClick(View view) {
+		if (countDownTimer == null) {
+			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+		} else {
+			if (countDownTimer.durationMillis != TIME_LENGHT) {
+				countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+			}
+		}
+		type = TYPE_TERRIBLE_LOOM;
+		mode = MODE_TERRIBLE;
+		gameView.setMode(MODE_TERRIBLE);
+		gameView.setType(TYPE_TERRIBLE_LOOM);
+
+		bestScore = sharedPreferences.getInt(TERRIBLE_LOOM_BSET_SCORE, 0);
+		typeIntroTextView.setText(R.string.loom_intro);
+		typeIntroTextView.setVisibility(View.VISIBLE);
+		currentScore = 0;
+		timerTV.setVisibility(View.VISIBLE);
+		timerTV.setText("30:00");
+		currentModeString = getString(R.string.mode_terrible);
+		currentTypeString = getString(R.string.type_loom);
+		currentModeTypeLevelTextView.setText(getString(
+				R.string.current_mode_type_level, currentModeString,
+				currentTypeString, currentLevelString));
+		typeSelectLayer.setVisibility(View.INVISIBLE);
+		modeSelectLayer.setVisibility(View.INVISIBLE);
+
 	}
 
 	public void onSettingButtonClick(View view) {
@@ -754,29 +809,29 @@ public class GameActiviy extends Activity implements GameEventListner {
 		;
 
 		switch (type) {
-		case TYPE_CLASSIC_DOUBLE:
-		case TYPE_GRAVITY_DOUBLE:
-		case TYPE_GRAVITY_MINE:
-		case TYPE_CLASSIC_DISCONTINUOUS:
-		case TYPE_GRAVITY_DISCONTINUOUS:
-		case TYPE_CLASSIC_ENDLESS:
-		case TYPE_GRAVITY_ENDLESS:
-			// transfer to classic
-		case TYPE_CLASSIC_30S:
-		case TYPE_GRAVITY_30S:
-		case TYPE_TERIBLE_RELAY:
-			resultInfo = getResources().getString(R.string.classic_result,
-					currentScore);
-
-			if (currentScore > 100) {
-				promptInfo = getResources().getString(R.string.str_high_score);
-			} else {
-				promptInfo = getResources().getString(R.string.strf);
-			}
-
-			bestScoreInfo = getString(R.string.best, bestScore);
-
-			break;
+		// case TYPE_CLASSIC_DOUBLE:
+		// case TYPE_GRAVITY_DOUBLE:
+		// case TYPE_GRAVITY_MINE:
+		// case TYPE_CLASSIC_DISCONTINUOUS:
+		// case TYPE_GRAVITY_DISCONTINUOUS:
+		// case TYPE_CLASSIC_ENDLESS:
+		// case TYPE_GRAVITY_ENDLESS:
+		// // transfer to classic
+		// case TYPE_CLASSIC_30S:
+		// case TYPE_GRAVITY_30S:
+		// case TYPE_TERIBLE_RELAY:
+		// resultInfo = getResources().getString(R.string.classic_result,
+		// currentScore);
+		//
+		// if (currentScore > 100) {
+		// promptInfo = getResources().getString(R.string.str_high_score);
+		// } else {
+		// promptInfo = getResources().getString(R.string.strf);
+		// }
+		//
+		// bestScoreInfo = getString(R.string.best, bestScore);
+		//
+		// break;
 
 		case TYPE_CLASSIC_SPEED:
 			StringBuffer sb = new StringBuffer();
@@ -809,6 +864,19 @@ public class GameActiviy extends Activity implements GameEventListner {
 				sb.append((speedBestScore % 1000) / 10);
 				bestScoreInfo = getString(R.string.speed_best, sb.toString());
 			}
+
+			break;
+		default:
+			resultInfo = getResources().getString(R.string.classic_result,
+					currentScore);
+
+			if (currentScore > 100) {
+				promptInfo = getResources().getString(R.string.str_high_score);
+			} else {
+				promptInfo = getResources().getString(R.string.strf);
+			}
+
+			bestScoreInfo = getString(R.string.best, bestScore);
 
 			break;
 		}
@@ -1177,6 +1245,13 @@ public class GameActiviy extends Activity implements GameEventListner {
 				}
 
 				break;
+			case TYPE_TERRIBLE_LOOM:
+				if (currentScore > bestScore) {
+					bestScore = currentScore;
+					sharedPreferences.edit()
+							.putInt(TERRIBLE_LOOM_BSET_SCORE, bestScore)
+							.commit();
+				}
 
 			default:
 				break;

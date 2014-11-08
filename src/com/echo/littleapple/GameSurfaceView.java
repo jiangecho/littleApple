@@ -94,6 +94,10 @@ public class GameSurfaceView extends SurfaceView implements
 	private int failCount = 0;
 	private int successCount = 0;
 
+	private int alpha = 255;
+	private int alphaStep = 1;
+	private boolean isAlphaUp = false;
+
 	public GameSurfaceView(Context context) {
 		this(context, null);
 
@@ -168,6 +172,20 @@ public class GameSurfaceView extends SurfaceView implements
 			}
 
 			// draw applse
+			if (type == GameActiviy.TYPE_TERRIBLE_LOOM) {
+				if (alpha <= 0) {
+					isAlphaUp = true;
+				}else if(alpha >= 255){
+					isAlphaUp = false;
+				}
+				if (isAlphaUp) {
+					alpha += alphaStep;
+				}else {
+					alpha -= alphaStep;
+				}
+				applePaint.setAlpha(alpha);
+			}
+
 			for (i = 0; i < row; i++) {
 				for (j = 0; j < COLUMN; j++) {
 					left = j * cellWidth;
@@ -262,6 +280,8 @@ public class GameSurfaceView extends SurfaceView implements
 		randomApples();
 		gravityMoveStepHeight = gravityMinMoveStepHeight;
 		moveYOffset = 0;
+		alpha = 255;
+		applePaint.setAlpha(alpha);
 		doDraw();
 	}
 
@@ -348,7 +368,7 @@ public class GameSurfaceView extends SurfaceView implements
 			int x_index = x / cellWidth;
 			int y_index = row - 1 - (height - y) / cellHeight;
 
-			if (mode == GameActiviy.MODE_GRAVITY) {
+			if (mode == GameActiviy.MODE_GRAVITY || (mode == GameActiviy.MODE_TERRIBLE && type == GameActiviy.TYPE_TERRIBLE_LOOM)) {
 
 				if (y_index < 1) {
 					return true;
@@ -618,7 +638,7 @@ public class GameSurfaceView extends SurfaceView implements
 			if (status != STATUS_START) {
 				return;
 			}
-			if (mode == GameActiviy.MODE_GRAVITY) {
+			if (mode == GameActiviy.MODE_GRAVITY || (mode == GameActiviy.MODE_TERRIBLE && type == GameActiviy.TYPE_TERRIBLE_LOOM)) {
 				if (moveYOffset < cellHeight) {
 					// if (type == GameActiviy.TYPE_GRAVITY_DOUBLE
 					// || (type == GameActiviy.TYPE_GRAVITY_MINE/* && level ==
