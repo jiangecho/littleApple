@@ -156,6 +156,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	
 	private Button startSpeedButton, startMindeButton;
+	private LinearLayout classicAndGravityTypesLayout, terribleTypesLayout;
 	
 	private boolean newVersionAvailable = false;
 	
@@ -181,6 +182,9 @@ public class GameActiviy extends Activity implements GameEventListner{
         
         startSpeedButton = (Button) findViewById(R.id.startSpeedButton);
         startMindeButton = (Button) findViewById(R.id.startMineButton);
+        
+        classicAndGravityTypesLayout = (LinearLayout) findViewById(R.id.classic_gravity_types);
+        terribleTypesLayout = (LinearLayout) findViewById(R.id.terrible_types);
 
         resultLayer = (LinearLayout)findViewById(R.id.resultLayer);
         resultLayer.setOnTouchListener(blockOnTouchEvent);
@@ -331,6 +335,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 		currentModeString = getString(R.string.mode_classic);
 		currentModeLevelTextView.setText(getString(R.string.current_mode_level, currentModeString, currentLevelString));
 		typeSelectLayer.setVisibility(View.VISIBLE);
+		classicAndGravityTypesLayout.setVisibility(View.VISIBLE);
+		terribleTypesLayout.setVisibility(View.GONE);
 		
 		gameView.setMode(mode);
 	}
@@ -345,8 +351,24 @@ public class GameActiviy extends Activity implements GameEventListner{
 		currentModeString = getString(R.string.mode_gravity);
 		currentModeLevelTextView.setText(getString(R.string.current_mode_level, currentModeString, currentLevelString));
 		typeSelectLayer.setVisibility(View.VISIBLE);
+		classicAndGravityTypesLayout.setVisibility(View.VISIBLE);
+		terribleTypesLayout.setVisibility(View.GONE);
 
 		gameView.setMode(mode);
+	}
+
+	public void onTerribleGameButtonClick(View view){
+		this.mode = MODE_TERRIBLE;
+		currentModeString = getString(R.string.mode_terrible);
+		currentModeLevelTextView.setText(getString(R.string.current_mode_level, currentModeString, currentLevelString));
+		modeSelectLayer.setVisibility(View.INVISIBLE);
+		typeSelectLayer.setVisibility(View.VISIBLE);
+		classicAndGravityTypesLayout.setVisibility(View.GONE);
+		terribleTypesLayout.setVisibility(View.VISIBLE);
+	}
+	
+	public void onStartRelayButtonClick(View view) {
+		startRelay();
 	}
 	
 	public void onSettingButtonClick(View view){
@@ -406,9 +428,6 @@ level = LEVEL_HARD;
 		startActivity(intent);
 	}
 	
-	public void onMoreGameButtonClick(View view){
-		startRelay();
-	}
 	
 	//select type
 	public void onStart30sButtonClick(View view) {
@@ -646,11 +665,7 @@ level = LEVEL_HARD;
 				modeSelectLayer.setVisibility(View.VISIBLE);
 			}else {
 				gameView.reset();
-				if (type == TYPE_TERIBLE_RELAY) {
-					modeSelectLayer.setVisibility(View.VISIBLE);
-				}else {
-					typeSelectLayer.setVisibility(View.VISIBLE);
-				}
+				typeSelectLayer.setVisibility(View.VISIBLE);
 				resultLayer.setVisibility(View.INVISIBLE);
 			}
 			
@@ -668,6 +683,7 @@ level = LEVEL_HARD;
 		}
 		
 		type = TYPE_TERIBLE_RELAY;
+		mode = MODE_TERRIBLE;
 		gameView.setMode(MODE_CLASSIC);
 
 		bestScore = sharedPreferences.getInt(TERRIBLE_RELAY_BSET_SCORE, 0);
@@ -675,8 +691,11 @@ level = LEVEL_HARD;
 		typeIntroTextView.setVisibility(View.VISIBLE);
 		currentScore = 0;
 		timerTV.setVisibility(View.VISIBLE);
-		timerTV.setText("40:00");
-		
+		timerTV.setText("30:00");
+		currentModeString = getString(R.string.mode_terrible);
+		currentTypeString = getString(R.string.type_relay);
+		currentModeTypeLevelTextView.setText(getString(R.string.current_mode_type_level, currentModeString, 
+				currentTypeString, currentLevelString));
 		typeSelectLayer.setVisibility(View.INVISIBLE);
 		modeSelectLayer.setVisibility(View.INVISIBLE);
 	}
@@ -708,6 +727,7 @@ level = LEVEL_HARD;
 			//transfer to classic
 		case TYPE_CLASSIC_30S:
 		case TYPE_GRAVITY_30S:
+		case TYPE_TERIBLE_RELAY:
 			resultInfo= getResources().getString(R.string.classic_result, currentScore);
 			
 			if (currentScore > 100) {
@@ -1074,7 +1094,21 @@ level = LEVEL_HARD;
 				}
 				break;
 		}
-	  }
+	  }else if (mode == MODE_TERRIBLE) {
+		  switch (type) {
+		  	case TYPE_TERIBLE_RELAY:
+		  		if (currentScore > bestScore) {
+					bestScore = currentScore;
+					sharedPreferences.edit().putInt(TERRIBLE_RELAY_BSET_SCORE, bestScore).commit();
+				}
+			
+			break;
+
+		default:
+			break;
+		}
+		
+	}
    }
 
    //TODO bug, different uri
@@ -1083,30 +1117,6 @@ level = LEVEL_HARD;
 	   if (nickyName == null) {
 		   return;
 	   }
-	   
-	   switch (type) {
-		case TYPE_CLASSIC_30S:
-		   if (currentScore == 0) {
-			   return;
-		   }
-		   scoreString = currentScore + "";
-			break;
-	
-		case TYPE_CLASSIC_SPEED:
-			if (escapeMillis > SPEED_MAX_TIME_LENGHT || currentScore < SPEED_SUCCESS_SCORE) {
-				return;
-			}
-			
-			scoreString = escapeMillis + "";
-			break;
-			//TODO 
-		case TYPE_CLASSIC_ENDLESS:
-		   if (currentScore == 0) {
-			   return;
-		   }
-		   scoreString = currentScore + "";
-			break;
-		}
 	   
 	   if (type == TYPE_CLASSIC_SPEED) {
 		   if (currentSpeedScore == 0) {

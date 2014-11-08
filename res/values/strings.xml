@@ -72,8 +72,10 @@
     <string name="type_double">双飞</string>
     <string name="type_endless">无尽</string>
     <string name="type_speed">竞速</string>
+    <string name="type_relay">接力</string>
     <string name="mode_classic">经典</string>
     <string name="mode_gravity">重力</string>
+    <string name="mode_terrible">凌乱</string>
     <string name="current_mode_level">%1$s~%2$s</string>
     <string name="current_mode_type_level">%1$s~%2$s~%3$s</string>
     <string name="level_setting">难度设置</string>
@@ -112,5 +114,5 @@
     <string name="run_caution">别撞到栏杆哦</string>
     <string name="block_row_one">单排</string>
     <string name="block_row_double">双排</string>
-    <string name="relay_intro">10s能吃掉40个小苹果，将获得30s的重力时间奖励</string>
+    <string name="relay_intro">10s后，开启重力</string>
 </resources>

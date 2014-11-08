@@ -47,6 +47,17 @@
         android:text="@string/mode_gravity"
         android:textColor="@color/white" />
 
+	<Button
+        android:id="@+id/terribleButton"
+        android:layout_width="150dip"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dip"
+        android:background="@color/red"
+        android:onClick="onTerribleGameButtonClick"
+        android:text="@string/mode_terrible"
+        android:textColor="@color/white" />
+
     <Button
         android:id="@+id/runnerButton"
         android:layout_width="150dip"
@@ -69,16 +80,7 @@
         android:text="@string/flappy_bird"
         android:textColor="@color/white" />
 
-    <Button
-        android:id="@+id/moreGameButton"
-        android:layout_width="150dip"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dip"
-        android:background="#993366"
-        android:onClick="onMoreGameButtonClick"
-        android:text="@string/more_games"
-        android:textColor="@color/white" />
+    
 
     <View
         android:layout_width="fill_parent"
