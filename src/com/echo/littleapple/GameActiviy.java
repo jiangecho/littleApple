@@ -1,7 +1,5 @@
 package com.echo.littleapple;
 
-
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -63,10 +61,10 @@ import cn.sharesdk.onekeyshare.OnekeyShare;
 import com.echo.littleapple.GameSurfaceView.GameEventListner;
 import com.echo.littleapple.R.color;
 
-
 public class GameActiviy extends Activity implements GameEventListner{
 
 	private static final int TIME_LENGHT = 30 * 1000;
+	private static final int TIME_LENGHT_20 = 20 * 1000;
 	private static final String CLASSIC_30S_BEST_SCORE = "CLASSIC_30S_BEST_SCORE";
 	//fix bug
 	private static final String CLASSIC_SPEED_BEST_SCORE = "CLASSIC_SPEED_BEST_SCORE_EX";
@@ -79,6 +77,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private static final String GRAVITY_ENDLESS_BEST_SCORE = "GRAVITY_ENDLESS_BEST_SCORE";
 	private static final String GRAVITY_DISCONTINUOUS_BEST_SCORE = "GRAVITY_DISCONTINUOUS_BEST_SCORE ";
 	private static final String GRAVITY_DOUBLE_BEST_SCORE = "GRAVITY_DOUBLE_BEST_SCORE ";
+
+	private static final String TERRIBLE_RELAY_BSET_SCORE = "TERRIBLE_RELAY_BEST_SCORE";
+	private static final String TERRIBLE_LOOM_BSET_SCORE = "TERRIBLE_LOOM_BEST_SCORE";
 
 	private static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
 
@@ -109,12 +110,13 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private long currentSpeedScore;
 	private long speedBestScore;
 	
-	
 	private long lastPressMillis = 0;
 	
 	private BlockOnTouchEvent blockOnTouchEvent;
 	
-	private static final String[] colors = {"#773460" ,"#FE436A" ,"#823935" ,"#113F3D" ,"#26BCD5" ,"#F40D64" ,"#458994" ,"#93E0FF" ,"#D96831" ,"#AEDD81" ,"#593D43"};
+	private static final String[] colors = { "#773460", "#FE436A", "#823935",
+			"#113F3D", "#26BCD5", "#F40D64", "#458994", "#93E0FF", "#D96831",
+			"#AEDD81", "#593D43" };
 	private static final String SAY_HELLO = "2.0ad";
 	//TODO modify for different app store
 	private static final String RECOVER_AD = "auto2.7";
@@ -131,6 +133,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	public static final int MODE_CLASSIC = 0;
 	public static final int MODE_GRAVITY = 1;
+	public static final int MODE_TERRIBLE = 2;
 
 	//attention: the type value should not be the same!!!!!
 	// when add new type, no matter which mode it is,
@@ -148,6 +151,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 	public static final int TYPE_GRAVITY_DOUBLE = 9;
 	// add new type here
 
+	public static final int TYPE_TERIBLE_RELAY = 10;
+	public static final int TYPE_TERRIBLE_LOOM = 11;
+
 	public static final String TYPE = "TYPE";
 	
 	private static final int SPEED_SUCCESS_SCORE = 100;
@@ -164,8 +170,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private int level = LEVEL_NORMAL;
 	private String currentLevelString;
 
-	
 	private Button startSpeedButton, startMindeButton;
+	private LinearLayout classicAndGravityTypesLayout, terribleTypesLayout;
 	
 	private boolean newVersionAvailable = false;
 
@@ -204,6 +210,9 @@ public class GameActiviy extends Activity implements GameEventListner{
         startSpeedButton = (Button) findViewById(R.id.startSpeedButton);
         startMindeButton = (Button) findViewById(R.id.startMineButton);
 
+		classicAndGravityTypesLayout = (LinearLayout) findViewById(R.id.classic_gravity_types);
+		terribleTypesLayout = (LinearLayout) findViewById(R.id.terrible_types);
+
         resultLayer = (LinearLayout)findViewById(R.id.resultLayer);
         resultLayer.setOnTouchListener(blockOnTouchEvent);
         
@@ -229,8 +238,10 @@ public class GameActiviy extends Activity implements GameEventListner{
         handler = new Handler();
         remindTimeSB = new StringBuffer();
         
-        sharedPreferences = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-        speedBestScore = sharedPreferences.getLong(CLASSIC_SPEED_BEST_SCORE, Long.MAX_VALUE);
+		sharedPreferences = getSharedPreferences(getPackageName(),
+				Context.MODE_PRIVATE);
+		speedBestScore = sharedPreferences.getLong(CLASSIC_SPEED_BEST_SCORE,
+				Long.MAX_VALUE);
         
         nickyName = sharedPreferences.getString(NICKY_NAME, null);
         if (nickyName == null) {
@@ -238,27 +249,40 @@ public class GameActiviy extends Activity implements GameEventListner{
         	LayoutInflater layoutInflater = LayoutInflater.from(this);
         	final View view = layoutInflater.inflate(R.layout.nicky_name, null);
         	AlertDialog dialog = new AlertDialog.Builder(this)
-        		.setTitle(getResources().getString(R.string.input_nicky_name))
+					.setTitle(
+							getResources().getString(R.string.input_nicky_name))
         		.setView(view)
-        		.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
+					.setPositiveButton(
+							getResources().getString(R.string.confirm),
+							new DialogInterface.OnClickListener() {
 					
 					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						EditText editText = (EditText) view.findViewById(R.id.editText);
-						String tmp = editText.getText().toString().replaceAll("\\s+", "");
+								public void onClick(DialogInterface dialog,
+										int which) {
+									EditText editText = (EditText) view
+											.findViewById(R.id.editText);
+									String tmp = editText.getText().toString()
+											.replaceAll("\\s+", "");
 						tmp.replaceAll("_", "");
 						tmp.replaceAll(";", "");
 						if (tmp.length() > 0) {
-							nickyName = tmp + "_" + System.currentTimeMillis();
-							sharedPreferences.edit().putString(NICKY_NAME, nickyName).commit();					
-							//when the user reset the nicky name, re-submit the best score
-							sharedPreferences.edit().putBoolean(HAVE_SUBMITED, false).commit();
+										nickyName = tmp + "_"
+												+ System.currentTimeMillis();
+										sharedPreferences
+												.edit()
+												.putString(NICKY_NAME,
+														nickyName).commit();
+										// when the user reset the nicky name,
+										// re-submit the best score
+										sharedPreferences
+												.edit()
+												.putBoolean(HAVE_SUBMITED,
+														false).commit();
 							haveSubmited = false;
 						}
 
 					}
-				})
-				.create();
+							}).create();
         	dialog.show();
 		}
         
@@ -362,10 +386,38 @@ public class GameActiviy extends Activity implements GameEventListner{
 		@Override
 		public void onTick(long millisUntilFinished) {
 
-			if (type == TYPE_CLASSIC_30S || type == TYPE_GRAVITY_30S 
-					|| type == TYPE_CLASSIC_DISCONTINUOUS || type == TYPE_GRAVITY_DISCONTINUOUS
-					|| type == TYPE_GRAVITY_MINE
-					|| type == TYPE_CLASSIC_DOUBLE || type == TYPE_GRAVITY_DOUBLE) {
+			// if (type == TYPE_CLASSIC_30S || type == TYPE_GRAVITY_30S
+			// || type == TYPE_CLASSIC_DISCONTINUOUS
+			// || type == TYPE_GRAVITY_DISCONTINUOUS
+			// || type == TYPE_GRAVITY_MINE || type == TYPE_CLASSIC_DOUBLE
+			// || type == TYPE_GRAVITY_DOUBLE
+			// || type == TYPE_TERIBLE_RELAY) {
+			// remindTimeSB.setLength(0);
+			// remindSeconds = (int) (millisUntilFinished / 1000);
+			// remindMillis = (int) (millisUntilFinished % 1000 / 10);
+			// if (remindSeconds < 10) {
+			// remindTimeSB.append("0");
+			// }
+			// remindTimeSB.append(remindSeconds);
+			// remindTimeSB.append(".");
+			//
+			// if (remindMillis < 10) {
+			// remindTimeSB.append("0");
+			// }
+			// remindTimeSB.append(remindMillis);
+			//
+			// timerTV.setText(remindTimeSB);
+			//
+			// // TERRIBLE type
+			// if (type == TYPE_TERIBLE_RELAY
+			// && millisUntilFinished < TIME_LENGHT_20) {
+			// gameView.setMode(MODE_GRAVITY);
+			// }
+			// } else
+			if (type == TYPE_CLASSIC_SPEED) {
+				// do nothing
+				escapeMillis = SPEED_MAX_TIME_LENGHT - millisUntilFinished;
+			} else {
 				remindTimeSB.setLength(0);
 				remindSeconds = (int) (millisUntilFinished / 1000);
 				remindMillis = (int) (millisUntilFinished % 1000 / 10);
@@ -381,15 +433,19 @@ public class GameActiviy extends Activity implements GameEventListner{
 				remindTimeSB.append(remindMillis);
 				
 				timerTV.setText(remindTimeSB);
-			}else if(type == TYPE_CLASSIC_SPEED){
-				//do nothing
-				escapeMillis = SPEED_MAX_TIME_LENGHT - millisUntilFinished;
-		}
-		
+
+				// TERRIBLE type
+				if (type == TYPE_TERIBLE_RELAY
+						&& millisUntilFinished < TIME_LENGHT_20) {
+					gameView.setMode(MODE_GRAVITY);
+				}
+
+			}
+
 	}
 	
 	}
-	
+
 	//select mode
 	public void onClassicButtonClick(View view){
 		this.mode = MODE_CLASSIC;
@@ -399,8 +455,11 @@ public class GameActiviy extends Activity implements GameEventListner{
 		startMindeButton.setVisibility(View.GONE);
 		
 		currentModeString = getString(R.string.mode_classic);
-		currentModeLevelTextView.setText(getString(R.string.current_mode_level, currentModeString, currentLevelString));
+		currentModeLevelTextView.setText(getString(R.string.current_mode_level,
+				currentModeString, currentLevelString));
 		typeSelectLayer.setVisibility(View.VISIBLE);
+		classicAndGravityTypesLayout.setVisibility(View.VISIBLE);
+		terribleTypesLayout.setVisibility(View.GONE);
 		
 		gameView.setMode(mode);
 	}
@@ -413,20 +472,70 @@ public class GameActiviy extends Activity implements GameEventListner{
 		startMindeButton.setVisibility(View.VISIBLE);
 
 		currentModeString = getString(R.string.mode_gravity);
-		currentModeLevelTextView.setText(getString(R.string.current_mode_level, currentModeString, currentLevelString));
+		currentModeLevelTextView.setText(getString(R.string.current_mode_level,
+				currentModeString, currentLevelString));
 		typeSelectLayer.setVisibility(View.VISIBLE);
+		classicAndGravityTypesLayout.setVisibility(View.VISIBLE);
+		terribleTypesLayout.setVisibility(View.GONE);
 
 		gameView.setMode(mode);
 	}
 	
+	public void onTerribleGameButtonClick(View view) {
+		this.mode = MODE_TERRIBLE;
+		currentModeString = getString(R.string.mode_terrible);
+		currentModeLevelTextView.setText(getString(R.string.current_mode_level,
+				currentModeString, currentLevelString));
+		modeSelectLayer.setVisibility(View.INVISIBLE);
+		typeSelectLayer.setVisibility(View.VISIBLE);
+		classicAndGravityTypesLayout.setVisibility(View.GONE);
+		terribleTypesLayout.setVisibility(View.VISIBLE);
+	}
+
+	public void onStartRelayButtonClick(View view) {
+		startRelay();
+	}
+
+	public void onStartLoomButtonClick(View view) {
+		if (countDownTimer == null) {
+			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+		} else {
+			if (countDownTimer.durationMillis != TIME_LENGHT) {
+				countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+			}
+		}
+		type = TYPE_TERRIBLE_LOOM;
+		mode = MODE_TERRIBLE;
+		gameView.setMode(MODE_TERRIBLE);
+		gameView.setType(TYPE_TERRIBLE_LOOM);
+
+		bestScore = sharedPreferences.getInt(TERRIBLE_LOOM_BSET_SCORE, 0);
+		typeIntroTextView.setText(R.string.loom_intro);
+		typeIntroTextView.setVisibility(View.VISIBLE);
+		currentScore = 0;
+		timerTV.setVisibility(View.VISIBLE);
+		timerTV.setText("30:00");
+		currentModeString = getString(R.string.mode_terrible);
+		currentTypeString = getString(R.string.type_loom);
+		currentModeTypeLevelTextView.setText(getString(
+				R.string.current_mode_type_level, currentModeString,
+				currentTypeString, currentLevelString));
+		typeSelectLayer.setVisibility(View.INVISIBLE);
+		modeSelectLayer.setVisibility(View.INVISIBLE);
+
+	}
+
 	public void onSettingButtonClick(View view){
         LayoutInflater layoutInflater = LayoutInflater.from(this);
-        final View alertView = layoutInflater.inflate(R.layout.level_setting, null);
+		final View alertView = layoutInflater.inflate(R.layout.level_setting,
+				null);
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.level_setting);
 		builder.setView(alertView);
 		AlertDialog dialog = builder.create();
-		dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.level_easy), new DialogInterface.OnClickListener() {
+		dialog.setButton(AlertDialog.BUTTON_NEGATIVE,
+				getString(R.string.level_easy),
+				new DialogInterface.OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -437,7 +546,9 @@ public class GameActiviy extends Activity implements GameEventListner{
 			}
 		});
 
-		dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.level_hard), new DialogInterface.OnClickListener() {
+		dialog.setButton(AlertDialog.BUTTON_POSITIVE,
+				getString(R.string.level_hard),
+				new DialogInterface.OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -458,26 +569,26 @@ level = LEVEL_HARD;
 	}
 	
 	public void onSingleRowButtonClick(View view){
-		Intent intent = new Intent(this, com.jucyzhang.flappybatta.RunnerGameActivity.class);
+		Intent intent = new Intent(this,
+				com.jucyzhang.flappybatta.RunnerGameActivity.class);
 		intent.putExtra("NICKYNAME", nickyName);
 		startActivity(intent);
 	}
 	
 	public void onDoubleRowButtonClick(View view){
-		Intent intent = new Intent(this, com.jucyzhang.flappybatta.TwoRunnerGameActivity.class);
+		Intent intent = new Intent(this,
+				com.jucyzhang.flappybatta.TwoRunnerGameActivity.class);
 		intent.putExtra("NICKYNAME", nickyName);
 		startActivity(intent);
 	}
 
 	public void onBirdButtonClick(View view){
-		Intent intent = new Intent(this, com.jucyzhang.flappybatta.GameActivity.class);
-		//Intent intent = new Intent(this, com.jucyzhang.flappybatta.RunnerGameActivity.class);
+		Intent intent = new Intent(this,
+				com.jucyzhang.flappybatta.GameActivity.class);
+		// Intent intent = new Intent(this,
+		// com.jucyzhang.flappybatta.RunnerGameActivity.class);
 		intent.putExtra("NICKYNAME", nickyName);
 		startActivity(intent);
-	}
-	
-	public void onMoreGameButtonClick(View view){
-		Ads.showAppWall(this, APP_WALL_ID);
 	}
 	
 	//select type
@@ -514,7 +625,8 @@ level = LEVEL_HARD;
 		timerTV.setText("30:00");
 		
 		currentTypeString = getString(R.string.type_time_30);
-		currentModeTypeLevelTextView.setText(getString(R.string.current_mode_type_level, currentModeString, 
+		currentModeTypeLevelTextView.setText(getString(
+				R.string.current_mode_type_level, currentModeString,
 				currentTypeString, currentLevelString));
 
 	}
@@ -543,7 +655,8 @@ level = LEVEL_HARD;
 		typeSelectLayer.setVisibility(View.INVISIBLE);
 
 		currentTypeString = getString(R.string.type_endless);
-		currentModeTypeLevelTextView.setText(getString(R.string.current_mode_type_level, currentModeString, 
+		currentModeTypeLevelTextView.setText(getString(
+				R.string.current_mode_type_level, currentModeString,
 				currentTypeString, currentLevelString));
 
 	}
@@ -554,12 +667,14 @@ level = LEVEL_HARD;
 			countDownTimer = new MyCountDownTimer(SPEED_MAX_TIME_LENGHT, 100);
 		}else {
 			if (countDownTimer.durationMillis != SPEED_MAX_TIME_LENGHT) {
-				countDownTimer = new MyCountDownTimer(SPEED_MAX_TIME_LENGHT, 100);
+				countDownTimer = new MyCountDownTimer(SPEED_MAX_TIME_LENGHT,
+						100);
 			}
 		}
 
 		// speed type is only available in CLASSIC MODE
-		speedBestScore = sharedPreferences.getLong(CLASSIC_SPEED_BEST_SCORE, Long.MAX_VALUE);
+		speedBestScore = sharedPreferences.getLong(CLASSIC_SPEED_BEST_SCORE,
+				Long.MAX_VALUE);
 		currentSpeedScore = 0;
 		currentScore = 0;
 		escapeMillis = 0;
@@ -572,7 +687,8 @@ level = LEVEL_HARD;
 		typeIntroTextView.setVisibility(View.VISIBLE);
 		
 		currentTypeString = getString(R.string.type_speed);
-		currentModeTypeLevelTextView.setText(getString(R.string.current_mode_type_level, currentModeString, 
+		currentModeTypeLevelTextView.setText(getString(
+				R.string.current_mode_type_level, currentModeString,
 				currentTypeString, currentLevelString));
 	}
 
@@ -589,13 +705,15 @@ level = LEVEL_HARD;
 		switch (mode) {
 		case MODE_CLASSIC:
 			type = TYPE_CLASSIC_DISCONTINUOUS;
-			bestScore = sharedPreferences.getInt(CLASSIC_DISCONTINUOUS_BEST_SCORE, 0);
+			bestScore = sharedPreferences.getInt(
+					CLASSIC_DISCONTINUOUS_BEST_SCORE, 0);
 			typeIntroTextView.setText(R.string.classic_intro);
 			typeIntroTextView.setVisibility(View.VISIBLE);
 			break;
 		case MODE_GRAVITY:
 			type = TYPE_GRAVITY_DISCONTINUOUS;
-			bestScore = sharedPreferences.getInt(GRAVITY_DISCONTINUOUS_BEST_SCORE, 0);
+			bestScore = sharedPreferences.getInt(
+					GRAVITY_DISCONTINUOUS_BEST_SCORE, 0);
 			typeIntroTextView.setText(R.string.gravity_intro);
 			typeIntroTextView.setVisibility(View.VISIBLE);
 			break;
@@ -608,7 +726,8 @@ level = LEVEL_HARD;
 		timerTV.setText("30:00");
 
 		currentTypeString = getString(R.string.type_discontinuous);
-		currentModeTypeLevelTextView.setText(getString(R.string.current_mode_type_level, currentModeString, 
+		currentModeTypeLevelTextView.setText(getString(
+				R.string.current_mode_type_level, currentModeString,
 				currentTypeString, currentLevelString));
 	}
 
@@ -644,7 +763,8 @@ level = LEVEL_HARD;
 		timerTV.setText("30:00");
 
 		currentTypeString = getString(R.string.type_double);
-		currentModeTypeLevelTextView.setText(getString(R.string.current_mode_type_level, currentModeString, 
+		currentModeTypeLevelTextView.setText(getString(
+				R.string.current_mode_type_level, currentModeString,
 				currentTypeString, currentLevelString));
 
 	}
@@ -672,7 +792,8 @@ level = LEVEL_HARD;
 		typeIntroTextView.setVisibility(View.VISIBLE);
 		
 		currentTypeString = getString(R.string.type_mine);
-		currentModeTypeLevelTextView.setText(getString(R.string.current_mode_type_level, currentModeString, 
+		currentModeTypeLevelTextView.setText(getString(
+				R.string.current_mode_type_level, currentModeString,
 				currentTypeString, currentLevelString));
 	}
 
@@ -682,12 +803,16 @@ level = LEVEL_HARD;
 		resultLayer.setVisibility(View.INVISIBLE);
 		if (type == TYPE_CLASSIC_30S || type == TYPE_GRAVITY_30S
 				|| type == TYPE_GRAVITY_MINE
-				|| type == TYPE_CLASSIC_DISCONTINUOUS || type == TYPE_GRAVITY_DISCONTINUOUS) {
+				|| type == TYPE_CLASSIC_DISCONTINUOUS
+				|| type == TYPE_GRAVITY_DISCONTINUOUS) {
 			timerTV.setText("30.00");
 		}else if(type == TYPE_CLASSIC_SPEED){
 			timerTV.setText("0");
 		}else if(type == TYPE_CLASSIC_ENDLESS || type == TYPE_GRAVITY_ENDLESS){
 			timerTV.setText("0");
+		} else if (type == TYPE_TERIBLE_RELAY) {
+			timerTV.setText("40:00");
+			gameView.setMode(MODE_CLASSIC);
 		}
 
 		currentScore = 0;
@@ -721,7 +846,35 @@ level = LEVEL_HARD;
 		
 	}
 	
+	private void startRelay() {
+		if (countDownTimer == null) {
+			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+		} else {
+			if (countDownTimer.durationMillis != TIME_LENGHT) {
+				countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+			}
+		}
 	
+		type = TYPE_TERIBLE_RELAY;
+		mode = MODE_TERRIBLE;
+		gameView.setMode(MODE_CLASSIC);
+		gameView.setType(TYPE_TERIBLE_RELAY);
+
+		bestScore = sharedPreferences.getInt(TERRIBLE_RELAY_BSET_SCORE, 0);
+		typeIntroTextView.setText(R.string.relay_intro);
+		typeIntroTextView.setVisibility(View.VISIBLE);
+		currentScore = 0;
+		timerTV.setVisibility(View.VISIBLE);
+		timerTV.setText("30:00");
+		currentModeString = getString(R.string.mode_terrible);
+		currentTypeString = getString(R.string.type_relay);
+		currentModeTypeLevelTextView.setText(getString(
+				R.string.current_mode_type_level, currentModeString,
+				currentTypeString, currentLevelString));
+		typeSelectLayer.setVisibility(View.INVISIBLE);
+		modeSelectLayer.setVisibility(View.INVISIBLE);
+	}
+
 	//TODO bug
 	private void updateAndShowResultLayer(){
 		String resultInfo = null;
@@ -735,30 +888,33 @@ level = LEVEL_HARD;
 		timerTV.setVisibility(View.INVISIBLE);
 
 		int colorIndex = random.nextInt(colors.length);
-		resultLayer.setBackgroundColor(Color.parseColor(colors[colorIndex]));;
+		resultLayer.setBackgroundColor(Color.parseColor(colors[colorIndex]));
+		;
 
 		switch (type) {
-		case TYPE_CLASSIC_DOUBLE:
-		case TYPE_GRAVITY_DOUBLE:
-		case TYPE_GRAVITY_MINE:
-		case TYPE_CLASSIC_DISCONTINUOUS:
-		case TYPE_GRAVITY_DISCONTINUOUS:
-		case TYPE_CLASSIC_ENDLESS:
-		case TYPE_GRAVITY_ENDLESS:
-			//transfer to classic
-		case TYPE_CLASSIC_30S:
-		case TYPE_GRAVITY_30S:
-			resultInfo= getResources().getString(R.string.classic_result, currentScore);
-		
-			if (currentScore > 100) {
-				promptInfo = getResources().getString(R.string.str_high_score);
-		}else {
-				promptInfo = getResources().getString(R.string.strf);
-		}
-
-	        bestScoreInfo = getString(R.string.best, bestScore);
-
-			break;
+		// case TYPE_CLASSIC_DOUBLE:
+		// case TYPE_GRAVITY_DOUBLE:
+		// case TYPE_GRAVITY_MINE:
+		// case TYPE_CLASSIC_DISCONTINUOUS:
+		// case TYPE_GRAVITY_DISCONTINUOUS:
+		// case TYPE_CLASSIC_ENDLESS:
+		// case TYPE_GRAVITY_ENDLESS:
+		// // transfer to classic
+		// case TYPE_CLASSIC_30S:
+		// case TYPE_GRAVITY_30S:
+		// case TYPE_TERIBLE_RELAY:
+		// resultInfo = getResources().getString(R.string.classic_result,
+		// currentScore);
+		//
+		// if (currentScore > 100) {
+		// promptInfo = getResources().getString(R.string.str_high_score);
+		// } else {
+		// promptInfo = getResources().getString(R.string.strf);
+		// }
+		//
+		// bestScoreInfo = getString(R.string.best, bestScore);
+		//
+		// break;
 
 		case TYPE_CLASSIC_SPEED:
 			StringBuffer sb = new StringBuffer();
@@ -766,10 +922,12 @@ level = LEVEL_HARD;
 				sb.append(escapeMillis / 1000);
 				sb.append(".");
 				sb.append((escapeMillis % 1000) / 10);
-				resultInfo= getResources().getString(R.string.speed_result, sb.toString());
+				resultInfo = getResources().getString(R.string.speed_result,
+						sb.toString());
 				
 				if (escapeMillis > 25 * 1000) {
-					promptInfo = getResources().getString(R.string.str_high_score);
+					promptInfo = getResources().getString(
+							R.string.str_high_score);
 				}else {
 					promptInfo = getResources().getString(R.string.strf);
 				}
@@ -779,7 +937,8 @@ level = LEVEL_HARD;
 			}
 			
 			if (speedBestScore > SPEED_MAX_TIME_LENGHT) {
-				bestScoreInfo = getString(R.string.speed_best, getString(R.string.speed_rank_none));
+				bestScoreInfo = getString(R.string.speed_best,
+						getString(R.string.speed_rank_none));
 				
 			}else {
 				sb.setLength(0);
@@ -789,6 +948,18 @@ level = LEVEL_HARD;
 				bestScoreInfo = getString(R.string.speed_best, sb.toString());
 			}
 
+			break;
+		default:
+			resultInfo = getResources().getString(R.string.classic_result,
+					currentScore);
+
+			if (currentScore > 100) {
+				promptInfo = getResources().getString(R.string.str_high_score);
+			} else {
+				promptInfo = getResources().getString(R.string.strf);
+			}
+
+			bestScoreInfo = getString(R.string.best, bestScore);
 
 			break;
 		}
@@ -841,7 +1012,9 @@ level = LEVEL_HARD;
 			builder.setTitle(R.string.recover);
 			builder.setMessage(R.string.recover_prompt);
 			AlertDialog dialog = builder.create();
-			dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.go_dead), new DialogInterface.OnClickListener() {
+			dialog.setButton(AlertDialog.BUTTON_NEGATIVE,
+					getString(R.string.go_dead),
+					new DialogInterface.OnClickListener() {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -851,7 +1024,9 @@ level = LEVEL_HARD;
 				}
 			});
 
-			dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.recover), new DialogInterface.OnClickListener() {
+			dialog.setButton(AlertDialog.BUTTON_POSITIVE,
+					getString(R.string.recover),
+					new DialogInterface.OnClickListener() {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -881,7 +1056,8 @@ level = LEVEL_HARD;
 //			dialog.setOnKeyListener(new OnKeyListener() {
 //				
 //				@Override
-//				public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+			// public boolean onKey(DialogInterface dialog, int keyCode,
+			// KeyEvent event) {
 //					return true;
 //				}
 //			});
@@ -906,7 +1082,8 @@ level = LEVEL_HARD;
 			if (score == SPEED_SUCCESS_SCORE) {
 				gameView.playGameSoundEffect(GameSurfaceView.TIME_OUT);
 				gameView.stop();
-				timerTV.setText(getResources().getString(R.string.speed_success));
+				timerTV.setText(getResources()
+						.getString(R.string.speed_success));
 
 				currentSpeedScore = escapeMillis;
 				
@@ -1014,7 +1191,8 @@ level = LEVEL_HARD;
 		if (imgPath == null) {
 			Toast.makeText(this, "SD卡不存在", Toast.LENGTH_SHORT).show();
 		}else {
-			Toast.makeText(this, getString(R.string.capture_screen_ok), Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.capture_screen_ok),
+					Toast.LENGTH_SHORT).show();
 			showShare(imgPath);
 		}
 	}
@@ -1024,7 +1202,8 @@ level = LEVEL_HARD;
 		rootView.setDrawingCacheEnabled(true);
 		rootView.buildDrawingCache(true);
 		Bitmap bitmap = rootView.getDrawingCache(true);
-		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+		if (!Environment.getExternalStorageState().equals(
+				Environment.MEDIA_MOUNTED)) {
 			return null;
 		}
 		File  path = Environment.getExternalStorageDirectory();
@@ -1052,7 +1231,8 @@ level = LEVEL_HARD;
         OnekeyShare oks = new OnekeyShare();
         oks.disableSSOWhenAuthorize();
        
-        oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
+		oks.setNotification(R.drawable.ic_launcher,
+				getString(R.string.app_name));
         oks.setTitle(getString(R.string.app_name));
         oks.setTitleUrl(APP_URL);
         oks.setText(getString(R.string.share_title, APP_URL));
@@ -1082,7 +1262,8 @@ level = LEVEL_HARD;
 	  
    private void checkUpdate(int versionCode){
 	   try {
-		   int currentVersionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+			int currentVersionCode = getPackageManager().getPackageInfo(
+					getPackageName(), 0).versionCode;
 		   if (versionCode > currentVersionCode) {
 			   newVersionAvailable = true;
 		   }
@@ -1095,7 +1276,8 @@ level = LEVEL_HARD;
 	 private void getOnlineConfig(){
 		try {
 			URL url = new URL("http://littleappleapp.sinaapp.com/config.txt");
-			HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+			HttpURLConnection urlConnection = (HttpURLConnection) url
+					.openConnection();
 			InputStream inputStream = urlConnection.getInputStream();
 			byte[] bytes = new byte[1024];
 			int count;
@@ -1120,7 +1302,8 @@ level = LEVEL_HARD;
 
 			for (String str : tmp) {
 				if (str.startsWith("version")) {
-					int versionCode = Integer.parseInt(str.substring("version".length()));
+					int versionCode = Integer.parseInt(str.substring("version"
+							.length()));
 					checkUpdate(versionCode);
 					break;
 				}
@@ -1146,73 +1329,87 @@ level = LEVEL_HARD;
    
    // TODO optimize do not need to check the mode, can just use type
    private void updateBestScore(){
+
+		if (type == TYPE_CLASSIC_SPEED) {
+			if (currentSpeedScore > 0 && currentSpeedScore < speedBestScore) {
+				speedBestScore = currentSpeedScore;
+			} else {
+				return;
+			}
+
+		} else {
+			if (currentScore > bestScore) {
+				bestScore = currentScore;
+			} else {
+				return;
+			}
+		}
+
 	  if (mode == MODE_CLASSIC) {
 		  switch (type) {
 		  	case TYPE_CLASSIC_30S:
-		  		if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit().putInt(CLASSIC_30S_BEST_SCORE, bestScore).commit();
-				}
+				sharedPreferences.edit()
+						.putInt(CLASSIC_30S_BEST_SCORE, bestScore).commit();
 		  		break;
 			case TYPE_CLASSIC_ENDLESS:
-		  		if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit().putInt(CLASSIC_ENDLESS_BEST_SCORE, bestScore).commit();
-				}
+				sharedPreferences.edit()
+						.putInt(CLASSIC_ENDLESS_BEST_SCORE, bestScore).commit();
 				break;
 			case TYPE_CLASSIC_SPEED:
-		  		if (currentSpeedScore > 0 && currentSpeedScore < speedBestScore) {
-					speedBestScore = currentSpeedScore;
-					sharedPreferences.edit().putLong(CLASSIC_SPEED_BEST_SCORE, speedBestScore).commit();
-				}
+				sharedPreferences.edit()
+						.putLong(CLASSIC_SPEED_BEST_SCORE, speedBestScore)
+						.commit();
 				break;
 			case TYPE_CLASSIC_DISCONTINUOUS:
-		  		if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit().putInt(CLASSIC_DISCONTINUOUS_BEST_SCORE, bestScore).commit();
-				}
+				sharedPreferences.edit()
+						.putInt(CLASSIC_DISCONTINUOUS_BEST_SCORE, bestScore)
+						.commit();
 				break;
 			case TYPE_CLASSIC_DOUBLE:
-		  		if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit().putInt(CLASSIC_DOUBLE_BEST_SCORE, bestScore).commit();
-				}
+				sharedPreferences.edit()
+						.putInt(CLASSIC_DOUBLE_BEST_SCORE, bestScore).commit();
 				break;
 		}
 		
 	  }else if(mode == MODE_GRAVITY){
 		  switch (type) {
 		  	case TYPE_GRAVITY_30S:
-		  		if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit().putInt(GRAVITY_30S_BEST_SCORE, bestScore).commit();
-				}
+				sharedPreferences.edit()
+						.putInt(GRAVITY_30S_BEST_SCORE, bestScore).commit();
 		  		break;
 			case TYPE_GRAVITY_ENDLESS:
-		  		if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit().putInt(GRAVITY_ENDLESS_BEST_SCORE, bestScore).commit();
-				}
+				sharedPreferences.edit()
+						.putInt(GRAVITY_ENDLESS_BEST_SCORE, bestScore).commit();
 				break;
 			case TYPE_GRAVITY_MINE:
-		  		if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit().putInt(GRAVITY_MINE_BEST_SCORE, bestScore).commit();
-				}
+				sharedPreferences.edit()
+						.putInt(GRAVITY_MINE_BEST_SCORE, bestScore).commit();
 				break;
 			case TYPE_GRAVITY_DISCONTINUOUS:
-		  		if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit().putInt(GRAVITY_DISCONTINUOUS_BEST_SCORE, bestScore).commit();
-				}
+				sharedPreferences.edit()
+						.putInt(GRAVITY_DISCONTINUOUS_BEST_SCORE, bestScore)
+						.commit();
 				break;
 			case TYPE_GRAVITY_DOUBLE:
-		  		if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit().putInt(GRAVITY_DOUBLE_BEST_SCORE, bestScore).commit();
+				sharedPreferences.edit()
+						.putInt(GRAVITY_DOUBLE_BEST_SCORE, bestScore).commit();
+				break;
 				}
+		} else if (mode == MODE_TERRIBLE) {
+			switch (type) {
+			case TYPE_TERIBLE_RELAY:
+				sharedPreferences.edit()
+						.putInt(TERRIBLE_RELAY_BSET_SCORE, bestScore).commit();
+
+				break;
+			case TYPE_TERRIBLE_LOOM:
+				sharedPreferences.edit()
+						.putInt(TERRIBLE_LOOM_BSET_SCORE, bestScore).commit();
+
+			default:
 				break;
 		}
+
 	  }
    }
 
@@ -1222,30 +1419,6 @@ level = LEVEL_HARD;
 	   if (nickyName == null) {
 		   return;
 	   }
-	   
-	   switch (type) {
-		case TYPE_CLASSIC_30S:
-		   if (currentScore == 0) {
-		return;
-	   }
-		   scoreString = currentScore + "";
-			break;
-	
-		case TYPE_CLASSIC_SPEED:
-			if (escapeMillis > SPEED_MAX_TIME_LENGHT || currentScore < SPEED_SUCCESS_SCORE) {
-				return;
-			}
-			
-			scoreString = escapeMillis + "";
-			break;
-			//TODO 
-		case TYPE_CLASSIC_ENDLESS:
-		   if (currentScore == 0) {
-			   return;
-		   }
-		   scoreString = currentScore + "";
-			break;
-		}
 	   
 	   if (type == TYPE_CLASSIC_SPEED) {
 		   if (currentSpeedScore == 0) {
@@ -1266,8 +1439,10 @@ level = LEVEL_HARD;
 		public void run() {
 			// TODO the uri should base on the mode
 			  List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-			  nameValuePairs.add(new BasicNameValuePair("nickyname", nickyName));
-			  nameValuePairs.add(new BasicNameValuePair("score", scoreString));
+				nameValuePairs.add(new BasicNameValuePair("nickyname",
+						nickyName));
+				nameValuePairs
+						.add(new BasicNameValuePair("score", scoreString));
 			  nameValuePairs.add(new BasicNameValuePair("type", type + ""));
 			  Util.httpPost(submitUri, nameValuePairs, postResultCallBack);
 		}
@@ -1281,7 +1456,8 @@ level = LEVEL_HARD;
 	public void onSuccess() {
 		if (!haveSubmited) {
 			haveSubmited = true;
-			sharedPreferences.edit().putBoolean(HAVE_SUBMITED, true).commit();
+				sharedPreferences.edit().putBoolean(HAVE_SUBMITED, true)
+						.commit();
 		}
 		
 	}
@@ -1300,7 +1476,9 @@ level = LEVEL_HARD;
 	  builder.setTitle(getString(R.string.update_title));
 	  builder.setMessage(getString(R.string.update_text));
 	  AlertDialog dialog = builder.create();
-	  dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.update_cancel), new DialogInterface.OnClickListener() {
+		dialog.setButton(AlertDialog.BUTTON_NEGATIVE,
+				getString(R.string.update_cancel),
+				new DialogInterface.OnClickListener() {
 		
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
@@ -1308,14 +1486,18 @@ level = LEVEL_HARD;
 			finish();
 		}
 	});
-	  dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.update_ok), new DialogInterface.OnClickListener() {
+		dialog.setButton(AlertDialog.BUTTON_POSITIVE,
+				getString(R.string.update_ok),
+				new DialogInterface.OnClickListener() {
 		
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
 			Uri uri = Uri.parse(APP_URL);
 			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 			startActivity(intent);
-			Toast toast = Toast.makeText(GameActiviy.this, getString(R.string.update_prompt) , Toast.LENGTH_SHORT);
+						Toast toast = Toast.makeText(GameActiviy.this,
+								getString(R.string.update_prompt),
+								Toast.LENGTH_SHORT);
 			toast.show();
 			finish();
 		}
@@ -1324,18 +1506,22 @@ level = LEVEL_HARD;
    }
    
    private void showExitDialog(){
-	  AlertDialog dialog = new AlertDialog.Builder(this)
-	  	.setTitle(getString(R.string.exit_title))
+		AlertDialog dialog = new AlertDialog.Builder(this).setTitle(
+				getString(R.string.exit_title))
 	  	//.setMessage(getString(R.string.exit_text))
 	  	.create();
-	  dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.exit_cancel), new DialogInterface.OnClickListener() {
+		dialog.setButton(AlertDialog.BUTTON_NEGATIVE,
+				getString(R.string.exit_cancel),
+				new DialogInterface.OnClickListener() {
 		
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
 			dialog.dismiss();
 		}
 	});
-	  dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.exit_ok), new DialogInterface.OnClickListener() {
+		dialog.setButton(AlertDialog.BUTTON_POSITIVE,
+				getString(R.string.exit_ok),
+				new DialogInterface.OnClickListener() {
 		
 		@Override
 		public void onClick(DialogInterface dialog, int which) {

@@ -47,7 +47,8 @@ import com.wandoujia.ads.sdk.Ads;
 import com.wandoujia.ads.sdk.Ads.ShowMode;
 import com.wandoujia.ads.sdk.loader.Fetcher.AdFormat;
 
-public class RunnerGameActivity extends Activity implements Callback, OnClickListener {
+public class RunnerGameActivity extends Activity implements Callback,
+		OnClickListener {
   /**
    * set to true in order to print fps in screen.
    */
@@ -174,7 +175,6 @@ public class RunnerGameActivity extends Activity implements Callback, OnClickLis
     stopDrawingThread();
   }
 
-
   private void restart() {
     if (!isFinishing()) {
       ivBackground.setImageResource(BACKGROUND[random
@@ -219,10 +219,10 @@ public class RunnerGameActivity extends Activity implements Callback, OnClickLis
     AssetManager assetManager = res.getAssets();
     soundIds = new int[5];
     try {
-      soundIds[SOUND_DIE] = soundPool.load(assetManager.openFd("sfx_die.ogg"),
-          1);
-      soundIds[SOUND_HIT] = soundPool.load(assetManager.openFd("sfx_hit.ogg"),
-          1);
+			soundIds[SOUND_DIE] = soundPool.load(
+					assetManager.openFd("sfx_die.ogg"), 1);
+			soundIds[SOUND_HIT] = soundPool.load(
+					assetManager.openFd("sfx_hit.ogg"), 1);
       soundIds[SOUND_POINT] = soundPool.load(
           assetManager.openFd("sfx_point.ogg"), 1);
       soundIds[SOUND_SWOOSHING] = soundPool.load(
@@ -294,7 +294,8 @@ public class RunnerGameActivity extends Activity implements Callback, OnClickLis
           continue;
         }
         if (currentStatus == Sprite.STATUS_GAME_OVER) {
-          if (runnerSprite.isHit(runnerSprite) && !splashSprite.isAlive()) {
+					if (runnerSprite.isHit(runnerSprite)
+							&& !splashSprite.isAlive()) {
             onGameOver();
             sprites.clear();
             continue;
@@ -318,7 +319,8 @@ public class RunnerGameActivity extends Activity implements Callback, OnClickLis
         }
         if (blockerCount > NEW_BLOCKER_COUNT) {
           blockerCount = 0;
-          RoadBlockSprite sprite = RoadBlockSprite.obtainRandom(getBaseContext(), runnerSprite.getX());
+					RoadBlockSprite sprite = RoadBlockSprite.obtainRandom(
+							getBaseContext(), runnerSprite.getX());
           sprites.addFirst(sprite);
           // Log.d(TAG, "new sprite");
         } else {
@@ -327,7 +329,8 @@ public class RunnerGameActivity extends Activity implements Callback, OnClickLis
         if (ENABLE_COIN) {
           if (coinCount > NEW_COIN_COUNT) {
             coinCount = 0;
-            CoinSprite sprite = new CoinSprite(getBaseContext(), coin);
+						CoinSprite sprite = new CoinSprite(getBaseContext(),
+								coin);
             sprites.addFirst(sprite);
             // Log.d(TAG, "new coin");
           } else {
@@ -372,6 +375,11 @@ public class RunnerGameActivity extends Activity implements Callback, OnClickLis
 	resultTV.setText(getString(R.string.flappy_runner_result, currentPoint));
   }
 
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+	}
+
   private void onGameOver() {
     runOnUiThread(new Runnable() {
 
@@ -411,7 +419,8 @@ public class RunnerGameActivity extends Activity implements Callback, OnClickLis
       @Override
       public void run() {
         if (!isFinishing()) {
-          soundPool.play(soundIds[SOUND_SWOOSHING], 0.5f, 0.5f, 1, 0, 1);
+					soundPool.play(soundIds[SOUND_SWOOSHING], 0.5f, 0.5f, 1, 0,
+							1);
         }
       }
     });
@@ -435,7 +444,6 @@ public class RunnerGameActivity extends Activity implements Callback, OnClickLis
       break;
     }
   }
-  
   
 	public void onRestartButtonClick(View view){
 		resultLayer.setVisibility(View.INVISIBLE);
@@ -468,9 +476,12 @@ public class RunnerGameActivity extends Activity implements Callback, OnClickLis
 			// TODO the uri should base on the mode;
 			  String submitUri = "http://littleappleapp.sinaapp.com/submit_score.php";
 			  List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-			  nameValuePairs.add(new BasicNameValuePair("nickyname", nickyName));
-			  nameValuePairs.add(new BasicNameValuePair("score", "" + currentPoint));
-			  nameValuePairs.add(new BasicNameValuePair("type", + Constant.TYPE_FLAPPY_RUNNER+ ""));
+				nameValuePairs.add(new BasicNameValuePair("nickyname",
+						nickyName));
+				nameValuePairs.add(new BasicNameValuePair("score", ""
+						+ currentPoint));
+				nameValuePairs.add(new BasicNameValuePair("type",
+						+Constant.TYPE_FLAPPY_RUNNER + ""));
 			  Util.httpPost(submitUri, nameValuePairs, null);
 		}
 	}).start();

@@ -7,8 +7,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-public class RoadBlockSprite implements Sprite{
-	
+public class RoadBlockSprite implements Sprite {
+
 	private boolean scored = false;
 	private int blockWidth, blockHeight;
 	private int width, height;
@@ -16,20 +16,21 @@ public class RoadBlockSprite implements Sprite{
 	private int currentX, currentY;
 	private int groundHeight;
 	private float speed;
-	
+
 	// X, the x position of the runner sprite
-	public static RoadBlockSprite obtainRandom(Context context, int X){
-		
+	public static RoadBlockSprite obtainRandom(Context context, int X) {
+
 		return new RoadBlockSprite(context, X);
 	}
 
-	private RoadBlockSprite(Context context, int X){
-		
+	private RoadBlockSprite(Context context, int X) {
+
 		groundHeight = ViewUtil.dipResourceToPx(context, R.dimen.ground_height);
-		
+
 		// TODO random width and height
-		int defaultHeight = ViewUtil.dipResourceToPx(context, R.dimen.block_width);
-		blockHeight = defaultHeight  - RANDOM.nextInt((int) (defaultHeight / 2));
+		int defaultHeight = ViewUtil.dipResourceToPx(context,
+				R.dimen.block_width);
+		blockHeight = defaultHeight - RANDOM.nextInt((int) (defaultHeight / 2));
 		blockWidth = defaultHeight / 3 + RANDOM.nextInt(defaultHeight / 2);
 
 		speed = ViewUtil.dipResourceToFloat(context, R.dimen.block_speed);
@@ -48,13 +49,14 @@ public class RoadBlockSprite implements Sprite{
 		if (status == STATUS_NOT_STARTED) {
 			return;
 		}
-		
+
 		if (status == STATUS_NORMAL) {
 			currentX -= speed;
 		}
-		
+
 		globalPaint.setColor(Color.BLACK);
-		canvas.drawRect(currentX, currentY, currentX + blockWidth, currentY + blockHeight, globalPaint);
+		canvas.drawRect(currentX, currentY, currentX + blockWidth, currentY
+				+ blockHeight, globalPaint);
 	}
 
 	@Override
@@ -66,22 +68,23 @@ public class RoadBlockSprite implements Sprite{
 	public boolean isHit(Sprite sprite) {
 		if (sprite instanceof RunnerSprite) {
 			RunnerSprite r = (RunnerSprite) sprite;
-			//int rTop = r.getHitTop();
+			// int rTop = r.getHitTop();
 			int rBottom = r.getHitBottom();
 			int rLeft = r.getHitLeft();
 			int rRight = r.getHitRight();
-			
-			if((rBottom > currentY && rBottom <= currentY + blockHeight) 
-					&& (((rRight > currentX) && (rLeft < currentX)) 
-					|| ((rLeft > currentX) && rRight < currentX + blockWidth)
-					|| ((rRight > currentX + blockWidth ) && (rLeft < currentX + blockWidth - ((RunnerSprite)sprite).getWidth() / 2)))) {
+
+			if ((rBottom > currentY && rBottom <= currentY + blockHeight)
+					&& (((rRight > currentX) && (rLeft < currentX))
+							|| ((rLeft > currentX) && rRight < currentX
+									+ blockWidth) || ((rRight > currentX
+							+ blockWidth) && (rLeft < currentX + blockWidth
+							- ((RunnerSprite) sprite).getWidth() / 2)))) {
 				return true;
-			}else {
+			} else {
 				return false;
 			}
-			
-			
-		}else {
+
+		} else {
 			return false;
 		}
 	}
@@ -91,7 +94,7 @@ public class RoadBlockSprite implements Sprite{
 		if (!scored && currentX < X) {
 			scored = true;
 			return 5;
-		}else {
+		} else {
 			return 0;
 		}
 	}
@@ -99,7 +102,7 @@ public class RoadBlockSprite implements Sprite{
 	@Override
 	public void setY(int y) {
 		currentY = y - blockHeight;
-		
+
 	}
 
 }

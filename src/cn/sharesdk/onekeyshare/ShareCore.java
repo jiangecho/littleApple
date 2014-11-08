@@ -23,14 +23,15 @@ import cn.sharesdk.framework.utils.R;
 import cn.sharesdk.framework.ShareSDK;
 
 /**
- * ShareCore是快捷分享的实际出口，此类使用了反射的方式，配合传递进来的HashMap，
- *构造{@link ShareParams}对象，并执行分享，使快捷分享不再需要考虑目标平台
+ * ShareCore是快捷分享的实际出口，此类使用了反射的方式，配合传递进来的HashMap， 构造{@link ShareParams}
+ * 对象，并执行分享，使快捷分享不再需要考虑目标平台
  */
 public class ShareCore {
 	private ShareContentCustomizeCallback customizeCallback;
 
 	/** 设置用于分享过程中，根据不同平台自定义分享内容的回调 */
-	public void setShareContentCustomizeCallback(ShareContentCustomizeCallback callback) {
+	public void setShareContentCustomizeCallback(
+			ShareContentCustomizeCallback callback) {
 		customizeCallback = callback;
 	}
 
@@ -38,8 +39,7 @@ public class ShareCore {
 	 * 向指定平台分享内容
 	 * <p>
 	 * <b>注意：</b><br>
-	 * 参数data的键值需要严格按照{@link ShareParams}不同子类具体字段来命名，
-	 *否则无法反射此字段，也无法设置其值。
+	 * 参数data的键值需要严格按照{@link ShareParams}不同子类具体字段来命名， 否则无法反射此字段，也无法设置其值。
 	 */
 	public boolean share(Platform plat, HashMap<String, Object> data) {
 		if (plat == null || data == null) {
@@ -49,9 +49,11 @@ public class ShareCore {
 		try {
 			String imagePath = (String) data.get("imagePath");
 			Bitmap viewToShare = (Bitmap) data.get("viewToShare");
-			if (TextUtils.isEmpty(imagePath) && viewToShare != null && !viewToShare.isRecycled()) {
+			if (TextUtils.isEmpty(imagePath) && viewToShare != null
+					&& !viewToShare.isRecycled()) {
 				String path = R.getCachePath(plat.getContext(), "screenshot");
-				File ss = new File(path, String.valueOf(System.currentTimeMillis()) + ".jpg");
+				File ss = new File(path, String.valueOf(System
+						.currentTimeMillis()) + ".jpg");
 				FileOutputStream fos = new FileOutputStream(ss);
 				viewToShare.compress(CompressFormat.JPEG, 100, fos);
 				fos.flush();
@@ -68,11 +70,9 @@ public class ShareCore {
 			customizeCallback.onShare(plat, sp);
 		}
 
-		String[] flags = new String[] {
-				"OnekeyShare",
+		String[] flags = new String[] { "OnekeyShare",
 				plat.getContext().getPackageName(),
-				String.valueOf(ShareSDK.getSDKVersionCode())
-		};
+				String.valueOf(ShareSDK.getSDKVersionCode()) };
 		sp.setCustomFlag(flags);
 		plat.share(sp);
 		return true;
@@ -81,12 +81,13 @@ public class ShareCore {
 	/** 判断指定平台是否使用客户端分享 */
 	public static boolean isUseClientToShare(String platform) {
 		if ("Wechat".equals(platform) || "WechatMoments".equals(platform)
-				|| "WechatFavorite".equals(platform) || "ShortMessage".equals(platform)
-				|| "Email".equals(platform) || "GooglePlus".equals(platform)
-				|| "QQ".equals(platform) || "Pinterest".equals(platform)
-				|| "Instagram".equals(platform) || "Yixin".equals(platform)
-				|| "YixinMoments".equals(platform) || "QZone".equals(platform)
-				|| "Mingdao".equals(platform) || "Line".equals(platform)) {
+				|| "WechatFavorite".equals(platform)
+				|| "ShortMessage".equals(platform) || "Email".equals(platform)
+				|| "GooglePlus".equals(platform) || "QQ".equals(platform)
+				|| "Pinterest".equals(platform) || "Instagram".equals(platform)
+				|| "Yixin".equals(platform) || "YixinMoments".equals(platform)
+				|| "QZone".equals(platform) || "Mingdao".equals(platform)
+				|| "Line".equals(platform)) {
 			return true;
 		} else if ("Evernote".equals(platform)) {
 			Platform plat = ShareSDK.getPlatform(platform);
@@ -99,7 +100,8 @@ public class ShareCore {
 				Intent test = new Intent(Intent.ACTION_SEND);
 				test.setPackage("com.sina.weibo");
 				test.setType("image/*");
-				ResolveInfo ri = plat.getContext().getPackageManager().resolveActivity(test, 0);
+				ResolveInfo ri = plat.getContext().getPackageManager()
+						.resolveActivity(test, 0);
 				return (ri != null);
 			}
 		}
@@ -110,11 +112,11 @@ public class ShareCore {
 	/** 判断指定平台是否可以用来授权 */
 	public static boolean canAuthorize(Context context, String platform) {
 		if ("Wechat".equals(platform) || "WechatMoments".equals(platform)
-				|| "WechatFavorite".equals(platform) || "ShortMessage".equals(platform)
-				|| "Email".equals(platform) || "GooglePlus".equals(platform)
-				|| "QQ".equals(platform) || "Pinterest".equals(platform)
-				|| "Yixin".equals(platform) || "YixinMoments".equals(platform)
-				|| "Line".equals(platform)) {
+				|| "WechatFavorite".equals(platform)
+				|| "ShortMessage".equals(platform) || "Email".equals(platform)
+				|| "GooglePlus".equals(platform) || "QQ".equals(platform)
+				|| "Pinterest".equals(platform) || "Yixin".equals(platform)
+				|| "YixinMoments".equals(platform) || "Line".equals(platform)) {
 			return false;
 		}
 		return true;

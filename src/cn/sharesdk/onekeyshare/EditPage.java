@@ -55,7 +55,8 @@ import cn.sharesdk.framework.TitleLayout;
 import cn.sharesdk.framework.utils.UIHandler;
 
 /** 执行图文分享的页面，此页面不支持微信平台的分享 */
-public class EditPage extends FakeActivity implements OnClickListener, TextWatcher {
+public class EditPage extends FakeActivity implements OnClickListener,
+		TextWatcher {
 	private static final int MAX_TEXT_COUNT = 140;
 	private static final int DIM_COLOR = 0x7f323232;
 	private HashMap<String, Object> reqData;
@@ -75,7 +76,7 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 	private Bitmap image;
 	private boolean shareImage;
 	private LinearLayout llPlat;
-//	private LinearLayout llAt;
+	// private LinearLayout llAt;
 	// 平台列表
 	private Platform[] platformList;
 	private View[] views;
@@ -126,7 +127,7 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 		showThumb();
 
 		// 获取平台列表并过滤微信等使用客户端分享的平台
-		new Thread(){
+		new Thread() {
 			public void run() {
 				platformList = ShareSDK.getPlatformList();
 				if (platformList == null) {
@@ -188,10 +189,10 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 	private TitleLayout getPageTitle() {
 		llTitle = new TitleLayout(getContext());
 		llTitle.setId(1);
-//		int resId = getBitmapRes(activity, "title_back");
-//		if (resId > 0) {
-//			llTitle.setBackgroundResource(resId);
-//		}
+		// int resId = getBitmapRes(activity, "title_back");
+		// if (resId > 0) {
+		// llTitle.setBackgroundResource(resId);
+		// }
 		llTitle.getBtnBack().setOnClickListener(this);
 		int resId = getStringRes(activity, "multi_share");
 		if (resId > 0) {
@@ -281,8 +282,8 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 		rlThumb.setId(1);
 		int dp_82 = dipToPx(getContext(), 82);
 		int dp_98 = dipToPx(getContext(), 98);
-		LinearLayout.LayoutParams lpThumb
-				= new LinearLayout.LayoutParams(dp_82, dp_98);
+		LinearLayout.LayoutParams lpThumb = new LinearLayout.LayoutParams(
+				dp_82, dp_98);
 		rlThumb.setLayoutParams(lpThumb);
 
 		ivImage = new ImageView(getContext());
@@ -296,8 +297,8 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 		int dp_4 = dipToPx(getContext(), 4);
 		ivImage.setPadding(dp_4, dp_4, dp_4, dp_4);
 		int dp_74 = dipToPx(getContext(), 74);
-		RelativeLayout.LayoutParams lpImage
-				= new RelativeLayout.LayoutParams(dp_74, dp_74);
+		RelativeLayout.LayoutParams lpImage = new RelativeLayout.LayoutParams(
+				dp_74, dp_74);
 		int dp_16 = dipToPx(getContext(), 16);
 		int dp_8 = dipToPx(getContext(), 8);
 		lpImage.setMargins(0, dp_16, dp_8, 0);
@@ -327,8 +328,8 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 			btn.setBackgroundResource(resId);
 		}
 		int dp_20 = dipToPx(getContext(), 20);
-		RelativeLayout.LayoutParams lpBtn
-				= new RelativeLayout.LayoutParams(dp_20, dp_20);
+		RelativeLayout.LayoutParams lpBtn = new RelativeLayout.LayoutParams(
+				dp_20, dp_20);
 		lpBtn.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		lpBtn.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		btn.setLayoutParams(lpBtn);
@@ -342,15 +343,15 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 		String imagePath = (String) reqData.get("imagePath");
 		Bitmap viewToShare = (Bitmap) reqData.get("viewToShare");
 		shareImage = false;
-		if(!TextUtils.isEmpty(imagePath) && new File(imagePath).exists()) {
+		if (!TextUtils.isEmpty(imagePath) && new File(imagePath).exists()) {
 			try {
 				shareImage = true;
 				image = getBitmap(imagePath);
-			} catch(Throwable t) {
+			} catch (Throwable t) {
 				System.gc();
 				try {
 					image = getBitmap(imagePath, 2);
-				} catch(Throwable t1) {
+				} catch (Throwable t1) {
 					t1.printStackTrace();
 					shareImage = false;
 				}
@@ -361,7 +362,7 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 				ivPin.setVisibility(View.VISIBLE);
 				ivImage.setImageBitmap(image);
 			}
-		} else if(viewToShare != null && !viewToShare.isRecycled()){
+		} else if (viewToShare != null && !viewToShare.isRecycled()) {
 			shareImage = true;
 			image = viewToShare;
 
@@ -371,13 +372,13 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 				ivImage.setImageBitmap(image);
 			}
 		} else if (reqData.containsKey("imageUrl")) {
-			new Thread(){
+			new Thread() {
 				public void run() {
 					String imageUrl = String.valueOf(reqData.get("imageUrl"));
 					try {
 						shareImage = true;
 						image = getBitmap(activity, imageUrl);
-					} catch(Throwable t) {
+					} catch (Throwable t) {
 						t.printStackTrace();
 						shareImage = false;
 						image = null;
@@ -537,8 +538,8 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 		}
 		int dp_80 = dipToPx(getContext(), 80);
 		int dp_36 = dipToPx(getContext(), 36);
-		RelativeLayout.LayoutParams lp
-				= new RelativeLayout.LayoutParams(dp_80, dp_36);
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(dp_80,
+				dp_36);
 		lp.topMargin = dipToPx(getContext(), 6);
 		lp.addRule(RelativeLayout.ALIGN_TOP, llBody.getId());
 		lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -552,10 +553,13 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 		background = new ColorDrawable(DIM_COLOR);
 		if (tmpBgView != null) {
 			try {
-				Bitmap bgBm = captureView(tmpBgView, tmpBgView.getWidth(), tmpBgView.getHeight());
+				Bitmap bgBm = captureView(tmpBgView, tmpBgView.getWidth(),
+						tmpBgView.getHeight());
 				bgBm = blur(bgBm, 20, 8);
-				BitmapDrawable blurBm = new BitmapDrawable(activity.getResources(), bgBm);
-				background = new LayerDrawable(new Drawable[] {blurBm, background});
+				BitmapDrawable blurBm = new BitmapDrawable(
+						activity.getResources(), bgBm);
+				background = new LayerDrawable(new Drawable[] { blurBm,
+						background });
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
@@ -593,7 +597,7 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 		if (v.equals(llTitle.getBtnRight())) {
 			String text = etContent.getText().toString();
 			reqData.put("text", text);
-			if(!shareImage){
+			if (!shareImage) {
 				if (reqData.get("imagePath") == null) {
 					reqData.put("viewToShare", null);
 					reqData.put("imageUrl", null);
@@ -606,8 +610,7 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 				}
 			}
 
-			HashMap<Platform, HashMap<String, Object>> editRes
-					= new HashMap<Platform, HashMap<String,Object>>();
+			HashMap<Platform, HashMap<String, Object>> editRes = new HashMap<Platform, HashMap<String, Object>>();
 			boolean selected = false;
 			for (int i = 0; i < views.length; i++) {
 				if (views[i].getVisibility() != View.VISIBLE) {
@@ -624,7 +627,8 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 			} else {
 				int resId = getStringRes(activity, "select_one_plat_at_least");
 				if (resId > 0) {
-					Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT).show();
+					Toast.makeText(getContext(), resId, Toast.LENGTH_SHORT)
+							.show();
 				}
 			}
 			return;
@@ -649,7 +653,8 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 		views = new View[size];
 
 		final int dp_24 = dipToPx(getContext(), 24);
-		LinearLayout.LayoutParams lpItem = new LinearLayout.LayoutParams(dp_24, dp_24);
+		LinearLayout.LayoutParams lpItem = new LinearLayout.LayoutParams(dp_24,
+				dp_24);
 		final int dp_9 = dipToPx(getContext(), 9);
 		lpItem.setMargins(0, 0, dp_9, 0);
 		FrameLayout.LayoutParams lpMask = new FrameLayout.LayoutParams(
@@ -689,7 +694,8 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 		final int postSel = selection;
 		UIHandler.sendEmptyMessageDelayed(0, 333, new Callback() {
 			public boolean handleMessage(Message msg) {
-				HorizontalScrollView hsv = (HorizontalScrollView)llPlat.getParent();
+				HorizontalScrollView hsv = (HorizontalScrollView) llPlat
+						.getParent();
 				hsv.scrollTo(postSel * (dp_24 + dp_9), 0);
 				return false;
 			}
@@ -708,7 +714,7 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 
 		String resName = "logo_" + plat.getName();
 		int resId = getBitmapRes(activity, resName);
-		if(resId > 0) {
+		if (resId > 0) {
 			return BitmapFactory.decodeResource(activity.getResources(), resId);
 		}
 		return null;
@@ -739,8 +745,8 @@ public class EditPage extends FakeActivity implements OnClickListener, TextWatch
 
 	private void hideSoftInput() {
 		try {
-			InputMethodManager imm = (InputMethodManager) activity.getSystemService(
-					Context.INPUT_METHOD_SERVICE);
+			InputMethodManager imm = (InputMethodManager) activity
+					.getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(etContent.getWindowToken(), 0);
 		} catch (Throwable t) {
 			t.printStackTrace();

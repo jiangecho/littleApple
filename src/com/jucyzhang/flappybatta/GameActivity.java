@@ -175,7 +175,6 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
     stopDrawingThread();
   }
 
-
   private void restart() {
     if (!isFinishing()) {
       ivBackground.setImageResource(BACKGROUND[random
@@ -221,10 +220,10 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
     AssetManager assetManager = res.getAssets();
     soundIds = new int[5];
     try {
-      soundIds[SOUND_DIE] = soundPool.load(assetManager.openFd("sfx_die.ogg"),
-          1);
-      soundIds[SOUND_HIT] = soundPool.load(assetManager.openFd("sfx_hit.ogg"),
-          1);
+			soundIds[SOUND_DIE] = soundPool.load(
+					assetManager.openFd("sfx_die.ogg"), 1);
+			soundIds[SOUND_HIT] = soundPool.load(
+					assetManager.openFd("sfx_hit.ogg"), 1);
       soundIds[SOUND_POINT] = soundPool.load(
           assetManager.openFd("sfx_point.ogg"), 1);
       soundIds[SOUND_SWOOSHING] = soundPool.load(
@@ -296,7 +295,8 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
           continue;
         }
         if (currentStatus == Sprite.STATUS_GAME_OVER) {
-          if (battaSprite.isHit(battaSprite) && !splashSprite.isAlive()) {
+					if (battaSprite.isHit(battaSprite)
+							&& !splashSprite.isAlive()) {
             onGameOver();
             sprites.clear();
             continue;
@@ -319,8 +319,9 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
         }
         if (blockerCount > NEW_BLOCKER_COUNT) {
           blockerCount = 0;
-          BlockerSprite sprite = BlockerSprite.obtainRandom(getBaseContext(),
-              blockerUp, blockerDown, battaSprite.getX(), lastBlockY);
+					BlockerSprite sprite = BlockerSprite.obtainRandom(
+							getBaseContext(), blockerUp, blockerDown,
+							battaSprite.getX(), lastBlockY);
           lastBlockY = sprite.getUpHeight();
           sprites.addFirst(sprite);
           // Log.d(TAG, "new sprite");
@@ -330,7 +331,8 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
         if (ENABLE_COIN) {
           if (coinCount > NEW_COIN_COUNT) {
             coinCount = 0;
-            CoinSprite sprite = new CoinSprite(getBaseContext(), coin);
+						CoinSprite sprite = new CoinSprite(getBaseContext(),
+								coin);
             sprites.addFirst(sprite);
             // Log.d(TAG, "new coin");
           } else {
@@ -362,6 +364,11 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
     });
   }
   
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+	}
+
   private void showAndUpdateResultLayer(){
 	  
 	resultLayer.setBackgroundColor(Color.parseColor("#773460"));
@@ -414,7 +421,8 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
       @Override
       public void run() {
         if (!isFinishing()) {
-          soundPool.play(soundIds[SOUND_SWOOSHING], 0.5f, 0.5f, 1, 0, 1);
+					soundPool.play(soundIds[SOUND_SWOOSHING], 0.5f, 0.5f, 1, 0,
+							1);
         }
       }
     });
@@ -438,7 +446,6 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
       break;
     }
   }
-  
   
 	public void onRestartButtonClick(View view){
 		resultLayer.setVisibility(View.INVISIBLE);
@@ -471,9 +478,12 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
 			// TODO the uri should base on the mode;
 			  String submitUri = "http://littleappleapp.sinaapp.com/submit_score.php";
 			  List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-			  nameValuePairs.add(new BasicNameValuePair("nickyname", nickyName));
-			  nameValuePairs.add(new BasicNameValuePair("score", "" + currentPoint));
-			  nameValuePairs.add(new BasicNameValuePair("type", + Constant.TYPE_FLAPPY_BIRD + ""));
+				nameValuePairs.add(new BasicNameValuePair("nickyname",
+						nickyName));
+				nameValuePairs.add(new BasicNameValuePair("score", ""
+						+ currentPoint));
+				nameValuePairs.add(new BasicNameValuePair("type",
+						+Constant.TYPE_FLAPPY_BIRD + ""));
 			  Util.httpPost(submitUri, nameValuePairs, null);
 		}
 	}).start();
