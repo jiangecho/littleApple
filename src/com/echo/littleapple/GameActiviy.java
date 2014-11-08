@@ -776,6 +776,7 @@ public class GameActiviy extends Activity implements GameEventListner {
 		type = TYPE_TERIBLE_RELAY;
 		mode = MODE_TERRIBLE;
 		gameView.setMode(MODE_CLASSIC);
+		gameView.setType(TYPE_TERIBLE_RELAY);
 
 		bestScore = sharedPreferences.getInt(TERRIBLE_RELAY_BSET_SCORE, 0);
 		typeIntroTextView.setText(R.string.relay_intro);
@@ -1147,111 +1148,82 @@ public class GameActiviy extends Activity implements GameEventListner {
 
 	// TODO optimize do not need to check the mode, can just use type
 	private void updateBestScore() {
+
+		if (type == TYPE_CLASSIC_SPEED) {
+			if (currentSpeedScore > 0 && currentSpeedScore < speedBestScore) {
+				speedBestScore = currentSpeedScore;
+			} else {
+				return;
+			}
+
+		} else {
+			if (currentScore > bestScore) {
+				bestScore = currentScore;
+			} else {
+				return;
+			}
+		}
+
 		if (mode == MODE_CLASSIC) {
 			switch (type) {
 			case TYPE_CLASSIC_30S:
-				if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit()
-							.putInt(CLASSIC_30S_BEST_SCORE, bestScore).commit();
-				}
+				sharedPreferences.edit()
+						.putInt(CLASSIC_30S_BEST_SCORE, bestScore).commit();
 				break;
 			case TYPE_CLASSIC_ENDLESS:
-				if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit()
-							.putInt(CLASSIC_ENDLESS_BEST_SCORE, bestScore)
-							.commit();
-				}
+				sharedPreferences.edit()
+						.putInt(CLASSIC_ENDLESS_BEST_SCORE, bestScore).commit();
 				break;
 			case TYPE_CLASSIC_SPEED:
-				if (currentSpeedScore > 0 && currentSpeedScore < speedBestScore) {
-					speedBestScore = currentSpeedScore;
-					sharedPreferences.edit()
-							.putLong(CLASSIC_SPEED_BEST_SCORE, speedBestScore)
-							.commit();
-				}
+				sharedPreferences.edit()
+						.putLong(CLASSIC_SPEED_BEST_SCORE, speedBestScore)
+						.commit();
 				break;
 			case TYPE_CLASSIC_DISCONTINUOUS:
-				if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences
-							.edit()
-							.putInt(CLASSIC_DISCONTINUOUS_BEST_SCORE, bestScore)
-							.commit();
-				}
+				sharedPreferences.edit()
+						.putInt(CLASSIC_DISCONTINUOUS_BEST_SCORE, bestScore)
+						.commit();
 				break;
 			case TYPE_CLASSIC_DOUBLE:
-				if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit()
-							.putInt(CLASSIC_DOUBLE_BEST_SCORE, bestScore)
-							.commit();
-				}
+				sharedPreferences.edit()
+						.putInt(CLASSIC_DOUBLE_BEST_SCORE, bestScore).commit();
 				break;
 			}
 
 		} else if (mode == MODE_GRAVITY) {
 			switch (type) {
 			case TYPE_GRAVITY_30S:
-				if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit()
-							.putInt(GRAVITY_30S_BEST_SCORE, bestScore).commit();
-				}
+				sharedPreferences.edit()
+						.putInt(GRAVITY_30S_BEST_SCORE, bestScore).commit();
 				break;
 			case TYPE_GRAVITY_ENDLESS:
-				if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit()
-							.putInt(GRAVITY_ENDLESS_BEST_SCORE, bestScore)
-							.commit();
-				}
+				sharedPreferences.edit()
+						.putInt(GRAVITY_ENDLESS_BEST_SCORE, bestScore).commit();
 				break;
 			case TYPE_GRAVITY_MINE:
-				if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit()
-							.putInt(GRAVITY_MINE_BEST_SCORE, bestScore)
-							.commit();
-				}
+				sharedPreferences.edit()
+						.putInt(GRAVITY_MINE_BEST_SCORE, bestScore).commit();
 				break;
 			case TYPE_GRAVITY_DISCONTINUOUS:
-				if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences
-							.edit()
-							.putInt(GRAVITY_DISCONTINUOUS_BEST_SCORE, bestScore)
-							.commit();
-				}
+				sharedPreferences.edit()
+						.putInt(GRAVITY_DISCONTINUOUS_BEST_SCORE, bestScore)
+						.commit();
 				break;
 			case TYPE_GRAVITY_DOUBLE:
-				if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit()
-							.putInt(GRAVITY_DOUBLE_BEST_SCORE, bestScore)
-							.commit();
-				}
+				sharedPreferences.edit()
+						.putInt(GRAVITY_DOUBLE_BEST_SCORE, bestScore).commit();
 				break;
 			}
 		} else if (mode == MODE_TERRIBLE) {
 			switch (type) {
 			case TYPE_TERIBLE_RELAY:
-				if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit()
-							.putInt(TERRIBLE_RELAY_BSET_SCORE, bestScore)
-							.commit();
-				}
+				sharedPreferences.edit()
+						.putInt(TERRIBLE_RELAY_BSET_SCORE, bestScore).commit();
 
 				break;
 			case TYPE_TERRIBLE_LOOM:
-				if (currentScore > bestScore) {
-					bestScore = currentScore;
-					sharedPreferences.edit()
-							.putInt(TERRIBLE_LOOM_BSET_SCORE, bestScore)
-							.commit();
-				}
+				sharedPreferences.edit()
+						.putInt(TERRIBLE_LOOM_BSET_SCORE, bestScore).commit();
 
 			default:
 				break;
