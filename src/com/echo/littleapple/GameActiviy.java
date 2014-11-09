@@ -58,6 +58,7 @@ import android.widget.Toast;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 
+import com.bodong.dianjinweb.DianJinPlatform;
 import com.echo.littleapple.GameSurfaceView.GameEventListner;
 import com.echo.littleapple.R.color;
 
@@ -340,6 +341,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		DianJinPlatform.destory(this);
 	}
 
 	@Override
