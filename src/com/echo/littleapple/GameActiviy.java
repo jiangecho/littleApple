@@ -48,7 +48,6 @@ import android.widget.Toast;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 
-import com.bodong.dianjinweb.DianJinPlatform;
 import com.echo.littleapple.GameSurfaceView.GameEventListner;
 
 public class GameActiviy extends Activity implements GameEventListner {
@@ -253,16 +252,12 @@ public class GameActiviy extends Activity implements GameEventListner {
 		postResultCallBack = new CallBack();
 
 		asyncGetOnlineConfig();
-		
-		DianJinPlatform.initialize(this, 54054, "efcffdd1fb695b6fa48bf7f036dd7516");
-		//DianJinPlatform.showFloatView(this);
 
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		DianJinPlatform.destory(this);
 	}
 
 	@Override

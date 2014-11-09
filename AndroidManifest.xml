@@ -17,7 +17,6 @@
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 	<uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
 	<uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:allowBackup="true"
@@ -76,19 +75,6 @@
 			  android:configChanges="keyboardHidden|orientation|screenSize"
 			  android:exported="true"
 			  android:screenOrientation="portrait" />
-		
-		<activity
-			android:name="com.bodong.dianjinweb.downloadmanager.DianJinDownloadManager"
-			android:configChanges="orientation|keyboardHidden"
-			android:launchMode="singleTask"
-			android:theme="@android:style/Theme.Black.NoTitleBar" />
-		<activity
-			android:name="com.bodong.dianjinweb.web.DianjinWebAcitivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:launchMode="singleTask"
-			android:theme="@android:style/Theme.Black.NoTitleBar" />
-		<service
-			android:name="com.bodong.dianjinweb.service.DianJinService" /> 
     </application>
 
 </manifest>
