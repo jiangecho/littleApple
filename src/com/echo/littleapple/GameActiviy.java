@@ -58,7 +58,6 @@ import android.widget.Toast;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 
-import com.bodong.dianjinweb.DianJinPlatform;
 import com.echo.littleapple.GameSurfaceView.GameEventListner;
 import com.echo.littleapple.R.color;
 
@@ -293,7 +292,6 @@ public class GameActiviy extends Activity implements GameEventListner{
         
         asyncGetOnlineConfig();
 
-
      // Init AdsSdk.
         try {
             Ads.init(this, "100010461", "7b95eea6b51978614c4ff137c2ad7c9f");
@@ -341,7 +339,6 @@ public class GameActiviy extends Activity implements GameEventListner{
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		DianJinPlatform.destory(this);
 	}
 
 	@Override
