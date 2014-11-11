@@ -54,6 +54,7 @@ public class GameSurfaceView extends SurfaceView implements
 
 	private float moveStepHeight;
 	private float gravityMoveStepHeight;
+	private float terribleMoveMoveStepHeight;
 	private boolean isGravitySpeedUp = false;
 	private static float gravityMaxMoveStepHeight, gravityMinMoveStepHeight;
 	// private int moveStepHeightForGravityDoubleAndMine;
@@ -97,6 +98,9 @@ public class GameSurfaceView extends SurfaceView implements
 	private int alpha = 255;
 	private int alphaStep = 1;
 	private boolean isAlphaUp = false;
+	
+	private int moveCount = 0;
+	private static final int MOVE_MAX_COUNT = 150;
 
 	public GameSurfaceView(Context context) {
 		this(context, null);
@@ -184,6 +188,32 @@ public class GameSurfaceView extends SurfaceView implements
 					alpha -= alphaStep;
 				}
 				applePaint.setAlpha(alpha);
+			}else if(type == GameActiviy.TYPE_TERRIBLE_MOVE){
+				if (moveCount == MOVE_MAX_COUNT) {
+					moveCount = 0;
+					int moveColumnIndex = -1;
+					int moveRowIndex = -1;
+					
+					out:
+					for(i = row - 1; i >= 0; i --){
+					for (j = 0; j < COLUMN; j++) {
+						if (apples[i][j] == CELL_TYPE_APPLE_OK) {
+							apples[i][j] = CELL_TYPE_BLANK;
+							moveRowIndex = i;
+							moveColumnIndex = j;
+							break out;
+						}
+					}
+					}
+					
+					if (moveColumnIndex != -1) {
+						moveColumnIndex = (moveColumnIndex + random.nextInt(moveColumnIndex + moveRowIndex)) % COLUMN;
+						apples[moveRowIndex][moveColumnIndex] = CELL_TYPE_APPLE_OK;
+					}
+
+				}else {
+					moveCount ++;
+				}
 			}
 
 			for (i = 0; i < row; i++) {
@@ -237,6 +267,7 @@ public class GameSurfaceView extends SurfaceView implements
 		gravityMinMoveStepHeight = cellHeight / 20;
 		gravityMaxMoveStepHeight = (float) (cellHeight / 8);
 		gravityMoveStepHeight = gravityMinMoveStepHeight;
+		terribleMoveMoveStepHeight = cellHeight / 15;
 		// moveStepHeightForGravityDoubleAndMine = cellHeight / 11;
 
 		if (apples == null) {
@@ -275,6 +306,7 @@ public class GameSurfaceView extends SurfaceView implements
 			}
 
 		}
+		this.moveCount = 0;
 		this.score = 0;
 		status = STATUS_STOP;
 		randomApples();
@@ -368,7 +400,10 @@ public class GameSurfaceView extends SurfaceView implements
 			int x_index = x / cellWidth;
 			int y_index = row - 1 - (height - y) / cellHeight;
 
-			if (mode == GameActiviy.MODE_GRAVITY || (mode == GameActiviy.MODE_TERRIBLE && type == GameActiviy.TYPE_TERRIBLE_LOOM)) {
+			if (mode == GameActiviy.MODE_GRAVITY 
+					|| (mode == GameActiviy.MODE_TERRIBLE && type == GameActiviy.TYPE_TERRIBLE_LOOM)
+					|| (mode == GameActiviy.MODE_TERRIBLE && type == GameActiviy.TYPE_TERRIBLE_MOVE)
+					) {
 
 				if (y_index < 1) {
 					return true;
@@ -638,7 +673,10 @@ public class GameSurfaceView extends SurfaceView implements
 			if (status != STATUS_START) {
 				return;
 			}
-			if (mode == GameActiviy.MODE_GRAVITY || (mode == GameActiviy.MODE_TERRIBLE && type == GameActiviy.TYPE_TERRIBLE_LOOM)) {
+			if (mode == GameActiviy.MODE_GRAVITY 
+					|| (mode == GameActiviy.MODE_TERRIBLE && type == GameActiviy.TYPE_TERRIBLE_LOOM)
+					|| (mode == GameActiviy.MODE_TERRIBLE && type == GameActiviy.TYPE_TERRIBLE_MOVE)
+					) {
 				if (moveYOffset < cellHeight) {
 					// if (type == GameActiviy.TYPE_GRAVITY_DOUBLE
 					// || (type == GameActiviy.TYPE_GRAVITY_MINE/* && level ==
@@ -648,7 +686,11 @@ public class GameSurfaceView extends SurfaceView implements
 					// }else {
 					// moveYOffset += gravityMoveStepHeight;
 					// }
-					moveYOffset += gravityMoveStepHeight;
+					if (type == GameActiviy.TYPE_TERRIBLE_MOVE) {
+						moveYOffset += terribleMoveMoveStepHeight;
+					}else {
+						moveYOffset += gravityMoveStepHeight;
+					}
 					doDraw();
 					animationHandler.postDelayed(animationTask, 4);
 				} else {
@@ -674,6 +716,7 @@ public class GameSurfaceView extends SurfaceView implements
 							return;
 						}
 					}
+					
 					if (gravityMoveStepHeight <= gravityMinMoveStepHeight) {
 						isGravitySpeedUp = true;
 					}

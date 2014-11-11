@@ -171,6 +171,17 @@
                 android:onClick="onStartLoomButtonClick"
                 android:text="@string/type_loom"
                 android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/startMoveButton"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dip"
+                android:background="@color/red"
+                android:onClick="onStartMoveButtonClick"
+                android:text="@string/type_move"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <Button
