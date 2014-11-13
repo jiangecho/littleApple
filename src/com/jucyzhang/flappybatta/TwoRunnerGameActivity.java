@@ -36,7 +36,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.widget.Button;
@@ -465,16 +464,24 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+		
+		int action = event.getAction();
+
+		if ((action & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN
+				|| (action & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_POINTER_DOWN) {
+
+			int pointerIndex = event.getActionIndex();
+			Log.d("jyj", "jyj action, pointerIndex: " + action +", " + pointerIndex);
 			switch (currentStatus) {
 			case Sprite.STATUS_NOT_STARTED:
 				currentStatus = Sprite.STATUS_NORMAL;
 			case Sprite.STATUS_NORMAL:
-				if (event.getY() < firstGroundY) {
+				if (event.getY(pointerIndex) < firstGroundY) {
 					runnerSprite2.onTap();
 				} else {
 					runnerSprite.onTap();
 				}
+					
 				soundPool.play(soundIds[SOUND_WING], 0.5f, 0.5f, 1, 0, 1);
 				break;
 
