@@ -10,6 +10,7 @@ import java.util.Random;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.echo.littleapple.App;
 import com.echo.littleapple.Constant;
 import com.echo.littleapple.GameActiviy;
 import com.echo.littleapple.R;
@@ -471,21 +472,6 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
 		if (nickyName == null || currentPoint == 0) {
 			return;
 		}
-
-	   new Thread(new Runnable() {
-		@Override
-		public void run() {
-			// TODO the uri should base on the mode;
-			  String submitUri = "http://littleappleapp.sinaapp.com/submit_score.php";
-			  List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-				nameValuePairs.add(new BasicNameValuePair("nickyname",
-						nickyName));
-				nameValuePairs.add(new BasicNameValuePair("score", ""
-						+ currentPoint));
-				nameValuePairs.add(new BasicNameValuePair("type",
-						+Constant.TYPE_FLAPPY_BIRD + ""));
-			  Util.httpPost(submitUri, nameValuePairs, null);
-		}
-	}).start();
+		App.submitScore(nickyName, currentPoint + "", Constant.TYPE_FLAPPY_BIRD);
 	}
 }
