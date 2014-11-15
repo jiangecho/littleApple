@@ -1263,7 +1263,6 @@ public class GameActiviy extends Activity implements GameEventListner {
 		}
 	}
 
-	// TODO bug, different uri
 	private void submitScore() {
 
 		if (nickyName == null) {
@@ -1283,20 +1282,8 @@ public class GameActiviy extends Activity implements GameEventListner {
 				scoreString = currentScore + "";
 			}
 		}
-
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				// TODO the uri should base on the mode
-				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-				nameValuePairs.add(new BasicNameValuePair("nickyname",
-						nickyName));
-				nameValuePairs
-						.add(new BasicNameValuePair("score", scoreString));
-				nameValuePairs.add(new BasicNameValuePair("type", type + ""));
-				Util.httpPost(submitUri, nameValuePairs, postResultCallBack);
-			}
-		}).start();
+		
+		App.submitScore(nickyName, scoreString, type);
 
 	}
 
