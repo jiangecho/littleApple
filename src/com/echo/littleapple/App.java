@@ -17,15 +17,14 @@ import android.content.pm.PackageManager.NameNotFoundException;
 
 public class App extends Application {
 
-	public boolean showInterstitialAd = false;
-	public boolean autoDownloadAd = false;
-	public boolean newVersionAvailable = false;
+	public static boolean showInterstitialAd = true; // when it is xiaomi, disable it;
+	public static boolean autoDownloadAd = false;
+	public static boolean newVersionAvailable = false;
 
 	// ad related
-	// TODO important: update every version
+	// TODO very important: update every version
 	private static final String AUTO_DOWNLOAD_AD = "auto3.0";
-	// only for xiaomi: xiaomi do not allow use interstitial ad
-	private static final String SHOW_INTERSTITIAL_AD = "3.0ad";
+	private static final String SHOW_INTERSTITIAL_AD = "3.0ad"; // only for xiaomi: xiaomi do not allow use interstitial ad
 
 	private static final String SUBMIT_SCORE_URL = "http://littleappleapp.sinaapp.com/submit_score.php";
 
