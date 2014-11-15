@@ -32,12 +32,14 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -114,6 +116,8 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
     private String nickyName;
     
     private int firstGroundY;
+
+    private ViewGroup adsWidgetContainer;
     
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +142,8 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
     bestTV = (TextView) findViewById(R.id.bestTV);
     currentModeTypeLevelTV = (TextView) findViewById(R.id.current_mode_type_level_tv);
     currentModeTypeLevelTV.setVisibility(View.INVISIBLE);
+
+    adsWidgetContainer = (ViewGroup) findViewById(R.id.ads_widget_container);
     
     nickyName = getIntent().getStringExtra("NICKYNAME");
     
@@ -426,9 +432,7 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
   }
 
   private void showAd(){
-	  if (Ads.isLoaded(AdFormat.interstitial, "d6ed8c42459ed0bfba7c21a1487d4765")) {
-		Ads.showAppWidget(this, null, "d6ed8c42459ed0bfba7c21a1487d4765", ShowMode.FULL_SCREEN);
-	}
+	  App.showInterstitialAd(this, adsWidgetContainer, "d6ed8c42459ed0bfba7c21a1487d4765");
   }
 
   private void onHit() {
@@ -536,5 +540,18 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 
 		App.submitScore(nickyName, currentPoint + "", Constant.TYPE_FLAPPY_RUNNER_DOUBLE);
 	}
+
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			
+			if(adsWidgetContainer.getVisibility() == View.VISIBLE){
+				return true;
+			}
+		}
+		return super.onKeyUp(keyCode, event);
+		
+	}
+
 
 }

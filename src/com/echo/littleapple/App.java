@@ -11,22 +11,39 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.ByteArrayBuffer;
 
 import com.echo.littleapple.Util.PostResultCallBack;
+import com.wandoujia.ads.sdk.Ads;
+import com.wandoujia.ads.sdk.loader.Fetcher.AdFormat;
+import com.wandoujia.ads.sdk.widget.AppWidget;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 
 public class App extends Application {
 
-	public static boolean showInterstitialAd = true; // when it is xiaomi, disable it;
+	public static boolean showInterstitialAd = true; // when it is xiaomi,
+														// disable it;
 	public static boolean autoDownloadAd = false;
 	public static boolean newVersionAvailable = false;
 
 	// ad related
 	// TODO very important: update every version
 	private static final String AUTO_DOWNLOAD_AD = "auto3.0";
-	private static final String SHOW_INTERSTITIAL_AD = "3.0ad"; // only for xiaomi: xiaomi do not allow use interstitial ad
+	private static final String SHOW_INTERSTITIAL_AD = "3.0ad"; // only for
+																// xiaomi:
+																// xiaomi do not
+																// allow use
+																// interstitial
+																// ad
 
 	private static final String SUBMIT_SCORE_URL = "http://littleappleapp.sinaapp.com/submit_score.php";
+
+	private static final String LAST_ENDLESS_DATE = "LAST_ENDLESS_DATE";
 
 	@Override
 	public void onCreate() {
@@ -103,6 +120,51 @@ public class App extends Application {
 
 	private void initAd() {
 		// TODO depend on different ad platform
+		// Init AdsSdk.
+		try {
+			Ads.init(this, "100010461", "7b95eea6b51978614c4ff137c2ad7c9f");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void showInterstitialAd(Activity activity, final ViewGroup adsWidgetContainer, String adTag) {
+		boolean tmp = Ads.isLoaded(AdFormat.interstitial, adTag);
+		if (tmp) {
+			adsWidgetContainer.setVisibility(View.VISIBLE);
+			AppWidget appWidget = Ads.showAppWidget(activity, null, adTag, Ads.ShowMode.WIDGET,
+					new View.OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							adsWidgetContainer.setVisibility(View.GONE);
+						}
+			});
+			if (App.autoDownloadAd) {
+				SharedPreferences sharedPreferences = activity.getSharedPreferences(activity.getPackageName(), Context.MODE_PRIVATE);
+				long lastEndlessModeMillis = sharedPreferences.getLong(LAST_ENDLESS_DATE, 0);
+
+				//long lastEndlessModeMillis = 0;
+				long currentMillis = System.currentTimeMillis();
+				long len = currentMillis - lastEndlessModeMillis;
+				if (len > 24 * 60 * 60 * 1000) {
+					int app_widget_install_button = com.wandoujia.ads.sdk.R.id.app_widget_install_button;
+					View view = appWidget.findViewById(app_widget_install_button);
+					if (view != null && view instanceof Button) {
+						String string = ((Button)view).getText().toString();
+						if (string != null) {
+							if (string.equals("立即安装")) {
+								((Button)view).performClick();
+								sharedPreferences.edit().putLong(LAST_ENDLESS_DATE, currentMillis).commit();
+							}
+						}
+					}
+				}
+				
+			}
+			adsWidgetContainer.addView(appWidget);
+		}
+		
 	}
 
 	public static void submitScore(final String nickyName,

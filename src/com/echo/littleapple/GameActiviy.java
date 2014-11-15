@@ -180,14 +180,12 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private AdBanner adBanner;
 	private View adBannerView;
 
-	private boolean sayHello = false;
 	private boolean isShowingAppWall = false;
 	private boolean appWallReady = false;
 
     private ViewGroup adsWidgetContainer;
     private LinearLayout adsContainerContainer;
     
-    private boolean recoverAdEnable = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -292,49 +290,39 @@ public class GameActiviy extends Activity implements GameEventListner{
         
         postResultCallBack = new CallBack();
         
-        asyncGetOnlineConfig();
 
-     // Init AdsSdk.
-        try {
-            Ads.init(this, "100010461", "7b95eea6b51978614c4ff137c2ad7c9f");
-          } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
-        sayHello = sharedPreferences.getBoolean(SAY_HELLO, false);
-        if (!sayHello) {
-        	asyncGetOnlineConfig();
-		}else {
+        if (App.showInterstitialAd) {
 			Ads.preLoad(this, AdFormat.interstitial, "1a3b067d93c5a677f37685fdf4c76b49");
 		}
         
-        Ads.preLoad(this, AdFormat.appwall, "GAME", APP_WALL_ID, new AdListener() {
-			
-			@Override
-			public void onLoadFailure() {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onAdReady() {
-				// TODO Auto-generated method stub
-				appWallReady = true;
-			}
-			
-			@Override
-			public void onAdPresent() {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onAdDismiss() {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-        Ads.preLoad(this, AdFormat.appwall, "APP", APP_WALL_ID);
+        // TODO now we do not use APP WALL
+//        Ads.preLoad(this, AdFormat.appwall, "GAME", APP_WALL_ID, new AdListener() {
+//			
+//			@Override
+//			public void onLoadFailure() {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//			
+//			@Override
+//			public void onAdReady() {
+//				// TODO Auto-generated method stub
+//				appWallReady = true;
+//			}
+//			
+//			@Override
+//			public void onAdPresent() {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//			
+//			@Override
+//			public void onAdDismiss() {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//		});
+//        Ads.preLoad(this, AdFormat.appwall, "APP", APP_WALL_ID);
 
 	}
 
@@ -1005,7 +993,7 @@ level = LEVEL_HARD;
 
 	@Override
 	protected void onStart() {
-		if (!sayHello) {
+		if (!App.showInterstitialAd) {
 			showBannerAd();
 		}
 		if (adBanner != null) {
@@ -1134,40 +1122,8 @@ level = LEVEL_HARD;
 	}
 
 	
-	public void showAd(){
-		boolean tmp = Ads.isLoaded(AdFormat.interstitial, "1a3b067d93c5a677f37685fdf4c76b49");
-		if (tmp) {
-			adsWidgetContainer.setVisibility(View.VISIBLE);
-			AppWidget appWidget = Ads.showAppWidget(this, null, "1a3b067d93c5a677f37685fdf4c76b49", Ads.ShowMode.WIDGET,
-					new View.OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							adsWidgetContainer.setVisibility(View.GONE);
-						}
-			});
-			//if ((type == TYPE_CLASSIC_ENDLESS || type == TYPE_GRAVITY_ENDLESS) && recoverAdEnable) {
-			if (recoverAdEnable) {
-				long lastEndlessModeMillis = sharedPreferences.getLong(LAST_ENDLESS_DATE, 0);
-				//long lastEndlessModeMillis = 0;
-				long currentMillis = System.currentTimeMillis();
-				long len = currentMillis - lastEndlessModeMillis;
-				if (len > 24 * 60 * 60 * 1000) {
-					int app_widget_install_button = com.wandoujia.ads.sdk.R.id.app_widget_install_button;
-					View view = appWidget.findViewById(app_widget_install_button);
-					if (view != null && view instanceof Button) {
-						String string = ((Button)view).getText().toString();
-						if (string != null) {
-							if (string.equals("立即安装")) {
-								((Button)view).performClick();
-								sharedPreferences.edit().putLong(LAST_ENDLESS_DATE, currentMillis).commit();
-							}
-						}
-					}
-				}
-				
-			}
-			adsWidgetContainer.addView(appWidget);
-		}
+	private void showAd(){
+		App.showInterstitialAd(this, adsWidgetContainer, "1a3b067d93c5a677f37685fdf4c76b49");
 	}
 	
 	
@@ -1302,60 +1258,6 @@ level = LEVEL_HARD;
 		   e.printStackTrace();
 	   }
    }
-   
-	 private void getOnlineConfig(){
-		try {
-			URL url = new URL("http://littleappleapp.sinaapp.com/config.txt");
-			HttpURLConnection urlConnection = (HttpURLConnection) url
-					.openConnection();
-			InputStream inputStream = urlConnection.getInputStream();
-			byte[] bytes = new byte[1024];
-			int count;
-			ByteArrayBuffer byteArrayBuffer = new ByteArrayBuffer(1024);
-			count = inputStream.read(bytes);
-			while (count != -1) {
-				byteArrayBuffer.append(bytes, 0, count);
-				count = inputStream.read(bytes);
-			}
-			String config = new String(byteArrayBuffer.toByteArray());
-			if (config.contains(SAY_HELLO)) {
-				sayHello = true;
-				sharedPreferences.edit().putBoolean(SAY_HELLO, true).commit();
-				Ads.preLoad(this, AdFormat.interstitial, "1a3b067d93c5a677f37685fdf4c76b49");
-			}
-			
-			if (config.contains(RECOVER_AD)) {
-				recoverAdEnable = true;
-			}
-
-			String[] tmp = config.split("\\s+");
-
-			for (String str : tmp) {
-				if (str.startsWith("version")) {
-					int versionCode = Integer.parseInt(str.substring("version"
-							.length()));
-					checkUpdate(versionCode);
-					break;
-				}
-			}
-
-			urlConnection.disconnect();
-			inputStream.close();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-	 } 
-	 
-	 private void asyncGetOnlineConfig(){
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				getOnlineConfig();
-			}
-		}).start(); 
-	 }
    
    // TODO optimize do not need to check the mode, can just use type
    private void updateBestScore(){
