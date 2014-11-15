@@ -80,6 +80,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	private static final String TERRIBLE_RELAY_BSET_SCORE = "TERRIBLE_RELAY_BEST_SCORE";
 	private static final String TERRIBLE_LOOM_BSET_SCORE = "TERRIBLE_LOOM_BEST_SCORE";
+	private static final String TERRIBLE_MOVE_BSET_SCORE = "TERRIBLE_MOVE_BEST_SCORE";
 
 	private static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
 
@@ -153,6 +154,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 
 	public static final int TYPE_TERIBLE_RELAY = 10;
 	public static final int TYPE_TERRIBLE_LOOM = 11;
+	public static final int TYPE_TERRIBLE_MOVE = 12;
 
 	public static final String TYPE = "TYPE";
 	
@@ -522,6 +524,35 @@ public class GameActiviy extends Activity implements GameEventListner{
 		typeSelectLayer.setVisibility(View.INVISIBLE);
 		modeSelectLayer.setVisibility(View.INVISIBLE);
 
+	}
+	
+	public void onStartMoveButtonClick(View view){
+		if (countDownTimer == null) {
+			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+		} else {
+			if (countDownTimer.durationMillis != TIME_LENGHT) {
+				countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+			}
+		}
+		type = TYPE_TERRIBLE_MOVE;
+		mode = MODE_TERRIBLE;
+		gameView.setMode(MODE_TERRIBLE);
+		gameView.setType(TYPE_TERRIBLE_MOVE);
+
+		bestScore = sharedPreferences.getInt(TERRIBLE_MOVE_BSET_SCORE, 0);
+		typeIntroTextView.setText(R.string.move_intro);
+		typeIntroTextView.setVisibility(View.VISIBLE);
+		currentScore = 0;
+		timerTV.setVisibility(View.VISIBLE);
+		timerTV.setText("30:00");
+		currentModeString = getString(R.string.mode_terrible);
+		currentTypeString = getString(R.string.type_move);
+		currentModeTypeLevelTextView.setText(getString(
+				R.string.current_mode_type_level, currentModeString,
+				currentTypeString, currentLevelString));
+		typeSelectLayer.setVisibility(View.INVISIBLE);
+		modeSelectLayer.setVisibility(View.INVISIBLE);
+		
 	}
 
 	public void onSettingButtonClick(View view){
