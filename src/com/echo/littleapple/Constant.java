@@ -1,6 +1,29 @@
 package com.echo.littleapple;
 
 public class Constant {
+
+	public static final String TYPE = "TYPE";
+	// attention: the type value should not be the same!!!!!
+	// when add new type, no matter which mode it is,
+	// we should add it at the end
+	public static final int TYPE_CLASSIC_30S = 0;
+	public static final int TYPE_CLASSIC_SPEED = 1;
+	public static final int TYPE_CLASSIC_ENDLESS = 2;
+	public static final int TYPE_CLASSIC_DISCONTINUOUS = 3;
+	public static final int TYPE_CLASSIC_DOUBLE = 4;
+
+	public static final int TYPE_GRAVITY_30S = 5;
+	public static final int TYPE_GRAVITY_MINE = 6;
+	public static final int TYPE_GRAVITY_ENDLESS = 7;
+	public static final int TYPE_GRAVITY_DISCONTINUOUS = 8;
+	public static final int TYPE_GRAVITY_DOUBLE = 9;
+	// add new type here
+
+	public static final int TYPE_TERIBLE_RELAY = 10;
+	public static final int TYPE_TERRIBLE_LOOM = 11;
+	public static final int TYPE_TERRIBLE_MOVE = 12;
+	
+	
 	public static final int TYPE_FLAPPY_BIRD = 20;
 	public static final int TYPE_FLAPPY_RUNNER = 21;
 	public static final int TYPE_FLAPPY_RUNNER_DOUBLE = 22;

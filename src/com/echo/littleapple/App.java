@@ -30,6 +30,9 @@ public class App extends Application {
 
 	private static final String SUBMIT_SCORE_URL = "http://littleappleapp.sinaapp.com/submit_score.php";
 	
+	// for preference
+	private static final String TYPE_PREFIX = "type:";
+	
 	private static SharedPreferences sharedPreferences;
 
 	@Override
@@ -136,6 +139,33 @@ public class App extends Application {
 	public static void submitScore(final String nickyName,
 			final String scoreString, final int type) {
 		submitScore(nickyName, scoreString, type, null);
+	}
+
+	public static long getBestScore(int type){
+		long score;
+		if (type == Constant.TYPE_CLASSIC_ENDLESS) {
+			score = sharedPreferences.getLong(TYPE_PREFIX + type, Long.MAX_VALUE);
+		}else {
+			score = sharedPreferences.getLong(TYPE_PREFIX + type, 0);
+		}
+		return score;
+	}
+	
+	// attention: is not backward compatible
+	public static void updateBestScore(int type, long score){
+		long bestScore = getBestScore(type);
+		if (score < bestScore) {
+			return;
+		}
+		sharedPreferences.edit().putLong(TYPE_PREFIX + type, score).commit();
+	}
+	
+	public static void putString(String key, String value){
+		sharedPreferences.edit().putString(key, value).commit();
+	}
+	
+	public static String getString(String key){
+		return sharedPreferences.getString(key, null);
 	}
 	
 }

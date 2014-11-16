@@ -105,6 +105,8 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
 	private TextView currentModeTypeLevelTV;
 
 	private String nickyName;
+	private int bestScore;
+	private int type = Constant.TYPE_FLAPPY_BIRD;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +132,7 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
 		currentModeTypeLevelTV.setVisibility(View.INVISIBLE);
 
 		nickyName = getIntent().getStringExtra("NICKYNAME");
+		bestScore = (int) App.getBestScore(type);
 
 		loadRes();
 		restart();
@@ -369,12 +372,11 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
 
 		resultLayer.setBackgroundColor(Color.parseColor("#773460"));
 		resultLayer.setVisibility(View.VISIBLE);
-		int highest = PrefUtil.getHighestScore(this);
-		if (currentPoint > highest) {
-			highest = currentPoint;
-			PrefUtil.setHighestScore(this, currentPoint);
+		if (currentPoint > bestScore) {
+			bestScore = currentPoint;
+			App.updateBestScore(type, bestScore);
 		}
-		bestTV.setText(getString(R.string.best, highest));
+		bestTV.setText(getString(R.string.best, bestScore));
 		resultTV.setText(getString(R.string.flappy_bird_result, currentPoint));
 	}
 
@@ -446,7 +448,7 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
 	// TODO bugs
 	public void onRankButtonClick(View view) {
 		Intent intent = new Intent(this, NewRankAcitivity.class);
-		intent.putExtra(GameActiviy.TYPE, Constant.TYPE_FLAPPY_BIRD);
+		intent.putExtra(Constant.TYPE, type);
 		startActivity(intent);
 	}
 
@@ -460,6 +462,6 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
 		if (nickyName == null || currentPoint == 0) {
 			return;
 		}
-		App.submitScore(nickyName, currentPoint + "", Constant.TYPE_FLAPPY_BIRD);
+		App.submitScore(nickyName, currentPoint + "", type);
 	}
 }

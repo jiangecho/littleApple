@@ -123,8 +123,8 @@ public class NewRankAcitivity extends Activity {
 		myNickyName = getSharedPreferences(getPackageName(),
 				Context.MODE_PRIVATE).getString("nickyname", null);
 
-		type = getIntent().getIntExtra(GameActiviy.TYPE,
-				GameActiviy.TYPE_CLASSIC_30S);
+		type = getIntent().getIntExtra(Constant.TYPE,
+				Constant.TYPE_CLASSIC_30S);
 
 		new LoadDataTask().execute();
 
@@ -207,7 +207,7 @@ public class NewRankAcitivity extends Activity {
 			rankTextView.setText("" + item.rank);
 			nickyNameTextView.setText(item.nickyName);
 
-			if (type == GameActiviy.TYPE_CLASSIC_SPEED) {
+			if (type == Constant.TYPE_CLASSIC_SPEED) {
 
 				StringBuffer sb = new StringBuffer();
 				sb.append(Long.parseLong(item.score) / 1000);
@@ -270,7 +270,7 @@ public class NewRankAcitivity extends Activity {
 			// scoreTextView.setText(item.score);
 			awardTextView.setText("" + item.award);
 
-			if (type == GameActiviy.TYPE_CLASSIC_SPEED) {
+			if (type == Constant.TYPE_CLASSIC_SPEED) {
 
 				StringBuffer sb = new StringBuffer();
 				sb.append(Long.parseLong(item.score) / 1000);

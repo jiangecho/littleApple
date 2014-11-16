@@ -5,11 +5,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
 
-import com.echo.littleapple.App;
-import com.echo.littleapple.Constant;
-import com.echo.littleapple.GameActiviy;
-import com.echo.littleapple.R;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -37,7 +32,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.echo.littleapple.App;
+import com.echo.littleapple.Constant;
 import com.echo.littleapple.NewRankAcitivity;
+import com.echo.littleapple.R;
 
 public class UpDownRnnerGameActivity extends Activity implements Callback,
 		OnTouchListener {
@@ -98,6 +96,8 @@ public class UpDownRnnerGameActivity extends Activity implements Callback,
 	private TextView currentModeTypeLevelTV;
 
 	private String nickyName;
+	private int bestScore;
+	private static final int type = Constant.TYPE_FLAPPY_RUNNER_UP_DOWN;
 
 	private int groundHeight;
 	private int groundTopHeight;
@@ -149,6 +149,8 @@ public class UpDownRnnerGameActivity extends Activity implements Callback,
 				- groundHeight;
 
 		runnerHeight = ViewUtil.dipResourceToPx(this, R.dimen.runner_height);
+		
+		bestScore = (int) App.getBestScore(type);
 
 		loadRes();
 		restart();
@@ -420,12 +422,11 @@ public class UpDownRnnerGameActivity extends Activity implements Callback,
 
 		resultLayer.setBackgroundColor(Color.parseColor("#773460"));
 		resultLayer.setVisibility(View.VISIBLE);
-		int highest = PrefUtil.getHighestScore(this);
-		if (currentPoint > highest) {
-			highest = currentPoint;
-			PrefUtil.setHighestScore(this, currentPoint);
+		if (currentPoint > bestScore) {
+			bestScore = currentPoint;
+			App.updateBestScore(type, bestScore);
 		}
-		bestTV.setText(getString(R.string.best, highest));
+		bestTV.setText(getString(R.string.best, bestScore));
 		resultTV.setText(getString(R.string.flappy_runner_result, currentPoint));
 	}
 
@@ -548,7 +549,7 @@ public class UpDownRnnerGameActivity extends Activity implements Callback,
 
 	public void onRankButtonClick(View view) {
 		Intent intent = new Intent(this, NewRankAcitivity.class);
-		intent.putExtra(GameActiviy.TYPE, Constant.TYPE_FLAPPY_RUNNER_UP_DOWN);
+		intent.putExtra(Constant.TYPE, type);
 		startActivity(intent);
 	}
 
@@ -563,8 +564,7 @@ public class UpDownRnnerGameActivity extends Activity implements Callback,
 			return;
 		}
 
-		App.submitScore(nickyName, currentPoint + "",
-				Constant.TYPE_FLAPPY_RUNNER_UP_DOWN);
+		App.submitScore(nickyName, currentPoint + "", type);
 	}
 
 }
