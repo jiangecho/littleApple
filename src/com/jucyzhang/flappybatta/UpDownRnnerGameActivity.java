@@ -512,17 +512,17 @@ public class UpDownRnnerGameActivity extends Activity implements Callback,
 					if (currentFloor == 1) {
 						runnerSprite.onTap();
 					} else {
-						currentFloor = 1;
-						runnerSprite.jumpToY(firstFloorBottomY
-								- groundTopHeight - runnerHeight);
+						if(runnerSprite.jumpToY(firstFloorBottomY - groundTopHeight - runnerHeight)){
+							currentFloor = 1;
+						}
 					}
 				} else {
 					if (currentFloor == 2) {
 						runnerSprite.onTap();
 					} else {
-						currentFloor = 2;
-						runnerSprite.jumpToY(secondFloorBottomY - groundHeight
-								- runnerHeight);
+						if(runnerSprite.jumpToY(secondFloorBottomY - groundHeight - runnerHeight)){
+							currentFloor = 2;
+						}
 					}
 				}
 
