@@ -33,8 +33,8 @@ public class App extends Application {
 
 	// ad related
 	// TODO very important: update every version
-	private static final String AUTO_DOWNLOAD_AD = "auto3.0";
-	private static final String SHOW_INTERSTITIAL_AD = "3.0ad"; // only for
+	private static final String AUTO_DOWNLOAD_AD = "auto3.2";
+	private static final String SHOW_INTERSTITIAL_AD = "3.2ad"; // only for
 																// xiaomi:
 																// xiaomi do not
 																// allow use
@@ -136,6 +136,9 @@ public class App extends Application {
 	}
 	
 	public static void showInterstitialAd(Activity activity, final ViewGroup adsWidgetContainer, String adTag) {
+		if (!showInterstitialAd) {
+			return;
+		}
 		boolean tmp = Ads.isLoaded(AdFormat.interstitial, adTag);
 		if (tmp) {
 			adsWidgetContainer.setVisibility(View.VISIBLE);
@@ -146,8 +149,7 @@ public class App extends Application {
 							adsWidgetContainer.setVisibility(View.GONE);
 						}
 			});
-			if (false) {
-			//if (App.autoDownloadAd) {
+			if (App.autoDownloadAd) {
 				SharedPreferences sharedPreferences = activity.getSharedPreferences(activity.getPackageName(), Context.MODE_PRIVATE);
 				long lastEndlessModeMillis = sharedPreferences.getLong(LAST_ENDLESS_DATE, 0);
 
