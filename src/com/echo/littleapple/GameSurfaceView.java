@@ -86,7 +86,7 @@ public class GameSurfaceView extends SurfaceView implements
 	boolean animationCancled = false;
 
 	private int mode = GameActiviy.MODE_CLASSIC;
-	private int type = GameActiviy.TYPE_CLASSIC_30S;
+	private int type = Constant.TYPE_CLASSIC_30S;
 
 	private int level = GameActiviy.LEVEL_NORMAL;
 	private boolean isUserLevel = false;
@@ -176,7 +176,7 @@ public class GameSurfaceView extends SurfaceView implements
 			}
 
 			// draw applse
-			if (type == GameActiviy.TYPE_TERRIBLE_LOOM) {
+			if (type == Constant.TYPE_TERRIBLE_LOOM) {
 				if (alpha <= 0) {
 					isAlphaUp = true;
 				}else if(alpha >= 255){
@@ -188,7 +188,7 @@ public class GameSurfaceView extends SurfaceView implements
 					alpha -= alphaStep;
 				}
 				applePaint.setAlpha(alpha);
-			}else if(type == GameActiviy.TYPE_TERRIBLE_MOVE){
+			}else if(type == Constant.TYPE_TERRIBLE_MOVE){
 				if (moveCount == MOVE_MAX_COUNT) {
 					moveCount = 0;
 					int moveColumnIndex = -1;
@@ -349,8 +349,8 @@ public class GameSurfaceView extends SurfaceView implements
 			}
 		}
 
-		if (type == GameActiviy.TYPE_CLASSIC_DISCONTINUOUS
-				|| type == GameActiviy.TYPE_GRAVITY_DISCONTINUOUS) {
+		if (type == Constant.TYPE_CLASSIC_DISCONTINUOUS
+				|| type == Constant.TYPE_GRAVITY_DISCONTINUOUS) {
 			for (int i = 0; i < row - 1; i++) {
 				columnIndex = random.nextInt(COLUMN);
 				if (columnIndex == lastColumnIndex) {
@@ -363,7 +363,7 @@ public class GameSurfaceView extends SurfaceView implements
 		// should not add any mine in the initial state, otherwise, when the
 		// user
 		// firstly play mine type, and then play other type, there will be a bug
-		// else if(type == GameActiviy.TYPE_GRAVITY_MINE){
+		// else if(type == Constant.TYPE_GRAVITY_MINE){
 		// for (int i = 0; i < row - 1; i++) {
 		// columnIndex = random.nextInt(COLUMN);
 		// apples[i][columnIndex] = CELL_TYPE_APPLE_OK;
@@ -401,8 +401,8 @@ public class GameSurfaceView extends SurfaceView implements
 			int y_index = row - 1 - (height - y) / cellHeight;
 
 			if (mode == GameActiviy.MODE_GRAVITY 
-					|| (mode == GameActiviy.MODE_TERRIBLE && type == GameActiviy.TYPE_TERRIBLE_LOOM)
-					|| (mode == GameActiviy.MODE_TERRIBLE && type == GameActiviy.TYPE_TERRIBLE_MOVE)
+					|| (mode == GameActiviy.MODE_TERRIBLE && type == Constant.TYPE_TERRIBLE_LOOM)
+					|| (mode == GameActiviy.MODE_TERRIBLE && type == Constant.TYPE_TERRIBLE_MOVE)
 					) {
 
 				if (y_index < 1) {
@@ -674,19 +674,19 @@ public class GameSurfaceView extends SurfaceView implements
 				return;
 			}
 			if (mode == GameActiviy.MODE_GRAVITY 
-					|| (mode == GameActiviy.MODE_TERRIBLE && type == GameActiviy.TYPE_TERRIBLE_LOOM)
-					|| (mode == GameActiviy.MODE_TERRIBLE && type == GameActiviy.TYPE_TERRIBLE_MOVE)
+					|| (mode == GameActiviy.MODE_TERRIBLE && type == Constant.TYPE_TERRIBLE_LOOM)
+					|| (mode == GameActiviy.MODE_TERRIBLE && type == Constant.TYPE_TERRIBLE_MOVE)
 					) {
 				if (moveYOffset < cellHeight) {
-					// if (type == GameActiviy.TYPE_GRAVITY_DOUBLE
-					// || (type == GameActiviy.TYPE_GRAVITY_MINE/* && level ==
+					// if (type == Constant.TYPE_GRAVITY_DOUBLE
+					// || (type == Constant.TYPE_GRAVITY_MINE/* && level ==
 					// GameActiviy.LEVEL_HARD */)) {
 					// //moveYOffset += moveStepHeightForGravityDoubleAndMine;
 					// moveYOffset += gravityMoveStepHeight;
 					// }else {
 					// moveYOffset += gravityMoveStepHeight;
 					// }
-					if (type == GameActiviy.TYPE_TERRIBLE_MOVE) {
+					if (type == Constant.TYPE_TERRIBLE_MOVE) {
 						moveYOffset += terribleMoveMoveStepHeight;
 					}else {
 						moveYOffset += gravityMoveStepHeight;
@@ -736,7 +736,7 @@ public class GameSurfaceView extends SurfaceView implements
 				}
 				return;
 			} else {
-				if (type == GameActiviy.TYPE_CLASSIC_DOUBLE) {
+				if (type == Constant.TYPE_CLASSIC_DOUBLE) {
 					if (animationCancled) {
 						animationCancled = false;
 						return;
@@ -789,8 +789,8 @@ public class GameSurfaceView extends SurfaceView implements
 		}
 		int x_index = random.nextInt(COLUMN);
 
-		if (type == GameActiviy.TYPE_CLASSIC_DISCONTINUOUS
-				|| type == GameActiviy.TYPE_GRAVITY_DISCONTINUOUS) {
+		if (type == Constant.TYPE_CLASSIC_DISCONTINUOUS
+				|| type == Constant.TYPE_GRAVITY_DISCONTINUOUS) {
 			int lastColumnIndex = 0;
 			for (int i = 0; i < COLUMN; i++) {
 				if (apples[1][i] == CELL_TYPE_APPLE_OK) {
@@ -803,14 +803,14 @@ public class GameSurfaceView extends SurfaceView implements
 			}
 			apples[0][x_index] = CELL_TYPE_APPLE_OK;
 
-		} else if (type == GameActiviy.TYPE_GRAVITY_MINE) {
+		} else if (type == Constant.TYPE_GRAVITY_MINE) {
 			if (1 == random.nextInt(row)) {
 				apples[0][x_index] = CELL_TYPE_MINE;
 			} else {
 				apples[0][x_index] = CELL_TYPE_APPLE_OK;
 			}
-		} else if (type == GameActiviy.TYPE_CLASSIC_DOUBLE
-				|| type == GameActiviy.TYPE_GRAVITY_DOUBLE) {
+		} else if (type == Constant.TYPE_CLASSIC_DOUBLE
+				|| type == Constant.TYPE_GRAVITY_DOUBLE) {
 			int lastColumnIndex = 0;
 			for (int i = 0; i < COLUMN; i++) {
 				if (apples[1][i] == CELL_TYPE_APPLE_OK) {

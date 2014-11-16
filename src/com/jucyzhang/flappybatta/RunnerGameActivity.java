@@ -1,20 +1,9 @@
 package com.jucyzhang.flappybatta;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import com.echo.littleapple.App;
-import com.echo.littleapple.Constant;
-import com.echo.littleapple.GameActiviy;
-import com.echo.littleapple.R;
-import com.echo.littleapple.Util;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -45,7 +34,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.echo.littleapple.App;
+import com.echo.littleapple.Constant;
 import com.echo.littleapple.NewRankAcitivity;
+import com.echo.littleapple.R;
 import com.wandoujia.ads.sdk.Ads;
 import com.wandoujia.ads.sdk.Ads.ShowMode;
 import com.wandoujia.ads.sdk.loader.Fetcher.AdFormat;
@@ -110,6 +102,8 @@ public class RunnerGameActivity extends Activity implements Callback,
     private TextView currentModeTypeLevelTV;
     
     private String nickyName;
+	private int bestScore;
+	private static final int type = Constant.TYPE_FLAPPY_RUNNER;
     private ViewGroup adsWidgetContainer;
 
   @Override
@@ -138,6 +132,7 @@ public class RunnerGameActivity extends Activity implements Callback,
     adsWidgetContainer = (ViewGroup) findViewById(R.id.ads_widget_container);
     
     nickyName = getIntent().getStringExtra("NICKYNAME");
+		bestScore = (int) App.getBestScore(type);
 
     loadRes();
     restart();
@@ -372,12 +367,11 @@ public class RunnerGameActivity extends Activity implements Callback,
 	  
 	resultLayer.setBackgroundColor(Color.parseColor("#773460"));
 	resultLayer.setVisibility(View.VISIBLE);
-    int highest = PrefUtil.getHighestScore(this);
-    if (currentPoint > highest) {
-      highest = currentPoint;
-      PrefUtil.setHighestScore(this, currentPoint);
+		if (currentPoint > bestScore) {
+			bestScore = currentPoint;
+			App.updateBestScore(type, bestScore);
     } 
-	bestTV.setText(getString(R.string.best, highest));
+		bestTV.setText(getString(R.string.best, bestScore));
 	resultTV.setText(getString(R.string.flappy_runner_result, currentPoint));
   }
 
@@ -459,7 +453,7 @@ public class RunnerGameActivity extends Activity implements Callback,
 	//TODO bugs
 	public void onRankButtonClick(View view){
 		Intent intent = new Intent(this, NewRankAcitivity.class);
-		intent.putExtra(GameActiviy.TYPE, Constant.TYPE_FLAPPY_RUNNER);
+		intent.putExtra(Constant.TYPE, type);
 		startActivity(intent);
 	}
 
@@ -474,7 +468,7 @@ public class RunnerGameActivity extends Activity implements Callback,
 			return;
 		}
 		
-		App.submitScore(nickyName, currentPoint + "", Constant.TYPE_FLAPPY_RUNNER);
+		App.submitScore(nickyName, currentPoint + "", type);
 	}
 
 	@Override
