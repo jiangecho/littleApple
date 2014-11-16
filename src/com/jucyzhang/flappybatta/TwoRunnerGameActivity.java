@@ -73,8 +73,8 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
   private Drawable blockerDown;
   private Drawable coin;
   private static final long GAP = 20;
-  private static final long NEW_BLOCKER_COUNT = 60;
-	private static final long NEW_BLOCKER_COUNT_2 = 100;
+	private static final long SECOND_FLOOR_NEW_BLOCKER_COUNT = 60;
+	private static final long FIRST_FLOOR_NEW_BLOCKER_COUNT = 100;
   private static final long NEW_COIN_COUNT = 60;
   private static final int[] BACKGROUND = new int[] {
       R.drawable.bg_general_day, R.drawable.bg_general_night };
@@ -98,8 +98,8 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
   private SplashSprite splashSprite;
   private FpsSprite fpsSprite;
 
-  private int blockerCount = 0;
-  private int blockerCount2 = 0;
+	private int secondFloorBlockerCount = 0;
+	private int firstFloorBlockerCount = 0;
   private int coinCount = 0;
   private volatile int currentPoint = 0;
   private volatile int currentStatus = Sprite.STATUS_NOT_STARTED;
@@ -115,10 +115,24 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
     
     private String nickyName;
     
-    private int firstGroundY;
+	private int groundHeight;
+	private int groundTopHeight;
+	private int firstFloorBottomY;
+	private int secondFloorBottomY;
+	private int currentFloor = 2;
+	private int firstFloorHeight;
+	private int secondFloorHeight;
 
     private ViewGroup adsWidgetContainer;
-    
+	private int FULL_BLOCK_FREQUCEN = 5;
+	
+	private int runnerHeight;
+	private int runnerMaxJumpHeight;
+
+	private float runnerJumpUpFloorSpeed;
+	private float runnerJumpDownFloorSpeed;
+	private float runnerJumpSpeed;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -147,7 +161,22 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
     
     nickyName = getIntent().getStringExtra("NICKYNAME");
     
-    firstGroundY = ViewUtil.getScreenHeight(this) / 5 * 2;
+
+		int height = ViewUtil.getScreenHeight(this);
+		groundHeight = ViewUtil.dipResourceToPx(this, R.dimen.ground_height);
+		groundTopHeight = groundHeight - ViewUtil.dipResourceToPx(this, R.dimen.ground_margin);
+
+		secondFloorBottomY = height;
+		firstFloorBottomY = height / 5 * 2;
+		firstFloorHeight = firstFloorBottomY - groundTopHeight;
+		secondFloorHeight = secondFloorBottomY - firstFloorBottomY - groundHeight;
+		
+		runnerHeight = ViewUtil.dipResourceToPx(this, R.dimen.runner_height);
+		runnerMaxJumpHeight = ViewUtil.dipResourceToPx(this, R.dimen.runner_max_jump_height);
+
+		runnerJumpUpFloorSpeed = ViewUtil.dipResourceToFloat(this, R.dimen.runner_jump_up_speed);
+		runnerJumpDownFloorSpeed = ViewUtil.dipResourceToFloat(this, R.dimen.runner_jump_down_speed);
+		runnerJumpSpeed = ViewUtil.dipResourceToFloat(this, R.dimen.runner_tap_speed);
 
     loadRes();
     restart();
@@ -199,14 +228,14 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
       sprites = new LinkedList<Sprite>();
       runnerSprite = new RunnerSprite(this);
       runnerSprite2 = new RunnerSprite(this);
-      runnerSprite2.setY(firstGroundY);
+			runnerSprite2.setY(firstFloorBottomY - groundTopHeight - runnerHeight);
       scoreSprite = new ScoreSprite(this);
       groundSprite = new GroundSprite(this);
       splashSprite = null;
       sprites.add(scoreSprite);
       sprites.add(groundSprite);
       groundSprite = new GroundSprite(this);
-      groundSprite.setY(firstGroundY);
+			groundSprite.setY(firstFloorBottomY - groundTopHeight);
       sprites.add(groundSprite);
       if (SHOW_FPS) {
         fpsSprite = new FpsSprite(this);
@@ -218,8 +247,8 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
       sprites.add(runnerSprite2);
       HintSprite hintSprite = new HintSprite(this);
       sprites.add(hintSprite);
-      blockerCount = 0;
-      blockerCount2 = 0;
+			secondFloorBlockerCount = 0;
+			firstFloorBlockerCount = 0;
       coinCount = (int) (NEW_COIN_COUNT / 2);
       currentPoint = 0;
       currentStatus = Sprite.STATUS_NOT_STARTED;
@@ -342,25 +371,26 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
           runnerSprite2.setHitted(true);
           continue;
         }
-        if (blockerCount > NEW_BLOCKER_COUNT) {
-          blockerCount = 0;
-					RoadBlockSprite sprite = RoadBlockSprite.obtainRandom(
-							getBaseContext(), runnerSprite.getX());
+				if (secondFloorBlockerCount > SECOND_FLOOR_NEW_BLOCKER_COUNT) {
+					secondFloorBlockerCount = 0;
+					RoadBlockSprite sprite; 
+					sprite = RoadBlockSprite.obtainRandom(getBaseContext(), runnerSprite.getX());
           sprites.addFirst(sprite);
           // Log.d(TAG, "new sprite");
         } else {
-          blockerCount++;
+					secondFloorBlockerCount++;
         }
 
-        if (blockerCount2 > NEW_BLOCKER_COUNT_2) {
-          blockerCount2 = 0;
-					RoadBlockSprite sprite = RoadBlockSprite.obtainRandom(
-							getBaseContext(), runnerSprite2.getX());
-          sprite.setY(firstGroundY);
+				if (firstFloorBlockerCount > FIRST_FLOOR_NEW_BLOCKER_COUNT) {
+					firstFloorBlockerCount = 0;
+					RoadBlockSprite sprite; 
+					sprite = RoadBlockSprite.obtainRandom(getBaseContext(), runnerSprite.getX());
+					//TODO error
+					sprite.setY(firstFloorBottomY - groundTopHeight - sprite.getHeight());
           sprites.addFirst(sprite);
           // Log.d(TAG, "new sprite");
         } else {
-          blockerCount2 ++;
+					firstFloorBlockerCount++;
         }
         if (ENABLE_COIN) {
           if (coinCount > NEW_COIN_COUNT) {
@@ -488,12 +518,12 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 				|| (action & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_POINTER_DOWN) {
 
 			int pointerIndex = event.getActionIndex();
-			Log.d("jyj", "jyj action, pointerIndex: " + action +", " + pointerIndex);
+			//Log.d("jyj", "jyj action, pointerIndex: " + action +", " + pointerIndex);
 			switch (currentStatus) {
 			case Sprite.STATUS_NOT_STARTED:
 				currentStatus = Sprite.STATUS_NORMAL;
 			case Sprite.STATUS_NORMAL:
-				if (event.getY(pointerIndex) < firstGroundY) {
+				if (event.getY(pointerIndex) < firstFloorBottomY) {
 					runnerSprite2.onTap();
 				}else {
 					runnerSprite.onTap();

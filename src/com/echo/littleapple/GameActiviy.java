@@ -20,10 +20,6 @@ import com.wandoujia.ads.sdk.widget.AppWidget;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -32,7 +28,6 @@ import android.content.DialogInterface.OnDismissListener;
 import android.content.DialogInterface.OnKeyListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Color;
@@ -125,12 +120,10 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	private String nickyName;
 	private String scoreString;
-	private final String submitUri = "http://littleappleapp.sinaapp.com/submit_score.php";
 	private static final String NICKY_NAME = "nickyname";
 	private static final String HAVE_SUBMITED = "haveSubmited";
 	private boolean haveSubmited = false;
 	
-	private Util.PostResultCallBack postResultCallBack;
 
 	public static final int MODE_CLASSIC = 0;
 	public static final int MODE_GRAVITY = 1;
@@ -175,7 +168,6 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private Button startSpeedButton, startMindeButton;
 	private LinearLayout classicAndGravityTypesLayout, terribleTypesLayout;
 	
-	private boolean newVersionAvailable = false;
 
 	private AdBanner adBanner;
 	private View adBannerView;
@@ -288,7 +280,6 @@ public class GameActiviy extends Activity implements GameEventListner{
         
         haveSubmited = sharedPreferences.getBoolean(HAVE_SUBMITED, false);
         
-        postResultCallBack = new CallBack();
         
 
         if (App.showInterstitialAd) {
@@ -596,6 +587,13 @@ level = LEVEL_HARD;
 	public void onDoubleRowButtonClick(View view){
 		Intent intent = new Intent(this,
 				com.jucyzhang.flappybatta.TwoRunnerGameActivity.class);
+		intent.putExtra("NICKYNAME", nickyName);
+		startActivity(intent);
+	}
+
+	public void onUpDownButtonClick(View view) {
+		Intent intent = new Intent(this,
+				com.jucyzhang.flappybatta.UpDownRnnerGameActivity.class);
 		intent.putExtra("NICKYNAME", nickyName);
 		startActivity(intent);
 	}
@@ -1145,7 +1143,7 @@ level = LEVEL_HARD;
 				if (currentMillis - lastPressMillis < 2000) {
 				 	finish();
 				}else {
-					if (newVersionAvailable) {
+					if (App.newVersionAvailable) {
 						showUpdateDialog();
 					}else {
 //						lastPressMillis = currentMillis;
@@ -1246,19 +1244,6 @@ level = LEVEL_HARD;
 		  }
 	  
 	  
-   private void checkUpdate(int versionCode){
-	   try {
-			int currentVersionCode = getPackageManager().getPackageInfo(
-					getPackageName(), 0).versionCode;
-		   if (versionCode > currentVersionCode) {
-			   newVersionAvailable = true;
-		   }
-
-	   } catch (NameNotFoundException e) {
-		   e.printStackTrace();
-	   }
-   }
-   
    // TODO optimize do not need to check the mode, can just use type
    private void updateBestScore(){
 

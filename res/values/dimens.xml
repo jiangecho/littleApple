@@ -13,6 +13,8 @@
     <dimen name="bird_acceleration">0.65dp</dimen>
     <dimen name="bird_tap_speed">-7.0dp</dimen>
     <dimen name="runner_tap_speed">-11.5dp</dimen>
+    <dimen name="runner_jump_up_speed">-20.0dp</dimen>
+    <dimen name="runner_jump_down_speed">20.0dp</dimen>
     <dimen name="bird_hit_padding_top">0dp</dimen>
     <dimen name="bird_hit_padding_right">0dp</dimen>
     <dimen name="bird_hit_padding_left">0dp</dimen>

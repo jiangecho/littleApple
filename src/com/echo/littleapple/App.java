@@ -42,6 +42,8 @@ public class App extends Application {
 																// ad
 
 	private static final String SUBMIT_SCORE_URL = "http://littleappleapp.sinaapp.com/submit_score.php";
+	
+	private static SharedPreferences sharedPreferences;
 
 	private static final String LAST_ENDLESS_DATE = "LAST_ENDLESS_DATE";
 
@@ -49,6 +51,7 @@ public class App extends Application {
 	public void onCreate() {
 		super.onCreate();
 
+		sharedPreferences = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
 		asyncGetOnlineConfig();
 		initAd();
 	}
@@ -140,7 +143,8 @@ public class App extends Application {
 							adsWidgetContainer.setVisibility(View.GONE);
 						}
 			});
-			if (App.autoDownloadAd) {
+			if (false) {
+			//if (App.autoDownloadAd) {
 				SharedPreferences sharedPreferences = activity.getSharedPreferences(activity.getPackageName(), Context.MODE_PRIVATE);
 				long lastEndlessModeMillis = sharedPreferences.getLong(LAST_ENDLESS_DATE, 0);
 
@@ -194,5 +198,5 @@ public class App extends Application {
 			final String scoreString, final int type) {
 		submitScore(nickyName, scoreString, type, null);
 	}
-
+	
 }
