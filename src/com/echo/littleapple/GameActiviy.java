@@ -2,28 +2,14 @@ package com.echo.littleapple;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import org.apache.http.util.ByteArrayBuffer;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnKeyListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Color;
@@ -35,7 +21,6 @@ import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.Window;
@@ -109,12 +94,10 @@ public class GameActiviy extends Activity implements GameEventListner {
 
 	private String nickyName;
 	private String scoreString;
-	private final String submitUri = "http://littleappleapp.sinaapp.com/submit_score.php";
 	private static final String NICKY_NAME = "nickyname";
 	private static final String HAVE_SUBMITED = "haveSubmited";
 	private boolean haveSubmited = false;
 
-	private Util.PostResultCallBack postResultCallBack;
 
 	public static final int MODE_CLASSIC = 0;
 	public static final int MODE_GRAVITY = 1;
@@ -159,7 +142,6 @@ public class GameActiviy extends Activity implements GameEventListner {
 	private Button startSpeedButton, startMindeButton;
 	private LinearLayout classicAndGravityTypesLayout, terribleTypesLayout;
 
-	private boolean newVersionAvailable = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -251,9 +233,6 @@ public class GameActiviy extends Activity implements GameEventListner {
 
 		haveSubmited = sharedPreferences.getBoolean(HAVE_SUBMITED, false);
 
-		postResultCallBack = new CallBack();
-
-		asyncGetOnlineConfig();
 
 	}
 
@@ -1041,7 +1020,7 @@ public class GameActiviy extends Activity implements GameEventListner {
 				if (currentMillis - lastPressMillis < 2000) {
 					finish();
 				} else {
-					if (newVersionAvailable) {
+					if (App.newVersionAvailable) {
 						showUpdateDialog();
 					} else {
 						// lastPressMillis = currentMillis;
@@ -1125,63 +1104,6 @@ public class GameActiviy extends Activity implements GameEventListner {
 		oks.setSiteUrl(APP_URL);
 
 		oks.show(this);
-	}
-
-	private void checkUpdate(int versionCode) {
-		try {
-			int currentVersionCode = getPackageManager().getPackageInfo(
-					getPackageName(), 0).versionCode;
-			if (versionCode > currentVersionCode) {
-				newVersionAvailable = true;
-			}
-
-		} catch (NameNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void getOnlineConfig() {
-		try {
-			URL url = new URL("http://littleappleapp.sinaapp.com/config.txt");
-			HttpURLConnection urlConnection = (HttpURLConnection) url
-					.openConnection();
-			InputStream inputStream = urlConnection.getInputStream();
-			byte[] bytes = new byte[1024];
-			int count;
-			ByteArrayBuffer byteArrayBuffer = new ByteArrayBuffer(1024);
-			count = inputStream.read(bytes);
-			while (count != -1) {
-				byteArrayBuffer.append(bytes, 0, count);
-				count = inputStream.read(bytes);
-			}
-			String config = new String(byteArrayBuffer.toByteArray());
-			String[] tmp = config.split("\\s+");
-
-			for (String str : tmp) {
-				if (str.startsWith("version")) {
-					int versionCode = Integer.parseInt(str.substring("version"
-							.length()));
-					checkUpdate(versionCode);
-					break;
-				}
-			}
-
-			urlConnection.disconnect();
-			inputStream.close();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void asyncGetOnlineConfig() {
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				getOnlineConfig();
-			}
-		}).start();
 	}
 
 	// TODO optimize do not need to check the mode, can just use type

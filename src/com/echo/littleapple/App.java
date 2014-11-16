@@ -13,6 +13,8 @@ import org.apache.http.util.ByteArrayBuffer;
 import com.echo.littleapple.Util.PostResultCallBack;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 
 public class App extends Application {
@@ -27,11 +29,14 @@ public class App extends Application {
 	private static final String SHOW_INTERSTITIAL_AD = "3.0ad"; // only for xiaomi: xiaomi do not allow use interstitial ad
 
 	private static final String SUBMIT_SCORE_URL = "http://littleappleapp.sinaapp.com/submit_score.php";
+	
+	private static SharedPreferences sharedPreferences;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 
+		sharedPreferences = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
 		asyncGetOnlineConfig();
 		initAd();
 	}
@@ -132,5 +137,5 @@ public class App extends Application {
 			final String scoreString, final int type) {
 		submitScore(nickyName, scoreString, type, null);
 	}
-
+	
 }
