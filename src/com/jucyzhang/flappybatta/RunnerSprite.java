@@ -204,7 +204,7 @@ public class RunnerSprite implements Sprite {
 		this.tapSpeed = speed;
 	}
 	
-	public void jumpToY(int y){
+	public boolean jumpToY(int y){
 		if (isOnGround && (y != currentY)) {
 			
 			// TODO when the runner is jumping up or down, allow the user to tap
@@ -220,8 +220,11 @@ public class RunnerSprite implements Sprite {
 			
 			maxY = y;
 			minY = maxY - maxJumpHeight - runnerHeight;
+			
+			return true;
 		}
-
+		
+		return false;
 	}
 
 }
