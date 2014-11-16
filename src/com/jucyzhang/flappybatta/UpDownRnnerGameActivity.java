@@ -1,24 +1,17 @@
 package com.jucyzhang.flappybatta;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 
 import com.echo.littleapple.App;
 import com.echo.littleapple.Constant;
 import com.echo.littleapple.GameActiviy;
 import com.echo.littleapple.R;
-import com.echo.littleapple.Util;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
@@ -46,7 +39,7 @@ import android.widget.TextView;
 
 import com.echo.littleapple.NewRankAcitivity;
 
-public class TwoRunnerGameActivity extends Activity implements Callback,
+public class UpDownRnnerGameActivity extends Activity implements Callback,
 		OnTouchListener {
 	/**
 	 * set to true in order to print fps in screen.
@@ -62,10 +55,7 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 	private LinkedList<Sprite> sprites;
 	private SoundPool soundPool;
 
-	@SuppressWarnings("unused")
 	private static final String TAG = "GameActivity";
-	private Drawable blockerUp;
-	private Drawable blockerDown;
 	private Drawable coin;
 	private static final long GAP = 20;
 	private static final long SECOND_FLOOR_NEW_BLOCKER_COUNT = 60;
@@ -78,7 +68,6 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 	private boolean surfaceCreated = false;;
 	private Thread drawingTheard;
 	private int[] soundIds;
-	private Dialog alertDialog;
 
 	private static final int SOUND_DIE = 0;
 	private static final int SOUND_HIT = 1;
@@ -87,7 +76,7 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 	private static final int SOUND_WING = 4;
 
 	private RunnerSprite runnerSprite;
-	private RunnerSprite runnerSprite2;
+	// private RunnerSprite runnerSprite2;
 	private ScoreSprite scoreSprite;
 	private GroundSprite groundSprite;
 	private SplashSprite splashSprite;
@@ -117,15 +106,10 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 	private int currentFloor = 2;
 	private int firstFloorHeight;
 	private int secondFloorHeight;
-	
-	private int FULL_BLOCK_FREQUCEN = 5;
-	
-	private int runnerHeight;
-	private int runnerMaxJumpHeight;
 
-	private float runnerJumpUpFloorSpeed;
-	private float runnerJumpDownFloorSpeed;
-	private float runnerJumpSpeed;
+	private int FULL_BLOCK_FREQUCEN = 5;
+
+	private int runnerHeight;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -153,22 +137,18 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 
 		nickyName = getIntent().getStringExtra("NICKYNAME");
 
-		
 		int height = ViewUtil.getScreenHeight(this);
 		groundHeight = ViewUtil.dipResourceToPx(this, R.dimen.ground_height);
-		groundTopHeight = groundHeight - ViewUtil.dipResourceToPx(this, R.dimen.ground_margin);
+		groundTopHeight = groundHeight
+				- ViewUtil.dipResourceToPx(this, R.dimen.ground_margin);
 
 		secondFloorBottomY = height;
 		firstFloorBottomY = height / 5 * 2;
 		firstFloorHeight = firstFloorBottomY - groundTopHeight;
-		secondFloorHeight = secondFloorBottomY - firstFloorBottomY - groundHeight;
-		
-		runnerHeight = ViewUtil.dipResourceToPx(this, R.dimen.runner_height);
-		runnerMaxJumpHeight = ViewUtil.dipResourceToPx(this, R.dimen.runner_max_jump_height);
+		secondFloorHeight = secondFloorBottomY - firstFloorBottomY
+				- groundHeight;
 
-		runnerJumpUpFloorSpeed = ViewUtil.dipResourceToFloat(this, R.dimen.runner_jump_up_speed);
-		runnerJumpDownFloorSpeed = ViewUtil.dipResourceToFloat(this, R.dimen.runner_jump_down_speed);
-		runnerJumpSpeed = ViewUtil.dipResourceToFloat(this, R.dimen.runner_tap_speed);
+		runnerHeight = ViewUtil.dipResourceToPx(this, R.dimen.runner_height);
 
 		loadRes();
 		restart();
@@ -217,8 +197,6 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 			soundPool.play(soundIds[SOUND_SWOOSHING], 0.5f, 0.5f, 1, 0, 1);
 			sprites = new LinkedList<Sprite>();
 			runnerSprite = new RunnerSprite(this);
-			runnerSprite2 = new RunnerSprite(this);
-			runnerSprite2.setY(firstFloorBottomY - groundTopHeight - runnerHeight);
 			scoreSprite = new ScoreSprite(this);
 			groundSprite = new GroundSprite(this);
 			splashSprite = null;
@@ -233,8 +211,17 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 			} else {
 				fpsSprite = null;
 			}
+
+			if (random.nextBoolean()) {
+				runnerSprite.setY(firstFloorBottomY - groundTopHeight
+						- runnerHeight);
+				currentFloor = 1;
+			} else {
+				currentFloor = 2;
+			}
 			sprites.add(runnerSprite);
-			sprites.add(runnerSprite2);
+
+			// sprites.add(runnerSprite2);
 			HintSprite hintSprite = new HintSprite(this);
 			sprites.add(hintSprite);
 			secondFloorBlockerCount = 0;
@@ -254,8 +241,6 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 
 	private void loadRes() {
 		Resources res = getResources();
-		blockerUp = res.getDrawable(R.drawable.img_block_up);
-		blockerDown = res.getDrawable(R.drawable.img_block_down);
 		coin = res.getDrawable(R.drawable.img_coin);
 		soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		AssetManager assetManager = res.getAssets();
@@ -336,8 +321,8 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 					continue;
 				}
 				if (currentStatus == Sprite.STATUS_GAME_OVER) {
-					if ((runnerSprite.isHit(runnerSprite) || runnerSprite2
-							.isHit(runnerSprite2)) && !splashSprite.isAlive()) {
+					if ((runnerSprite.isHit(runnerSprite) || runnerSprite
+							.isHit(runnerSprite)) && !splashSprite.isAlive()) {
 						onGameOver();
 						sprites.clear();
 						continue;
@@ -348,7 +333,7 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 				boolean hit = false;
 				for (Sprite sprite : sprites) {
 					if (sprite.isHit(runnerSprite)
-							|| sprite.isHit(runnerSprite2)) {
+					/* || sprite.isHit(runnerSprite2) */) {
 						onHit();
 						hit = true;
 						break;
@@ -358,13 +343,19 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 					sprites.addLast(splashSprite = new SplashSprite());
 					currentStatus = Sprite.STATUS_GAME_OVER;
 					runnerSprite.setHitted(true);
-					runnerSprite2.setHitted(true);
+					// runnerSprite2.setHitted(true);
 					continue;
 				}
 				if (secondFloorBlockerCount > SECOND_FLOOR_NEW_BLOCKER_COUNT) {
 					secondFloorBlockerCount = 0;
-					RoadBlockSprite sprite; 
-					sprite = RoadBlockSprite.obtainRandom(getBaseContext(), runnerSprite.getX());
+					RoadBlockSprite sprite;
+					if (random.nextInt(FULL_BLOCK_FREQUCEN) == 3) {
+						sprite = RoadBlockSprite.obtainRandom(getBaseContext(),
+								runnerSprite.getX(), secondFloorHeight);
+					} else {
+						sprite = RoadBlockSprite.obtainRandom(getBaseContext(),
+								runnerSprite.getX());
+					}
 					sprites.addFirst(sprite);
 					// Log.d(TAG, "new sprite");
 				} else {
@@ -373,10 +364,17 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 
 				if (firstFloorBlockerCount > FIRST_FLOOR_NEW_BLOCKER_COUNT) {
 					firstFloorBlockerCount = 0;
-					RoadBlockSprite sprite; 
-					sprite = RoadBlockSprite.obtainRandom(getBaseContext(), runnerSprite.getX());
-					//TODO error
-					sprite.setY(firstFloorBottomY - groundTopHeight - sprite.getHeight());
+					RoadBlockSprite sprite;
+					if (random.nextInt(FULL_BLOCK_FREQUCEN) == 3) {
+						sprite = RoadBlockSprite.obtainRandom(getBaseContext(),
+								runnerSprite.getX(), firstFloorHeight);
+					} else {
+						sprite = RoadBlockSprite.obtainRandom(getBaseContext(),
+								runnerSprite.getX());
+					}
+					// TODO error
+					sprite.setY(firstFloorBottomY - groundTopHeight
+							- sprite.getHeight());
 					sprites.addFirst(sprite);
 					// Log.d(TAG, "new sprite");
 				} else {
@@ -407,15 +405,15 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 	private void onGetPoint(int point) {
 		currentPoint += point;
 		scoreSprite.setCurrentScore(currentPoint);
-		runOnUiThread(new Runnable() {
-
-			@Override
-			public void run() {
-				if (!isFinishing()) {
-					soundPool.play(soundIds[SOUND_POINT], 0.5f, 0.5f, 1, 0, 1);
-				}
-			}
-		});
+		// runOnUiThread(new Runnable() {
+		//
+		// @Override
+		// public void run() {
+		// if (!isFinishing()) {
+		// soundPool.play(soundIds[SOUND_POINT], 0.5f, 0.5f, 1, 0, 1);
+		// }
+		// }
+		// });
 	}
 
 	private void showAndUpdateResultLayer() {
@@ -496,24 +494,37 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		
+
 		int action = event.getAction();
 
 		if ((action & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN
 				|| (action & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_POINTER_DOWN) {
 
 			int pointerIndex = event.getActionIndex();
-			//Log.d("jyj", "jyj action, pointerIndex: " + action +", " + pointerIndex);
+			// Log.d("jyj", "jyj action, pointerIndex: " + action +", " +
+			// pointerIndex);
 			switch (currentStatus) {
 			case Sprite.STATUS_NOT_STARTED:
 				currentStatus = Sprite.STATUS_NORMAL;
 			case Sprite.STATUS_NORMAL:
 				if (event.getY(pointerIndex) < firstFloorBottomY) {
-					runnerSprite2.onTap();
+					if (currentFloor == 1) {
+						runnerSprite.onTap();
+					} else {
+						currentFloor = 1;
+						runnerSprite.jumpToY(firstFloorBottomY
+								- groundTopHeight - runnerHeight);
+					}
 				} else {
-					runnerSprite.onTap();
+					if (currentFloor == 2) {
+						runnerSprite.onTap();
+					} else {
+						currentFloor = 2;
+						runnerSprite.jumpToY(secondFloorBottomY - groundHeight
+								- runnerHeight);
+					}
 				}
-					
+
 				soundPool.play(soundIds[SOUND_WING], 0.5f, 0.5f, 1, 0, 1);
 				break;
 
@@ -535,10 +546,9 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 		restart();
 	}
 
-	// TODO bugs
 	public void onRankButtonClick(View view) {
 		Intent intent = new Intent(this, NewRankAcitivity.class);
-		intent.putExtra(GameActiviy.TYPE, Constant.TYPE_FLAPPY_RUNNER_DOUBLE);
+		intent.putExtra(GameActiviy.TYPE, Constant.TYPE_FLAPPY_RUNNER_UP_DOWN);
 		startActivity(intent);
 	}
 
@@ -553,7 +563,8 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 			return;
 		}
 
-		App.submitScore(nickyName, currentPoint + "", Constant.TYPE_FLAPPY_RUNNER_DOUBLE);
+		App.submitScore(nickyName, currentPoint + "",
+				Constant.TYPE_FLAPPY_RUNNER_UP_DOWN);
 	}
 
 }

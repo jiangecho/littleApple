@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 public class RunnerSprite implements Sprite {
 
@@ -23,7 +24,9 @@ public class RunnerSprite implements Sprite {
 	private float currentSpeed;
 
 	private final float acceleration;
-	private final float tapSpeed;
+	private float tapSpeed;
+	private float jumpUpSpeed;
+	private float jumpDownSpeed;
 
 	private int hitPaddingLeft;
 	private int hitPaddingRight;
@@ -32,6 +35,13 @@ public class RunnerSprite implements Sprite {
 	private int maxJumpHeight;
 
 	private boolean isHitted = false;
+	private boolean isOnGround = true;
+	
+	private static final int STATE_NORMAL = 0;
+	private static final int STATE_JUMP_UP = 1;
+	private static final int STATE_JUMP_DOWN = 2;
+	private int currentState = STATE_NORMAL;
+	private int jumpToY;
 
 	public RunnerSprite(Context context) {
 		int width = ViewUtil.getScreenWidth(context);
@@ -46,7 +56,7 @@ public class RunnerSprite implements Sprite {
 				* (runner.getIntrinsicWidth() / runner.getIntrinsicHeight());
 
 		groundHeight = ViewUtil.dipResourceToPx(context, R.dimen.ground_height);
-		maxY = heith - groundHeight;
+		maxY = heith - groundHeight - runnerHeight;
 		currentY = heith - groundHeight - runnerHeight;
 
 		maxJumpHeight = ViewUtil.dipResourceToPx(context,
@@ -70,28 +80,62 @@ public class RunnerSprite implements Sprite {
 		hitPaddingRight = ViewUtil.dipResourceToPx(context,
 				R.dimen.bird_hit_padding_right);
 
+		jumpUpSpeed = ViewUtil.dipResourceToFloat(context, R.dimen.runner_jump_up_speed);
+		jumpDownSpeed = ViewUtil.dipResourceToFloat(context, R.dimen.runner_jump_down_speed);
 		currentSpeed = 0;
 	}
 
+	// TODO optimize
 	@Override
 	public void onDraw(Canvas canvas, Paint globalPaint, int status) {
 		if (status != Sprite.STATUS_NOT_STARTED) {
-			if (!isHitted) {
-				currentY += currentSpeed;
-				synchronized (this) {
+			
+			switch (currentState) {
+			case STATE_NORMAL:
+				if (!isHitted) {
+					currentY += currentSpeed;
+					//Log.d("jyj", "jyj currentY, speed, minY, maxY, acceleration: " + currentY + " " + currentSpeed + " " + minY + " " + maxY + " " + acceleration);
 					currentSpeed += acceleration;
+	
 				}
+				if (currentY > maxY) {
+					currentY = maxY;
+					isOnGround = true;
+				}
+		
+				if (currentY < minY) {
+					currentY = minY;
+				}
+				
+				break;
 
+			case STATE_JUMP_UP:
+				if (!isHitted) {
+					//Log.d("jyj", "jyj up y, toY: " + currentY + " " + jumpToY);
+					if (currentY > jumpToY) {
+						currentY += tapSpeed;
+					}else {
+						currentY = jumpToY;
+						isOnGround = true;
+						currentState = STATE_NORMAL;
+					}
+				}
+				break;
+			case STATE_JUMP_DOWN:
+				if (!isHitted) {
+					//Log.d("jyj", "jyj down y, toY: " + currentY + " " + jumpToY);
+					if (currentY < jumpToY) {
+						currentY -= tapSpeed;
+					}else {
+						currentY = jumpToY;
+						isOnGround = true;
+						currentState = STATE_NORMAL;
+					}
+				}
+				break;
 			}
 		}
 
-		if (currentY + runnerHeight > maxY) {
-			currentY = maxY - runnerHeight;
-		}
-
-		if (currentY < minY) {
-			currentY = minY;
-		}
 
 		runner.setBounds(X, currentY, X + runnerWidth, currentY + runnerHeight);
 		runner.draw(canvas);
@@ -142,19 +186,42 @@ public class RunnerSprite implements Sprite {
 	}
 
 	public void onTap() {
-		if (currentY == maxY - runnerHeight) {
-			synchronized (this) {
-				currentSpeed = tapSpeed;
-			}
+		if (isOnGround) {
+			currentSpeed = tapSpeed;
+			isOnGround = false;
 
 		}
 	}
 
 	@Override
 	public void setY(int y) {
-		currentY = y - runnerHeight;
+		currentY = y;
 		maxY = y;
-		minY = currentY - maxJumpHeight;
+		minY = currentY - maxJumpHeight - runnerHeight;
+	}
+	
+	public void setSpeed(float speed){
+		this.tapSpeed = speed;
+	}
+	
+	public void jumpToY(int y){
+		if (isOnGround && (y != currentY)) {
+			
+			// TODO when the runner is jumping up or down, allow the user to tap
+			// if you do not like this feature, please uncomment the following line
+			//isOnGround = false;
+
+			jumpToY = y;
+			if (currentY > y) {
+				currentState = STATE_JUMP_UP;
+			}else {
+				currentState = STATE_JUMP_DOWN;
+			}
+			
+			maxY = y;
+			minY = maxY - maxJumpHeight - runnerHeight;
+		}
+
 	}
 
 }

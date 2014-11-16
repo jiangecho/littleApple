@@ -531,6 +531,13 @@ public class GameActiviy extends Activity implements GameEventListner {
 		startActivity(intent);
 	}
 
+	public void onUpDownButtonClick(View view) {
+		Intent intent = new Intent(this,
+				com.jucyzhang.flappybatta.UpDownRnnerGameActivity.class);
+		intent.putExtra("NICKYNAME", nickyName);
+		startActivity(intent);
+	}
+
 	public void onBirdButtonClick(View view) {
 		Intent intent = new Intent(this,
 				com.jucyzhang.flappybatta.GameActivity.class);

@@ -20,17 +20,28 @@ public class RoadBlockSprite implements Sprite {
 	// X, the x position of the runner sprite
 	public static RoadBlockSprite obtainRandom(Context context, int X) {
 
-		return new RoadBlockSprite(context, X);
+		return new RoadBlockSprite(context, X, -1);
 	}
 
-	private RoadBlockSprite(Context context, int X) {
+	public static RoadBlockSprite obtainRandom(Context context, int X, int blockHeight) {
+
+		return new RoadBlockSprite(context, X, blockHeight);
+	}
+
+	private RoadBlockSprite(Context context, int X, int aBlockHeight) {
 
 		groundHeight = ViewUtil.dipResourceToPx(context, R.dimen.ground_height);
 
 		// TODO random width and height
 		int defaultHeight = ViewUtil.dipResourceToPx(context,
 				R.dimen.block_width);
-		blockHeight = defaultHeight - RANDOM.nextInt((int) (defaultHeight / 2));
+
+		if (aBlockHeight > 0) {
+			blockHeight = aBlockHeight;
+		}else {
+			blockHeight = defaultHeight - RANDOM.nextInt((int) (defaultHeight / 2));
+		}
+
 		blockWidth = defaultHeight / 3 + RANDOM.nextInt(defaultHeight / 2);
 
 		speed = ViewUtil.dipResourceToFloat(context, R.dimen.block_speed);
@@ -101,8 +112,12 @@ public class RoadBlockSprite implements Sprite {
 
 	@Override
 	public void setY(int y) {
-		currentY = y - blockHeight;
+		currentY = y;
 
 	}
-
+	
+	public int getHeight(){
+		return blockHeight;
+	}
+	
 }
