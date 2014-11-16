@@ -107,9 +107,14 @@ public class UpDownRnnerGameActivity extends Activity implements Callback,
 	private int firstFloorHeight;
 	private int secondFloorHeight;
 
-	private int FULL_BLOCK_FREQUCEN = 5;
+	private int FULL_BLOCK_FREQUCEN = 2;
 
 	private int runnerHeight;
+	private int runnerWidth;
+	
+	private boolean lastBlockIsFull = false;
+	private int lastFullBlockX = 0;
+	private int lastFullBlockWidth = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +154,7 @@ public class UpDownRnnerGameActivity extends Activity implements Callback,
 				- groundHeight;
 
 		runnerHeight = ViewUtil.dipResourceToPx(this, R.dimen.runner_height);
+		runnerWidth = runnerHeight;
 		
 		bestScore = (int) App.getBestScore(type);
 
@@ -351,12 +357,26 @@ public class UpDownRnnerGameActivity extends Activity implements Callback,
 				if (secondFloorBlockerCount > SECOND_FLOOR_NEW_BLOCKER_COUNT) {
 					secondFloorBlockerCount = 0;
 					RoadBlockSprite sprite;
-					if (random.nextInt(FULL_BLOCK_FREQUCEN) == 3) {
+					if (random.nextInt(FULL_BLOCK_FREQUCEN) == 0) {
 						sprite = RoadBlockSprite.obtainRandom(getBaseContext(),
 								runnerSprite.getX(), secondFloorHeight);
+						
+						int width = sprite.getWidth();
+						int x = sprite.getX();
+						
+						if (!lastBlockIsFull || (x - lastFullBlockX - lastFullBlockWidth > 2 * runnerWidth)) {
+							lastBlockIsFull = true;
+							lastFullBlockWidth = width;
+							lastFullBlockX = x;
+						}else {
+							sprite.setHeight(width + runnerHeight);
+							lastBlockIsFull = false;
+						}
+
 					} else {
 						sprite = RoadBlockSprite.obtainRandom(getBaseContext(),
 								runnerSprite.getX());
+						lastBlockIsFull = false;
 					}
 					sprites.addFirst(sprite);
 					// Log.d(TAG, "new sprite");
@@ -367,18 +387,30 @@ public class UpDownRnnerGameActivity extends Activity implements Callback,
 				if (firstFloorBlockerCount > FIRST_FLOOR_NEW_BLOCKER_COUNT) {
 					firstFloorBlockerCount = 0;
 					RoadBlockSprite sprite;
-					if (random.nextInt(FULL_BLOCK_FREQUCEN) == 3) {
+					if (random.nextInt(FULL_BLOCK_FREQUCEN) == 0) {
 						sprite = RoadBlockSprite.obtainRandom(getBaseContext(),
 								runnerSprite.getX(), firstFloorHeight);
+
+						int width = sprite.getWidth();
+						int x = sprite.getX();
+						
+						if (!lastBlockIsFull || (x - lastFullBlockX - lastFullBlockWidth > 2 * runnerWidth)) {
+							lastBlockIsFull = true;
+							lastFullBlockWidth = width;
+							lastFullBlockX = x;
+						}else {
+							sprite.setHeight(width + runnerHeight);
+							lastBlockIsFull = false;
+							
+						}
 					} else {
 						sprite = RoadBlockSprite.obtainRandom(getBaseContext(),
 								runnerSprite.getX());
+						lastBlockIsFull = false;
 					}
-					// TODO error
 					sprite.setY(firstFloorBottomY - groundTopHeight
 							- sprite.getHeight());
 					sprites.addFirst(sprite);
-					// Log.d(TAG, "new sprite");
 				} else {
 					firstFloorBlockerCount++;
 				}

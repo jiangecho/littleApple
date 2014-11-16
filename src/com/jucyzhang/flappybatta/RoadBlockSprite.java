@@ -120,4 +120,20 @@ public class RoadBlockSprite implements Sprite {
 		return blockHeight;
 	}
 	
+	// we should keep the bottom of the block stable
+	public void setHeight(int height){
+		int tmp = blockHeight - height;
+		blockHeight = height;
+		
+		currentY += tmp;
+	}
+	
+	public int getWidth(){
+		return blockWidth;
+	}
+	
+	public int getX(){
+		return currentX;
+	}
+	
 }
