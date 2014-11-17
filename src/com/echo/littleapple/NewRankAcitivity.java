@@ -10,11 +10,8 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import android.R.integer;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,12 +19,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.onekeyshare.OnekeyShare;
 
 public class NewRankAcitivity extends Activity {
 	private ProgressBar progressBar;
@@ -536,7 +534,14 @@ public class NewRankAcitivity extends Activity {
 	}
 
 	public void onShareButtonClick(View view){
-		// TODO
+		String imgPath = Util.takeScreenShot(view);
+		if (imgPath == null) {
+			Toast.makeText(this, "SD卡不存在", Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(this, getString(R.string.capture_screen_ok),
+					Toast.LENGTH_SHORT).show();
+			showShare(imgPath);
+		}
 	}
 
 	// TODO more strict
@@ -547,6 +552,25 @@ public class NewRankAcitivity extends Activity {
 			return false;
 		}
 
+	}
+
+	private void showShare(String imgPath) {
+		ShareSDK.initSDK(this);
+		OnekeyShare oks = new OnekeyShare();
+		oks.disableSSOWhenAuthorize();
+
+		oks.setNotification(R.drawable.ic_launcher,
+				getString(R.string.app_name));
+		oks.setTitle(getString(R.string.share_comment));
+		oks.setTitleUrl(Constant.APP_URL);
+		oks.setText(getString(R.string.share_title, Constant.APP_URL));
+		oks.setImagePath(imgPath);
+		oks.setUrl(Constant.APP_URL);
+		oks.setComment(getString(R.string.share_comment));
+		oks.setSite(getString(R.string.app_name));
+		oks.setSiteUrl(Constant.APP_URL);
+
+		oks.show(this);
 	}
 
 }

@@ -52,16 +52,6 @@
 	        />
 
 	    <Button
-	        android:id="@+id/restartButton"
-	        android:layout_width="150dp"
-	        android:layout_height="wrap_content"
-	        android:layout_marginTop="15dip"
-	        android:background="@color/red"
-	        android:textColor="@color/white"
-	        android:text="@string/restart" 
-	        android:onClick="onRestartButtonClick"
-	        />
-	    <Button
 	        android:id="@+id/sharetButton"
 	        android:layout_width="150dp"
 	        android:layout_height="wrap_content"
@@ -70,6 +60,18 @@
 	        android:textColor="@color/white"
 	        android:text="@string/share" 
 	        android:onClick="onShareButtonClick"
+	        android:visibility="invisible"
+	        />
+
+	    <Button
+	        android:id="@+id/restartButton"
+	        android:layout_width="150dp"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="15dip"
+	        android:background="@color/red"
+	        android:textColor="@color/white"
+	        android:text="@string/restart" 
+	        android:onClick="onRestartButtonClick"
 	        />
 	    <Button
 	        android:id="@+id/rankButton"

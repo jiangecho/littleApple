@@ -1,22 +1,15 @@
 package com.echo.littleapple;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.Random;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Environment;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -30,8 +23,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import cn.sharesdk.framework.ShareSDK;
-import cn.sharesdk.onekeyshare.OnekeyShare;
 
 import com.echo.littleapple.GameSurfaceView.GameEventListner;
 
@@ -39,24 +30,7 @@ public class GameActiviy extends Activity implements GameEventListner {
 
 	private static final int TIME_LENGHT = 30 * 1000;
 	private static final int TIME_LENGHT_20 = 20 * 1000;
-	private static final String CLASSIC_30S_BEST_SCORE = "CLASSIC_30S_BEST_SCORE";
-	// fix bug
-	private static final String CLASSIC_SPEED_BEST_SCORE = "CLASSIC_SPEED_BEST_SCORE_EX";
-	private static final String CLASSIC_ENDLESS_BEST_SCORE = "CLASSIC_ENDLESS_BEST_SCORE";
-	private static final String CLASSIC_DISCONTINUOUS_BEST_SCORE = "CLASSIC_DISCONTINUOUS_BEST_SCORE ";
-	private static final String CLASSIC_DOUBLE_BEST_SCORE = "CLASSIC_DOUBLE_BEST_SCORE ";
 
-	private static final String GRAVITY_30S_BEST_SCORE = "GRAVITY_30S_BEST_SCORE";
-	private static final String GRAVITY_MINE_BEST_SCORE = "GRAVITY_MINE_BEST_SCORE";
-	private static final String GRAVITY_ENDLESS_BEST_SCORE = "GRAVITY_ENDLESS_BEST_SCORE";
-	private static final String GRAVITY_DISCONTINUOUS_BEST_SCORE = "GRAVITY_DISCONTINUOUS_BEST_SCORE ";
-	private static final String GRAVITY_DOUBLE_BEST_SCORE = "GRAVITY_DOUBLE_BEST_SCORE ";
-
-	private static final String TERRIBLE_RELAY_BSET_SCORE = "TERRIBLE_RELAY_BEST_SCORE";
-	private static final String TERRIBLE_LOOM_BSET_SCORE = "TERRIBLE_LOOM_BEST_SCORE";
-	private static final String TERRIBLE_MOVE_BSET_SCORE = "TERRIBLE_MOVE_BEST_SCORE";
-
-	private static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
 
 	private TextView timerTV;
 	private GameSurfaceView gameView;
@@ -1010,62 +984,6 @@ public class GameActiviy extends Activity implements GameEventListner {
 	}
 
 	public void onShareButtonClick(View view) {
-		String imgPath = takeScreenShot(view);
-		if (imgPath == null) {
-			Toast.makeText(this, "SD卡不存在", Toast.LENGTH_SHORT).show();
-		} else {
-			Toast.makeText(this, getString(R.string.capture_screen_ok),
-					Toast.LENGTH_SHORT).show();
-			showShare(imgPath);
-		}
-	}
-
-	private String takeScreenShot(View view) {
-		View rootView = view.getRootView();
-		rootView.setDrawingCacheEnabled(true);
-		rootView.buildDrawingCache(true);
-		Bitmap bitmap = rootView.getDrawingCache(true);
-		if (!Environment.getExternalStorageState().equals(
-				Environment.MEDIA_MOUNTED)) {
-			return null;
-		}
-		File path = Environment.getExternalStorageDirectory();
-		File file = new File(path, "screenshot.png");
-
-		if (file.exists()) {
-			file.delete();
-		}
-		try {
-			FileOutputStream fileOutputStream = new FileOutputStream(file);
-			bitmap.compress(CompressFormat.PNG, 100, fileOutputStream);
-			fileOutputStream.close();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		rootView.destroyDrawingCache();
-		return file.getAbsolutePath();
-
-	}
-
-	private void showShare(String imgPath) {
-		ShareSDK.initSDK(this);
-		OnekeyShare oks = new OnekeyShare();
-		oks.disableSSOWhenAuthorize();
-
-		oks.setNotification(R.drawable.ic_launcher,
-				getString(R.string.app_name));
-		oks.setTitle(getString(R.string.app_name));
-		oks.setTitleUrl(APP_URL);
-		oks.setText(getString(R.string.share_title, APP_URL));
-		oks.setImagePath(imgPath);
-		oks.setUrl(APP_URL);
-		oks.setComment(getString(R.string.share_comment, currentScore));
-		oks.setSite(getString(R.string.app_name));
-		oks.setSiteUrl(APP_URL);
-
-		oks.show(this);
 	}
 
 	// TODO optimize do not need to check the mode, can just use type
@@ -1150,7 +1068,7 @@ public class GameActiviy extends Activity implements GameEventListner {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						Uri uri = Uri.parse(APP_URL);
+						Uri uri = Uri.parse(Constant.APP_URL);
 						Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 						startActivity(intent);
 						Toast toast = Toast.makeText(GameActiviy.this,

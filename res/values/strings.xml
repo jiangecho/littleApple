@@ -89,8 +89,8 @@
     <string name="level_easy">简单</string>
     <string name="level_hard">困难</string>
     <string name="sd_not_found">SD卡不存在</string>
-    <string name="share_title">哈哈，来挑战我吧!你是我的小苹果:%s</string>
-    <string name="share_comment">呵呵，我吃了%d个小苹果</string>
+    <string name="share_title">哈哈，玩游戏，赢话费大奖了!你是我的小苹果:%s</string>
+    <string name="share_comment">呵呵，玩游戏赢话费了</string>
     <string name="exit_title">亲，玩累了</string>
     <string name="exit_text">最近新出了很多好玩的游戏哦，去不去看看？</string>
     <string name="exit_cancel">取消</string>

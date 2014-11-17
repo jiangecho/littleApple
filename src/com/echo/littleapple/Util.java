@@ -1,5 +1,7 @@
 package com.echo.littleapple;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -9,6 +11,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.os.Environment;
+import android.view.View;
 
 //TODO please refer to: http://blog.csdn.net/flying_tao/article/details/6553601
 public class Util {
@@ -54,5 +61,35 @@ public class Util {
 		public void onFail();
 
 	}
+
+
+	public static String takeScreenShot(View view) {
+		View rootView = view.getRootView();
+		rootView.setDrawingCacheEnabled(true);
+		rootView.buildDrawingCache(true);
+		Bitmap bitmap = rootView.getDrawingCache(true);
+		if (!Environment.getExternalStorageState().equals(
+				Environment.MEDIA_MOUNTED)) {
+			return null;
+		}
+		File path = Environment.getExternalStorageDirectory();
+		File file = new File(path, "screenshot.png");
+
+		if (file.exists()) {
+			file.delete();
+		}
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream(file);
+			bitmap.compress(CompressFormat.PNG, 100, fileOutputStream);
+			fileOutputStream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		rootView.destroyDrawingCache();
+		return file.getAbsolutePath();
+	}
+
+
 
 }
