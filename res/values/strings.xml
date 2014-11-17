@@ -34,14 +34,16 @@
     <string name="score">成绩</string>
     <string name="input_nicky_name">请输入你的昵称, 那样获奖之后，你才可以领奖哦~</string>
     <string name="confirm">确定</string>
-    <string name="me">我</string>
+    <string name="me">我:</string>
     <string name="network_error">网络异常</string>
     <string name="news">新闻</string>
     <string name="check_rank">排行榜</string>
 	<string name="share">截图炫耀</string>
     <string name="back">返回</string>
     <string name="my_rank_of_current_week">本周排名: %d</string>
+    <string name="my_total_award">累计奖金: %d</string>
     <string name="my_rank_of_last_week">上周排名: %d</string>
+    <string name="my_award_of_last_week">上周奖金: %d</string>
     <string name="last_week_no_rank">上周排名: 千里之外</string>
     <string name="current_week_no_rank">本周排名: 千里之外</string>
     <string name="rank_of_current_week">本周排行榜</string>

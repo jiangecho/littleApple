@@ -4,11 +4,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -36,13 +38,15 @@ public class NewRankAcitivity extends Activity {
 	private List<RankItem> rankListItems;
 	private List<AwardItem> awardListItems;
 
-	private TextView myLastWeekRankTextView;
-	private Button acceptAwardButton;
-	private TextView myCurrentWeekRankTextView;
+	private TextView myLastWeekAwardTextView;
+	private TextView myTotalAwardTextView;
+	private Button shareButton;
 	private ListView lastWeekAwardListView;
 	private ListView currentWeekRankListListView;
 	private TextView lastWeekNoAwardLisTextView;
 	private TextView currentWeekNoRankLisTextView;
+	
+	private TextView nickynameTextView;
 
 	private TextView newsTextView;
 
@@ -97,9 +101,9 @@ public class NewRankAcitivity extends Activity {
 		networkInfoTextView = (TextView) findViewById(R.id.networkInfoTV);
 		scrollView = (ScrollView) findViewById(R.id.scrollView);
 
-		myLastWeekRankTextView = (TextView) findViewById(R.id.my_rank_of_last_week);
-		myCurrentWeekRankTextView = (TextView) findViewById(R.id.my_rank_of_current_week);
-		acceptAwardButton = (Button) findViewById(R.id.accept_award);
+		myLastWeekAwardTextView = (TextView) findViewById(R.id.my_award_of_last_week);
+		myTotalAwardTextView = (TextView) findViewById(R.id.my_total_award);
+		shareButton = (Button) findViewById(R.id.sharetButton);
 		lastWeekAwardListView = (ListView) findViewById(R.id.last_week_award_list);
 		currentWeekRankListListView = (ListView) findViewById(R.id.current_week_rank_list);
 
@@ -440,36 +444,40 @@ public class NewRankAcitivity extends Activity {
 					newsTextView.setText(news);
 					newsTextView.setVisibility(View.VISIBLE);
 				}
-				if (lastWeekAwardStatus == ON_GOING) {
-					if (myLastWeekRank != -1
-							&& myLastWeekRank <= awardListItems.size()) {
-						acceptAwardButton.setEnabled(true);
-					} else {
-						acceptAwardButton.setText(getString(R.string.no_award));
-						acceptAwardButton.setEnabled(false);
+
+				int lastWeekAward = 0;
+				int totalAward = 0;
+				String lastAwardWeek = null;
+				String awardWeek = null;
+
+				totalAward = App.getInt(Constant.TOTAL_AWARD);
+				if (myLastWeekRank >= 0 && myLastWeekRank < awardListItems.size()) {
+					if (myLastWeekRank < awardValues.length) {
+						lastWeekAward = awardValues[myLastWeekRank];
+					}else {
+						lastWeekAward = awardValues[awardValues.length - 1];
 					}
-				} else {
-					acceptAwardButton.setText(getString(R.string.no_award));
-					acceptAwardButton.setEnabled(false);
 
-				}
-				if (myCurrentWeekRank >= 0) {
-					myCurrentWeekRankTextView
-							.setText(getString(
-									R.string.my_rank_of_current_week,
-									myCurrentWeekRank));
-				} else {
-					myCurrentWeekRankTextView
-							.setText(getString(R.string.current_week_no_rank));
+				} 
+				myLastWeekAwardTextView.setText(getString(
+						R.string.my_award_of_last_week, lastWeekAward));
+				
+				if (lastWeekAward > 0) {
+					Calendar calendar = Calendar.getInstance();
+					int year = calendar.get(Calendar.YEAR);
+					int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
+					awardWeek = year + " " + weekOfYear;
+
+					lastAwardWeek = App.getString(Constant.LAST_AWARD_WEEK);
+					if (lastAwardWeek == null || !lastAwardWeek.equals(awardWeek)) {
+						App.putString(Constant.LAST_AWARD_WEEK, awardWeek);
+						totalAward += lastWeekAward;
+						App.putInt(Constant.TOTAL_AWARD, totalAward);
+					}
+					
 				}
 
-				if (myLastWeekRank >= 0) {
-					myLastWeekRankTextView.setText(getString(
-							R.string.my_rank_of_last_week, myLastWeekRank));
-				} else {
-					myLastWeekRankTextView
-							.setText(getString(R.string.last_week_no_rank));
-				}
+				myTotalAwardTextView.setText(getString(R.string.my_total_award, totalAward));
 
 				if (awardListItems.size() == 0) {
 					if (lastWeekAwardStatus == NOT_START) {
@@ -527,60 +535,8 @@ public class NewRankAcitivity extends Activity {
 
 	}
 
-	public void onAcceptAwardButtonClick(View v) {
-		// LayoutInflater layoutInflater = LayoutInflater.from(this);
-		// final View view =
-		// layoutInflater.inflate(R.layout.accept_award_dialog, null);
-		// AlertDialog dialog = new AlertDialog.Builder(this)
-		// .setTitle(getString(R.string.award_value, awardValues[myLastWeekRank
-		// - 1]))
-		// .setView(view)
-		// .setPositiveButton(getResources().getString(R.string.confirm), new
-		// DialogInterface.OnClickListener() {
-		//
-		// @Override
-		// public void onClick(DialogInterface dialog, int which) {
-		// EditText editText = (EditText) view.findViewById(R.id.editText);
-		// final String phoneNum = editText.getText().toString().trim();
-		// if (isPhoneNumber(phoneNum)) {
-		// new Thread(new Runnable() {
-		//
-		// @Override
-		// public void run() {
-		// String uri = "http://littleappleapp.sinaapp.com/accept_award.php";
-		// List<NameValuePair> nameValuePairs = null;
-		// if (myNickyName != null) {
-		// nameValuePairs = new ArrayList<NameValuePair>();
-		// nameValuePairs.add(new BasicNameValuePair("nickyname", myNickyName));
-		// nameValuePairs.add(new BasicNameValuePair("phone_number", phoneNum));
-		// nameValuePairs.add(new BasicNameValuePair("award",
-		// awardValues[myLastWeekRank - 1] + ""));
-		// }
-		//
-		// String content = Util.httpPost(uri, nameValuePairs, null);
-		// if (content == null) {
-		// return ;
-		// }
-		//
-		// }
-		// }).start();
-		// acceptAwardButton.setText(getString(R.string.have_accept_award));
-		// Toast.makeText(NewRankAcitivity.this,
-		// getString(R.string.accept_award_success), Toast.LENGTH_LONG).show();
-		//
-		// }else {
-		// Toast.makeText(NewRankAcitivity.this,
-		// getString(R.string.invalid_phone_number), Toast.LENGTH_LONG)
-		// .show();;
-		// }
-		//
-		// }
-		// })
-		// .create();
-		// dialog.show();
-
-		Toast.makeText(this, getString(R.string.accept_award_toast),
-				Toast.LENGTH_LONG).show();
+	public void onShareButtonClick(View view){
+		// TODO
 	}
 
 	// TODO more strict

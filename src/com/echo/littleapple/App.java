@@ -168,4 +168,12 @@ public class App extends Application {
 		return sharedPreferences.getString(key, null);
 	}
 	
+	public static void putInt(String key, int value) {
+		sharedPreferences.edit().putInt(key, value).commit();
+	}
+	
+	public static int getInt(String key){
+		return sharedPreferences.getInt(key, 0);
+	}
+	
 }

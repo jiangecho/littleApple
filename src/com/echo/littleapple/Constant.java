@@ -3,6 +3,8 @@ package com.echo.littleapple;
 public class Constant {
 
 	public static final String TYPE = "TYPE";
+	public static final String TOTAL_AWARD = "TOTAL_AWARD";
+	public static final String LAST_AWARD_WEEK = "LAST_AWARD_WEEK";
 	// attention: the type value should not be the same!!!!!
 	// when add new type, no matter which mode it is,
 	// we should add it at the end
