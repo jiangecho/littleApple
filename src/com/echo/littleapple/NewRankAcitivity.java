@@ -104,6 +104,7 @@ public class NewRankAcitivity extends Activity {
 		shareButton = (Button) findViewById(R.id.sharetButton);
 		lastWeekAwardListView = (ListView) findViewById(R.id.last_week_award_list);
 		currentWeekRankListListView = (ListView) findViewById(R.id.current_week_rank_list);
+		nickynameTextView = (TextView) findViewById(R.id.nickyname_textview);
 
 		lastWeekNoAwardLisTextView = (TextView) findViewById(R.id.last_week_no_award_list);
 		currentWeekNoRankLisTextView = (TextView) findViewById(R.id.current_week_no_rank_list);
@@ -124,6 +125,13 @@ public class NewRankAcitivity extends Activity {
 
 		myNickyName = getSharedPreferences(getPackageName(),
 				Context.MODE_PRIVATE).getString("nickyname", null);
+		
+		int index = myNickyName.indexOf("_");
+		if (index > 0) {
+			nickynameTextView.setText(myNickyName.subSequence(0, index));
+		}else {
+			nickynameTextView.setText(myNickyName);
+		}
 
 		type = getIntent().getIntExtra(Constant.TYPE,
 				Constant.TYPE_CLASSIC_30S);
