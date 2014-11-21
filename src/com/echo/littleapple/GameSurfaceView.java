@@ -348,39 +348,44 @@ public class GameSurfaceView extends SurfaceView implements
 				apples[i][j] = CELL_TYPE_BLANK;
 			}
 		}
-
-		if (type == Constant.TYPE_CLASSIC_DISCONTINUOUS
-				|| type == Constant.TYPE_GRAVITY_DISCONTINUOUS) {
-			for (int i = 0; i < row - 1; i++) {
-				columnIndex = random.nextInt(COLUMN);
-				if (columnIndex == lastColumnIndex) {
-					columnIndex = (columnIndex + 1) % COLUMN;
+		
+		switch (type) {
+			case Constant.TYPE_CLASSIC_DISCONTINUOUS:
+			case Constant.TYPE_GRAVITY_DISCONTINUOUS:
+				for (int i = 0; i < row - 1; i++) {
+					columnIndex = random.nextInt(COLUMN);
+					if (columnIndex == lastColumnIndex) {
+						columnIndex = (columnIndex + 1) % COLUMN;
+					}
+					lastColumnIndex = columnIndex;
+					apples[i][columnIndex] = CELL_TYPE_APPLE_OK;
 				}
-				lastColumnIndex = columnIndex;
-				apples[i][columnIndex] = CELL_TYPE_APPLE_OK;
-			}
-		}
-		// should not add any mine in the initial state, otherwise, when the
-		// user
-		// firstly play mine type, and then play other type, there will be a bug
-		// else if(type == Constant.TYPE_GRAVITY_MINE){
-		// for (int i = 0; i < row - 1; i++) {
-		// columnIndex = random.nextInt(COLUMN);
-		// apples[i][columnIndex] = CELL_TYPE_APPLE_OK;
-		//
-		// if (1 == random.nextInt(row)) {
-		// apples[i][columnIndex] = CELL_TYPE_MINE;
-		// }
-		// }
-		//
-		// }
-		else {
-			for (int i = 0; i < row - 1; i++) {
-				columnIndex = random.nextInt(COLUMN);
-				apples[i][columnIndex] = CELL_TYPE_APPLE_OK;
-			}
+				
+				break;
+				// Attention: only 4 columns
+//			case Constant.TYPE_TERRIBLE_DOUBLE:
+//				for (int i = 0; i < row - 1; i++) {
+//					if (random.nextBoolean()) {
+//						apples[i][0] = CELL_TYPE_APPLE_OK;
+//					}else {
+//						apples[i][1] = CELL_TYPE_APPLE_OK;
+//					}
+//					if (random.nextBoolean()) {
+//						apples[i][3] = CELL_TYPE_APPLE_OK;
+//					}else {
+//						apples[i][2] = CELL_TYPE_APPLE_OK;
+//					}
+//				}
+//				break;
 
+			default:
+				for (int i = 0; i < row - 1; i++) {
+					columnIndex = random.nextInt(COLUMN);
+					apples[i][columnIndex] = CELL_TYPE_APPLE_OK;
+				}
+				break;
 		}
+
 
 	}
 
@@ -391,11 +396,16 @@ public class GameSurfaceView extends SurfaceView implements
 			return false;
 		}
 
-		if (event.getAction() != MotionEvent.ACTION_DOWN) {
+		int action = event.getAction();
+		int actionCode = action & MotionEvent.ACTION_MASK;
+		if ((actionCode  != MotionEvent.ACTION_DOWN)
+				&& (actionCode != MotionEvent.ACTION_POINTER_DOWN)) {
 			return false;
 		} else {
-			int x = (int) event.getX();
-			int y = (int) event.getY();
+
+			int pointerIndex = event.getActionIndex();
+			int x = (int) event.getX(pointerIndex);
+			int y = (int) event.getY(pointerIndex);
 
 			int x_index = x / cellWidth;
 			int y_index = row - 1 - (height - y) / cellHeight;
@@ -403,6 +413,7 @@ public class GameSurfaceView extends SurfaceView implements
 			if (mode == GameActiviy.MODE_GRAVITY 
 					|| (mode == GameActiviy.MODE_TERRIBLE && type == Constant.TYPE_TERRIBLE_LOOM)
 					|| (mode == GameActiviy.MODE_TERRIBLE && type == Constant.TYPE_TERRIBLE_MOVE)
+					|| type == Constant.TYPE_TERRIBLE_DOUBLE
 					) {
 
 				if (y_index < 1) {
@@ -676,6 +687,7 @@ public class GameSurfaceView extends SurfaceView implements
 			if (mode == GameActiviy.MODE_GRAVITY 
 					|| (mode == GameActiviy.MODE_TERRIBLE && type == Constant.TYPE_TERRIBLE_LOOM)
 					|| (mode == GameActiviy.MODE_TERRIBLE && type == Constant.TYPE_TERRIBLE_MOVE)
+					|| type == Constant.TYPE_TERRIBLE_DOUBLE
 					) {
 				if (moveYOffset < cellHeight) {
 					// if (type == Constant.TYPE_GRAVITY_DOUBLE
@@ -788,47 +800,67 @@ public class GameSurfaceView extends SurfaceView implements
 			}
 		}
 		int x_index = random.nextInt(COLUMN);
-
-		if (type == Constant.TYPE_CLASSIC_DISCONTINUOUS
-				|| type == Constant.TYPE_GRAVITY_DISCONTINUOUS) {
-			int lastColumnIndex = 0;
-			for (int i = 0; i < COLUMN; i++) {
-				if (apples[1][i] == CELL_TYPE_APPLE_OK) {
-					lastColumnIndex = i;
-					break;
+		int lastColumnIndex = 0;
+		
+		switch (type) {
+			case Constant.TYPE_CLASSIC_DISCONTINUOUS:
+			case Constant.TYPE_GRAVITY_DISCONTINUOUS:
+				for (int i = 0; i < COLUMN; i++) {
+					if (apples[1][i] == CELL_TYPE_APPLE_OK) {
+						lastColumnIndex = i;
+						break;
+					}
 				}
-			}
-			if (x_index == lastColumnIndex) {
-				x_index = (x_index + 1) % COLUMN;
-			}
-			apples[0][x_index] = CELL_TYPE_APPLE_OK;
-
-		} else if (type == Constant.TYPE_GRAVITY_MINE) {
-			if (1 == random.nextInt(row)) {
-				apples[0][x_index] = CELL_TYPE_MINE;
-			} else {
-				apples[0][x_index] = CELL_TYPE_APPLE_OK;
-			}
-		} else if (type == Constant.TYPE_CLASSIC_DOUBLE
-				|| type == Constant.TYPE_GRAVITY_DOUBLE) {
-			int lastColumnIndex = 0;
-			for (int i = 0; i < COLUMN; i++) {
-				if (apples[1][i] == CELL_TYPE_APPLE_OK) {
-					lastColumnIndex = i;
-					break;
+				if (x_index == lastColumnIndex) {
+					x_index = (x_index + 1) % COLUMN;
 				}
-			}
-			if (x_index == lastColumnIndex) {
-				x_index = (x_index + 1) % COLUMN;
-			}
-			apples[0][x_index] = CELL_TYPE_APPLE_OK;
-			if (1 == random.nextInt(row + COLUMN)) {
-				x_index = (x_index + 2) % COLUMN;
 				apples[0][x_index] = CELL_TYPE_APPLE_OK;
-			}
+				
+				break;
+			case Constant.TYPE_GRAVITY_MINE:
+				if (1 == random.nextInt(row)) {
+					apples[0][x_index] = CELL_TYPE_MINE;
+				} else {
+					apples[0][x_index] = CELL_TYPE_APPLE_OK;
+				}
 
-		} else {
-			apples[0][x_index] = CELL_TYPE_APPLE_OK;
+				break;
+			case Constant.TYPE_CLASSIC_DOUBLE:
+			case Constant.TYPE_GRAVITY_DOUBLE:
+				for (int i = 0; i < COLUMN; i++) {
+					if (apples[1][i] == CELL_TYPE_APPLE_OK) {
+						lastColumnIndex = i;
+						break;
+					}
+				}
+				if (x_index == lastColumnIndex) {
+					x_index = (x_index + 1) % COLUMN;
+				}
+				apples[0][x_index] = CELL_TYPE_APPLE_OK;
+				if (1 == random.nextInt(row + COLUMN)) {
+					x_index = (x_index + 2) % COLUMN;
+					apples[0][x_index] = CELL_TYPE_APPLE_OK;
+				}
+				
+				break;
+				
+			case Constant.TYPE_TERRIBLE_DOUBLE:
+				if (random.nextBoolean()) {
+					apples[0][0] = CELL_TYPE_APPLE_OK;
+				}else {
+					apples[0][1] = CELL_TYPE_APPLE_OK;
+				}
+
+				if (random.nextBoolean()) {
+					apples[0][3] = CELL_TYPE_APPLE_OK;
+				}else {
+					apples[0][2] = CELL_TYPE_APPLE_OK;
+				}
+				break;
+
+			default:
+				apples[0][x_index] = CELL_TYPE_APPLE_OK;
+				break;
 		}
 	}
 

@@ -3,6 +3,9 @@ package com.echo.littleapple;
 public class Constant {
 
 	public static final String TYPE = "TYPE";
+	public static final String TOTAL_AWARD = "TOTAL_AWARD";
+	public static final String LAST_AWARD_WEEK = "LAST_AWARD_WEEK";
+	public static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
 	// attention: the type value should not be the same!!!!!
 	// when add new type, no matter which mode it is,
 	// we should add it at the end
@@ -22,6 +25,7 @@ public class Constant {
 	public static final int TYPE_TERIBLE_RELAY = 10;
 	public static final int TYPE_TERRIBLE_LOOM = 11;
 	public static final int TYPE_TERRIBLE_MOVE = 12;
+	public static final int TYPE_TERRIBLE_DOUBLE = 13;
 	
 	
 	public static final int TYPE_FLAPPY_BIRD = 20;

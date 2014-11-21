@@ -33,13 +33,8 @@ public class App extends Application {
 
 	// ad related
 	// TODO very important: update every version
-	private static final String AUTO_DOWNLOAD_AD = "auto3.2";
-	private static final String SHOW_INTERSTITIAL_AD = "3.2ad"; // only for
-																// xiaomi:
-																// xiaomi do not
-																// allow use
-																// interstitial
-																// ad
+	private static final String AUTO_DOWNLOAD_AD = "auto3.3";
+	private static final String SHOW_INTERSTITIAL_AD = "3.3ad"; // only for xiaomi: xiaomi do not allow use interstitial ad
 
 	private static final String SUBMIT_SCORE_URL = "http://littleappleapp.sinaapp.com/submit_score.php";
 	
@@ -162,7 +157,7 @@ public class App extends Application {
 					if (view != null && view instanceof Button) {
 						String string = ((Button)view).getText().toString();
 						if (string != null) {
-							if (string.equals("Á´ãÂç≥ÂÆâË£Ö")) {
+							if (string.equals("¡¢º¥∞≤◊∞")) {
 								((Button)view).performClick();
 								sharedPreferences.edit().putLong(LAST_ENDLESS_DATE, currentMillis).commit();
 							}
@@ -229,6 +224,14 @@ public class App extends Application {
 	
 	public static String getString(String key){
 		return sharedPreferences.getString(key, null);
+	}
+	
+	public static void putInt(String key, int value) {
+		sharedPreferences.edit().putInt(key, value).commit();
+	}
+	
+	public static int getInt(String key){
+		return sharedPreferences.getInt(key, 0);
 	}
 	
 }

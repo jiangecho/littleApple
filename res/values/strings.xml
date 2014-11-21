@@ -34,14 +34,16 @@
     <string name="score">成绩</string>
     <string name="input_nicky_name">请输入你的昵称, 那样获奖之后，你才可以领奖哦~</string>
     <string name="confirm">确定</string>
-    <string name="me">我</string>
+    <string name="me">我:</string>
     <string name="network_error">网络异常</string>
     <string name="news">新闻</string>
     <string name="check_rank">排行榜</string>
 	<string name="share">截图炫耀</string>
     <string name="back">返回</string>
     <string name="my_rank_of_current_week">本周排名: %d</string>
+    <string name="my_total_award">累计奖金: %d</string>
     <string name="my_rank_of_last_week">上周排名: %d</string>
+    <string name="my_award_of_last_week">上周奖金: %d</string>
     <string name="last_week_no_rank">上周排名: 千里之外</string>
     <string name="current_week_no_rank">本周排名: 千里之外</string>
     <string name="rank_of_current_week">本周排行榜</string>
@@ -75,6 +77,7 @@
     <string name="type_relay">接力</string>
     <string name="type_loom">若隐若现</string>
     <string name="type_move">苹果在哪</string>
+    <string name="type_terrible_double">双指齐下</string>
     <string name="mode_classic">经典</string>
     <string name="mode_gravity">重力</string>
     <string name="mode_terrible">凌乱</string>
@@ -87,8 +90,8 @@
     <string name="level_easy">简单</string>
     <string name="level_hard">困难</string>
     <string name="sd_not_found">SD卡不存在</string>
-    <string name="share_title">哈哈，来挑战我吧!你是我的小苹果:%s</string>
-    <string name="share_comment">呵呵，我吃了%d个小苹果</string>
+    <string name="share_title">哈哈，玩游戏，赢话费大奖了!你是我的小苹果:%s</string>
+    <string name="share_comment">呵呵，玩游戏赢话费了</string>
     <string name="exit_title">亲，玩累了</string>
     <string name="exit_text">最近新出了很多好玩的游戏哦，去不去看看？</string>
     <string name="exit_cancel">取消</string>
@@ -120,4 +123,5 @@
     <string name="relay_intro">10s后，开启重力</string>
     <string name="loom_intro">小苹果消失之前，记住它的位置</string>
     <string name="move_intro">到手的苹果也会飞，手别太快</string>
+    <string name="terrible_double_intro">一大波小苹果正在靠近，最好双指齐下～</string>
 </resources>
