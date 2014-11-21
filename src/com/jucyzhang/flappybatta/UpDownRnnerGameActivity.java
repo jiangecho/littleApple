@@ -458,7 +458,7 @@ public class UpDownRnnerGameActivity extends Activity implements Callback,
 
 	private void showAndUpdateResultLayer() {
 
-		App.showInterstitialAd(this, adsWidgetContainer, "1a3b067d93c5a677f37685fdf4c76b49");
+		App.showInterstitialAd(this, adsWidgetContainer, App.AD_TAG);
 
 		resultLayer.setBackgroundColor(Color.parseColor("#773460"));
 		resultLayer.setVisibility(View.VISIBLE);

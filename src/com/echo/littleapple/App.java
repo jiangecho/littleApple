@@ -44,6 +44,11 @@ public class App extends Application {
 	private static SharedPreferences sharedPreferences;
 
 	private static final String LAST_ENDLESS_DATE = "LAST_ENDLESS_DATE";
+	
+	// TODO attention: this is the wandoujia ad info, please set change it
+	public static final String AD_TAG = "1a3b067d93c5a677f37685fdf4c76b49";
+	private static final String APPKEY_ID = "100010461";
+	private static final String SECRET_KEY = "7b95eea6b51978614c4ff137c2ad7c9f";
 
 	@Override
 	public void onCreate() {
@@ -123,7 +128,7 @@ public class App extends Application {
 		// TODO depend on different ad platform
 		// Init AdsSdk.
 		try {
-			Ads.init(this, "100010461", "7b95eea6b51978614c4ff137c2ad7c9f");
+			Ads.init(this, APPKEY_ID, SECRET_KEY);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -155,18 +160,15 @@ public class App extends Application {
 					int app_widget_install_button = com.wandoujia.ads.sdk.R.id.app_widget_install_button;
 					View view = appWidget.findViewById(app_widget_install_button);
 					if (view != null && view instanceof Button) {
-						String string = ((Button)view).getText().toString();
-						if (string != null) {
-							if (string.equals("Á¢¼´°²×°")) {
-								((Button)view).performClick();
-								sharedPreferences.edit().putLong(LAST_ENDLESS_DATE, currentMillis).commit();
-							}
-						}
+						((Button)view).performClick();
+						sharedPreferences.edit().putLong(LAST_ENDLESS_DATE, currentMillis).commit();
 					}
 				}
 				
 			}
 			adsWidgetContainer.addView(appWidget);
+		}else {
+			Ads.preLoad(activity, AdFormat.interstitial, adTag);
 		}
 		
 	}

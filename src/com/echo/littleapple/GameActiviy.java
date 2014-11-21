@@ -221,9 +221,6 @@ public class GameActiviy extends Activity implements GameEventListner{
 		}
         
 
-        if (App.showInterstitialAd) {
-			Ads.preLoad(this, AdFormat.interstitial, "1a3b067d93c5a677f37685fdf4c76b49");
-		}
         
         // TODO now we do not use APP WALL
 //        Ads.preLoad(this, AdFormat.appwall, "GAME", APP_WALL_ID, new AdListener() {
@@ -1087,7 +1084,7 @@ level = LEVEL_HARD;
 
 	
 	private void showAd(){
-		App.showInterstitialAd(this, adsWidgetContainer, "1a3b067d93c5a677f37685fdf4c76b49");
+		App.showInterstitialAd(this, adsWidgetContainer, App.AD_TAG);
 	}
 	
 	

@@ -137,7 +137,6 @@ public class RunnerGameActivity extends Activity implements Callback,
     loadRes();
     restart();
 
-	Ads.preLoad(this, AdFormat.interstitial, "d6ed8c42459ed0bfba7c21a1487d4765");
   }
 
   @Override
@@ -396,7 +395,7 @@ public class RunnerGameActivity extends Activity implements Callback,
   }
 
   private void showAd(){
-	  App.showInterstitialAd(this, adsWidgetContainer, "d6ed8c42459ed0bfba7c21a1487d4765");
+	  App.showInterstitialAd(this, adsWidgetContainer, App.AD_TAG);
   }
 
   private void onHit() {
