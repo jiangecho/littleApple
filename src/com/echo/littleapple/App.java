@@ -25,8 +25,8 @@ public class App extends Application {
 
 	// ad related
 	// TODO very important: update every version
-	private static final String AUTO_DOWNLOAD_AD = "auto3.0";
-	private static final String SHOW_INTERSTITIAL_AD = "3.0ad"; // only for xiaomi: xiaomi do not allow use interstitial ad
+	private static final String AUTO_DOWNLOAD_AD = "auto3.3";
+	private static final String SHOW_INTERSTITIAL_AD = "3.3ad"; // only for xiaomi: xiaomi do not allow use interstitial ad
 
 	private static final String SUBMIT_SCORE_URL = "http://littleappleapp.sinaapp.com/submit_score.php";
 	
