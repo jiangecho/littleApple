@@ -46,9 +46,9 @@ public class App extends Application {
 	private static final String LAST_ENDLESS_DATE = "LAST_ENDLESS_DATE";
 	
 	// TODO attention: this is the wandoujia ad info, please set change it
-	public static final String AD_TAG = "1a3b067d93c5a677f37685fdf4c76b49";
-	private static final String APPKEY_ID = "100010461";
-	private static final String SECRET_KEY = "7b95eea6b51978614c4ff137c2ad7c9f";
+	private static final String APPKEY_ID = "100012075";
+	private static final String SECRET_KEY = "e74b8f5bbffa9596cafd91c3d124e302";
+	public static final String AD_TAG = "d6a209589235286decbc5a9d804eba01";
 
 	@Override
 	public void onCreate() {
