@@ -126,11 +126,14 @@ public class NewRankAcitivity extends Activity {
 		myNickyName = getSharedPreferences(getPackageName(),
 				Context.MODE_PRIVATE).getString("nickyname", null);
 		
-		int index = myNickyName.indexOf("_");
-		if (index > 0) {
-			nickynameTextView.setText(myNickyName.subSequence(0, index));
-		}else {
-			nickynameTextView.setText(myNickyName);
+		if (myNickyName != null) {
+			int index = myNickyName.indexOf("_");
+			if (index > 0) {
+				nickynameTextView.setText(myNickyName.subSequence(0, index));
+			}else {
+				nickynameTextView.setText(myNickyName);
+			}
+			
 		}
 
 		type = getIntent().getIntExtra(Constant.TYPE,
