@@ -39,6 +39,10 @@ public class RequestManager {
     private RequestManager(){
 
     }
+    
+    public static ImageLoader getImageLoader(){
+    	return mImageLoader;
+    }
 
     private static Cache openCache() {
         return new DiskBasedCache(CacheUtils.getExternalCacheDir(App.getContext()),

@@ -3,7 +3,6 @@ package com.echo.littleapple.data;
 
 import com.android.volley.toolbox.ImageLoader;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v4.util.LruCache;

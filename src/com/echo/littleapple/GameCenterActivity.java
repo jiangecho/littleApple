@@ -6,30 +6,40 @@ import java.util.List;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+import com.echo.littleapple.data.BitmapLruCache;
+import com.echo.littleapple.data.GameItem;
+import com.echo.littleapple.data.GameItemsRequestData;
 import com.echo.littleapple.data.GsonRequest;
 import com.echo.littleapple.data.RequestManager;
-import com.google.gson.JsonObject;
 
 import cn.trinea.android.common.view.DropDownListView;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class GameCenterActivity extends Activity {
 
 	private DropDownListView dropDownListView;
 	private GameListAdapter adapter;
-	private List<GameItem> games;
+	
+	private ArrayList<GameItem> games;
+	private ImageLoader imageLoader;
+	
+	private final static String GAMES_URL = "http://littleappleapp.sinaapp.com/games/gameitest_json_test.txt";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +47,7 @@ public class GameCenterActivity extends Activity {
 		setContentView(R.layout.game_center);
 
 		games = new ArrayList<GameItem>();
-		// TODO the following line is just for testing
-		games.add(new GameItem("0" , "gameIconUrl", "summary", "title", "download url"));
+		imageLoader = RequestManager.getImageLoader();
 
 		dropDownListView = (DropDownListView) findViewById(R.id.game_list);
 		adapter = new GameListAdapter(this);
@@ -48,7 +57,6 @@ public class GameCenterActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO the following lines are just for test
-				games.add(new GameItem("0" , "gameIconUrl", "summary", "title", "download url"));
 				adapter.notifyDataSetChanged();
 				dropDownListView.onBottomComplete();
 			}
@@ -56,7 +64,8 @@ public class GameCenterActivity extends Activity {
 		
 		
 		// TODO download the game list.
-		// volley?
+		loadData(GAMES_URL);
+		
 	}
 
 	@Override
@@ -74,22 +83,17 @@ public class GameCenterActivity extends Activity {
 		super.onResume();
 	}
 	
-	class GameItem{
-		String gameName;
-		String gameIconUrl;
-		String gameSummary;
-		String gameTitle;
-		String gameDownloadUrl;
-
-		public GameItem(String gameName, String gameIconUrl, String gameSummary, String gameTitle, String gameDownloadUrl) {
-			super();
-			this.gameName = gameName;
-			this.gameIconUrl = gameIconUrl;
-			this.gameSummary = gameSummary;
-			this.gameTitle = gameTitle;
-			this.gameDownloadUrl = gameDownloadUrl;
-		}
-		
+	// TODO 
+	public void onDownloadButtonClick(View view){
+		Button button = (Button) view;
+		int position = (Integer) button.getTag();
+        Uri uri = Uri.parse(games.get(position).getGameDownloadUrl());
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
+        Toast toast = Toast.makeText(this,
+                        getString(R.string.update_prompt),
+                        Toast.LENGTH_SHORT);
+        toast.show();
 	}
 	
 	class GameListAdapter extends BaseAdapter{
@@ -123,10 +127,11 @@ public class GameCenterActivity extends Activity {
 				LayoutInflater inflater = LayoutInflater.from(context);
 				convertView = inflater.inflate(R.layout.game_list_item, null);
 				holder = new Holder();
-				holder.gameIconimImageView = (ImageView) convertView.findViewById(R.id.game_icon);
+				holder.gameIconimImageView = (NetworkImageView) convertView.findViewById(R.id.game_icon);
 				holder.gameNameTextView = (TextView) convertView.findViewById(R.id.game_name);
 				holder.gameSummaryTextView = (TextView) convertView.findViewById(R.id.game_summary);
 				holder.gameTitleTextView = (TextView) convertView.findViewById(R.id.game_title);
+				holder.downloadButton = (Button) convertView.findViewById(R.id.download_button);
 				convertView.setTag(holder);
 			}else {
 				holder = (Holder) convertView.getTag();
@@ -134,37 +139,43 @@ public class GameCenterActivity extends Activity {
 
 			GameItem gameItem = games.get(position);
 			// TODO set the game icon
-			holder.gameNameTextView.setText(gameItem.gameName);
-			holder.gameSummaryTextView.setText(gameItem.gameSummary);
-			holder.gameTitleTextView.setText(gameItem.gameTitle);
+			holder.gameIconimImageView.setImageUrl(gameItem.getGameIconUrl(), imageLoader);
+			holder.gameNameTextView.setText(gameItem.getGameName());
+			holder.gameSummaryTextView.setText(gameItem.getGameSummary());
+			holder.gameTitleTextView.setText(gameItem.getGameTitle());
+			holder.downloadButton.setTag(position);
 			
 			return convertView;
 		}
 		
 		class Holder{
-			ImageView gameIconimImageView;
+			NetworkImageView gameIconimImageView;
 			TextView gameNameTextView;
 			TextView gameSummaryTextView;
 			TextView gameTitleTextView;
+			Button downloadButton;
 		}
 	}
 	
-	// TODO refactor GameItem
 	private void loadData(String url){
-		GsonRequest<GameItem> request = new GsonRequest<GameItem>(url, GameItem.class, null, new Response.Listener<GameItem>() {
+		GsonRequest<GameItemsRequestData> request = new GsonRequest<GameItemsRequestData>(url, GameItemsRequestData.class, null, new Response.Listener<GameItemsRequestData>() {
 
 			@Override
-			public void onResponse(GameItem response) {
+			public void onResponse(GameItemsRequestData response) {
 				// TODO Auto-generated method stub
 				// TODO asyntask to update the ui
-				
+				List<GameItem> responseGames = response.getGameItems();
+				for (GameItem gameItem : responseGames) {
+					games.add(gameItem);
+				}
+				adapter.notifyDataSetChanged();
 			}
 		}, new Response.ErrorListener() {
 
 			@Override
 			public void onErrorResponse(VolleyError error) {
 				// TODO Auto-generated method stub
-				
+				Log.d("JYJ", "error");
 			}
 		});
 		executeRequest(request);
