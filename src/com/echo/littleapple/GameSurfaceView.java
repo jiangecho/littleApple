@@ -698,7 +698,7 @@ public class GameSurfaceView extends SurfaceView implements
 					// }else {
 					// moveYOffset += gravityMoveStepHeight;
 					// }
-					if (type == Constant.TYPE_TERRIBLE_MOVE) {
+					if (type == Constant.TYPE_TERRIBLE_MOVE || type == Constant.TYPE_TERRIBLE_DOUBLE) {
 						moveYOffset += terribleMoveMoveStepHeight;
 					}else {
 						moveYOffset += gravityMoveStepHeight;
