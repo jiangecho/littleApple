@@ -14,6 +14,7 @@ import com.echo.littleapple.Util.PostResultCallBack;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 
@@ -34,11 +35,14 @@ public class App extends Application {
 	private static final String TYPE_PREFIX = "type:";
 	
 	private static SharedPreferences sharedPreferences;
+	
+	private static Context context;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 
+		context = getApplicationContext();
 		sharedPreferences = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
 		asyncGetOnlineConfig();
 		initAd();
@@ -174,6 +178,10 @@ public class App extends Application {
 	
 	public static int getInt(String key){
 		return sharedPreferences.getInt(key, 0);
+	}
+
+	public static Context getContext() {
+		return context;
 	}
 	
 }

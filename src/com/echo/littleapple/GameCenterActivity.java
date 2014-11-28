@@ -3,10 +3,13 @@ package com.echo.littleapple;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
-
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.echo.littleapple.data.GsonRequest;
+import com.echo.littleapple.data.RequestManager;
+import com.google.gson.JsonObject;
 
 import cn.trinea.android.common.view.DropDownListView;
 import android.app.Activity;
@@ -144,6 +147,31 @@ public class GameCenterActivity extends Activity {
 			TextView gameSummaryTextView;
 			TextView gameTitleTextView;
 		}
+	}
+	
+	// TODO refactor GameItem
+	private void loadData(String url){
+		GsonRequest<GameItem> request = new GsonRequest<GameItem>(url, GameItem.class, null, new Response.Listener<GameItem>() {
+
+			@Override
+			public void onResponse(GameItem response) {
+				// TODO Auto-generated method stub
+				// TODO asyntask to update the ui
+				
+			}
+		}, new Response.ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		executeRequest(request);
+	}
+	
+	private void executeRequest(Request<?> request){
+		RequestManager.addRequest(request, this);
 	}
 
 	
