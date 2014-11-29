@@ -13,6 +13,7 @@ import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.HttpHeaderParser;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 /**
@@ -23,6 +24,8 @@ public class GsonRequest<T> extends Request<T> {
     private final Class<T> clazz;
     private final Map<String, String> headers;
     private final Listener<T> listener;
+    
+    private String charsetName;
 
     /**
      * Make a GET request and return a parsed object from JSON.
@@ -50,12 +53,26 @@ public class GsonRequest<T> extends Request<T> {
     protected void deliverResponse(T response) {
         listener.onResponse(response);
     }
+    
+    /**
+     * sometimes the header does not contain the right charset info, please set it manually
+     * @param charsetName
+     */
+    public void setResponseCharset(String charsetName){
+    	this.charsetName = charsetName;
+    }
 
     @Override
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
         try {
-            String json = new String(
-                    response.data, HttpHeaderParser.parseCharset(response.headers));
+        	String json;
+        	if (charsetName != null && charsetName.length() > 0) {
+        		json = new String(response.data, Charset.forName(charsetName));
+			}else {
+				json = new String(
+						response.data, HttpHeaderParser.parseCharset(response.headers));
+				
+			}
             return Response.success(
                     gson.fromJson(json, clazz), HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {

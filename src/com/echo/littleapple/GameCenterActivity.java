@@ -52,13 +52,14 @@ public class GameCenterActivity extends Activity {
 		dropDownListView = (DropDownListView) findViewById(R.id.game_list);
 		adapter = new GameListAdapter(this);
 		dropDownListView.setAdapter(adapter);
+		dropDownListView.onBottom();
 		dropDownListView.setOnBottomListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO the following lines are just for test
-				adapter.notifyDataSetChanged();
-				dropDownListView.onBottomComplete();
+				//adapter.notifyDataSetChanged();
+				//dropDownListView.onBottomComplete();
 			}
 		});
 		
@@ -169,6 +170,7 @@ public class GameCenterActivity extends Activity {
 					games.add(gameItem);
 				}
 				adapter.notifyDataSetChanged();
+				dropDownListView.onBottomComplete();
 			}
 		}, new Response.ErrorListener() {
 
@@ -178,6 +180,7 @@ public class GameCenterActivity extends Activity {
 				Log.d("JYJ", "error");
 			}
 		});
+		request.setResponseCharset("UTF-8");
 		executeRequest(request);
 	}
 	
