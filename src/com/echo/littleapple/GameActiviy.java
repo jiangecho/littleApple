@@ -747,6 +747,11 @@ public class GameActiviy extends Activity implements GameEventListner {
 		}
 
 	}
+	
+	public void onMoreGamesButtonClick(View view){
+		Intent intent = new Intent(this, GameCenterActivity.class);
+		startActivity(intent);
+	}
 
 	private void startRelay() {
 		if (countDownTimer == null) {
