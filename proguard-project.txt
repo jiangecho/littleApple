@@ -26,3 +26,12 @@
 -keep class cn.sharesdk.**{*;}
 -keep class com.sina.**{*;}
 
+
+#gson
+-keep class com.google.gson.** { *;}  
+-keep class com.echo.littleapple.data.AppConfig { *; }
+-keep class com.echo.littleapple.data.GameItemsRequestData { *; }
+-keep class com.echo.littleapple.data.GameItem { *; }
+
+#volley
+-keep class com.android.volley.** {*;}
