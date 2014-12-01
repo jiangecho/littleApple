@@ -6,6 +6,9 @@ public class Constant {
 	public static final String TOTAL_AWARD = "TOTAL_AWARD";
 	public static final String LAST_AWARD_WEEK = "LAST_AWARD_WEEK";
 	public static final String APP_URL = "http://1.littleappleapp.sinaapp.com/littleApple.apk";
+	public static final String CONFIG_URL = "http://littleappleapp.sinaapp.com/config/config.json";
+	public static final String SUBMIT_SCORE_URL = "http://littleappleapp.sinaapp.com/submit_score.php";
+	public static final String GAME_LIST_URL = "http://littleappleapp.sinaapp.com/games/game_list.json";
 	// attention: the type value should not be the same!!!!!
 	// when add new type, no matter which mode it is,
 	// we should add it at the end

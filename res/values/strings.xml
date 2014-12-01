@@ -124,4 +124,5 @@
     <string name="loom_intro">小苹果消失之前，记住它的位置</string>
     <string name="move_intro">到手的苹果也会飞，手别太快</string>
     <string name="terrible_double_intro">一大波小苹果正在靠近，最好双指齐下～</string>
+    <string name="download">下载</string>
 </resources>

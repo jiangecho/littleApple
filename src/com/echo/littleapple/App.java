@@ -1,14 +1,10 @@
 package com.echo.littleapple;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.ByteArrayBuffer;
 
 import com.echo.littleapple.Util.PostResultCallBack;
 import com.wandoujia.ads.sdk.Ads;
@@ -24,6 +20,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.echo.littleapple.Util.PostResultCallBack;
+import com.echo.littleapple.data.AppConfig;
+import com.echo.littleapple.data.GsonRequest;
+import com.echo.littleapple.data.RequestManager;
+
 public class App extends Application {
 
 	public static boolean showInterstitialAd = true; // when it is xiaomi,
@@ -31,17 +34,12 @@ public class App extends Application {
 	public static boolean autoDownloadAd = false;
 	public static boolean newVersionAvailable = false;
 
-	// ad related
-	// TODO very important: update every version
-	private static final String AUTO_DOWNLOAD_AD = "auto3.3";
-	private static final String SHOW_INTERSTITIAL_AD = "3.3ad"; // only for xiaomi: xiaomi do not allow use interstitial ad
-
-	private static final String SUBMIT_SCORE_URL = "http://littleappleapp.sinaapp.com/submit_score.php";
-	
 	// for preference
 	private static final String TYPE_PREFIX = "type:";
 	
 	private static SharedPreferences sharedPreferences;
+
+	private static Context context;
 
 	private static final String LAST_ENDLESS_DATE = "LAST_ENDLESS_DATE";
 	
@@ -54,74 +52,54 @@ public class App extends Application {
 	public void onCreate() {
 		super.onCreate();
 
+		context = getApplicationContext();
 		sharedPreferences = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-		asyncGetOnlineConfig();
-		initAd();
+		getOnlineConfig();
+		
 	}
 
-	private void asyncGetOnlineConfig() {
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				getOnlineConfig();
-			}
-		}).start();
-	}
 
 	private void getOnlineConfig() {
-		try {
-			URL url = new URL("http://littleappleapp.sinaapp.com/config.txt");
-			HttpURLConnection urlConnection = (HttpURLConnection) url
-					.openConnection();
-			InputStream inputStream = urlConnection.getInputStream();
-			byte[] bytes = new byte[1024];
-			int count;
-			ByteArrayBuffer byteArrayBuffer = new ByteArrayBuffer(1024);
-			count = inputStream.read(bytes);
-			while (count != -1) {
-				byteArrayBuffer.append(bytes, 0, count);
-				count = inputStream.read(bytes);
+
+		GsonRequest<AppConfig> request = new GsonRequest<AppConfig>(Constant.CONFIG_URL, AppConfig.class, null, new Response.Listener<AppConfig>() {
+
+			@Override
+					public void onResponse(AppConfig response) {
+						int currentVersionCode = 0;
+						try {
+							currentVersionCode = getPackageManager().getPackageInfo(
+									getPackageName(), 0).versionCode;
+						} catch (NameNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 			}
-			String config = new String(byteArrayBuffer.toByteArray());
-			if (config.contains(SHOW_INTERSTITIAL_AD)) {
-				showInterstitialAd = true;
-			}
-
-			if (config.contains(AUTO_DOWNLOAD_AD)) {
-				autoDownloadAd = true;
-			}
-
-			String[] tmp = config.split("\\s+");
-
-			for (String str : tmp) {
-				if (str.startsWith("version")) {
-					int versionCode = Integer.parseInt(str.substring("version"
-							.length()));
-					checkUpdate(versionCode);
-					break;
-				}
-			}
-
-			urlConnection.disconnect();
-			inputStream.close();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+						if (currentVersionCode <= response.getAutoAdVersion()) {
+							autoDownloadAd = true;
 	}
 
-	private void checkUpdate(int versionCode) {
-		try {
-			int currentVersionCode = getPackageManager().getPackageInfo(
-					getPackageName(), 0).versionCode;
-			if (versionCode > currentVersionCode) {
-				newVersionAvailable = true;
+						// attention the following line only for xiaomi
+						if (currentVersionCode <= response.getShowInterstitialAdVersion()) {
+				showInterstitialAd = true;
+			}
+						// end
+
+						if (currentVersionCode < response.getVersionCode()) {
+							newVersionAvailable = true;
 			}
 
-		} catch (NameNotFoundException e) {
-			e.printStackTrace();
+						initAd();
+
+				}
+				}, 
+				new Response.ErrorListener() {
+
+					@Override
+					public void onErrorResponse(VolleyError error) {
+
 		}
+				});
+		request.setResponseCharset("UTF-8");
+		RequestManager.addRequest(request, this);
 	}
 
 	private void initAd() {
@@ -191,7 +169,7 @@ public class App extends Application {
 				nameValuePairs
 						.add(new BasicNameValuePair("score", scoreString));
 				nameValuePairs.add(new BasicNameValuePair("type", type + ""));
-				Util.httpPost(SUBMIT_SCORE_URL, nameValuePairs, callBack);
+				Util.httpPost(Constant.SUBMIT_SCORE_URL, nameValuePairs, callBack);
 			}
 		}).start();
 	}
@@ -235,5 +213,9 @@ public class App extends Application {
 	public static int getInt(String key){
 		return sharedPreferences.getInt(key, 0);
 	}
+	
+	public static Context getContext() {
+		return context;
+}
 	
 }

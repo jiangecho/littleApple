@@ -826,6 +826,11 @@ level = LEVEL_HARD;
 		
 	}
 	
+	public void onMoreGamesButtonClick(View view){
+		Intent intent = new Intent(this, GameCenterActivity.class);
+		startActivity(intent);
+	}
+
 	private void startRelay() {
 		if (countDownTimer == null) {
 			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
