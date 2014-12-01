@@ -24,9 +24,9 @@ public class Util {
 	public static String httpPost(String uri,
 			List<NameValuePair> nameValuePairs, PostResultCallBack callBack) {
 
-		HttpPost httpPost = new HttpPost(uri);
 		String resultString = null;
 		try {
+			HttpPost httpPost = new HttpPost(uri);
 			if (nameValuePairs != null) {
 				httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs,
 						HTTP.UTF_8));
