@@ -39,7 +39,6 @@ public class GameCenterActivity extends Activity {
 	private ArrayList<GameItem> games;
 	private ImageLoader imageLoader;
 	
-	private final static String GAMES_URL = "http://littleappleapp.sinaapp.com/games/gameitest_json_test.txt";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +64,7 @@ public class GameCenterActivity extends Activity {
 		
 		
 		// TODO download the game list.
-		loadData(GAMES_URL);
+		loadData(Constant.GAME_LIST_URL);
 		
 	}
 

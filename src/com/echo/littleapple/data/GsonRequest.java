@@ -1,5 +1,7 @@
 package com.echo.littleapple.data;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -78,6 +80,7 @@ public class GsonRequest<T> extends Request<T> {
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));
         } catch (JsonSyntaxException e) {
+        	Log.e("GsonRequest", "important: maybe the charset is wrong, you can try setResponseCharset");
             return Response.error(new ParseError(e));
         }
     }
