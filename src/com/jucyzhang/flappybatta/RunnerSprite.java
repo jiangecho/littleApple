@@ -2,6 +2,7 @@ package com.jucyzhang.flappybatta;
 
 import com.echo.littleapple.R;
 
+import android.R.bool;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -42,6 +43,8 @@ public class RunnerSprite implements Sprite {
 	private static final int STATE_JUMP_DOWN = 2;
 	private int currentState = STATE_NORMAL;
 	private int jumpToY;
+
+	private boolean enablePlusMode = false;
 
 	public RunnerSprite(Context context) {
 		int width = ViewUtil.getScreenWidth(context);
@@ -209,7 +212,9 @@ public class RunnerSprite implements Sprite {
 			
 			// TODO when the runner is jumping up or down, allow the user to tap
 			// if you do not like this feature, please uncomment the following line
-			//isOnGround = false;
+			if (enablePlusMode) {
+				isOnGround = false;
+			}
 
 			jumpToY = y;
 			if (currentY > y) {
@@ -225,6 +230,10 @@ public class RunnerSprite implements Sprite {
 		}
 		
 		return false;
+	}
+	
+	public void enablePlusMode(boolean enablePlusMode){
+		this.enablePlusMode = enablePlusMode;
 	}
 
 }
