@@ -82,6 +82,7 @@ public class GameSurfaceView extends SurfaceView implements
 	private static final int CELL_TYPE_APPLE_CLICKED = 2;
 	private static final int CELL_TYPE_ERROR = 3;
 	private static final int CELL_TYPE_MINE = 4;
+	private static final int CELL_TYPE_APPLE_2 = 5;
 
 	boolean animationCancled = false;
 
@@ -229,7 +230,7 @@ public class GameSurfaceView extends SurfaceView implements
 
 					if (apples[i][j] == CELL_TYPE_BLANK) {
 						// do nothing
-					} else if (apples[i][j] == CELL_TYPE_APPLE_OK) {
+					} else if (apples[i][j] == CELL_TYPE_APPLE_OK || apples[i][j] == CELL_TYPE_APPLE_2) {
 						canvas.drawBitmap(bitmapApple, null, rect, applePaint);
 					} else if (apples[i][j] == CELL_TYPE_ERROR) {
 						canvas.drawBitmap(bitmapError, null, rect, applePaint);
@@ -451,21 +452,28 @@ public class GameSurfaceView extends SurfaceView implements
 						}
 					}, 200);
 
-				} else if (isBottomAppleRow(x_index, y_index)
-						&& apples[y_index][x_index] == CELL_TYPE_APPLE_OK) {
-					score++;
-					playGameSoundEffect(OK);
-					apples[y_index][x_index] = CELL_TYPE_APPLE_CLICKED;
-					if (status == STATUS_STOP) {
-						status = STATUS_START;
-						// move down
-						// startMoveAnimation();
-						if (listner != null) {
-							listner.onGameStart();
+				} else if (isBottomAppleRow(x_index, y_index)){
+					if (apples[y_index][x_index] == CELL_TYPE_APPLE_OK) {
+						score++;
+						playGameSoundEffect(OK);
+						apples[y_index][x_index] = CELL_TYPE_APPLE_CLICKED;
+						if (status == STATUS_STOP) {
+							status = STATUS_START;
+							// move down
+							// startMoveAnimation();
+							if (listner != null) {
+								listner.onGameStart();
+								listner.onScoreUpdate(score);
+							}
+						} else {
 							listner.onScoreUpdate(score);
 						}
-					} else {
-						listner.onScoreUpdate(score);
+						
+					// apples[y_index][x_index] == CELL_TYPE_APPLE_2) 
+					}else if(apples[y_index][x_index] == CELL_TYPE_APPLE_2){
+						playGameSoundEffect(OK);
+						apples[y_index][x_index] = CELL_TYPE_APPLE_OK;
+						
 					}
 					startMoveAnimation();
 
@@ -688,6 +696,7 @@ public class GameSurfaceView extends SurfaceView implements
 					|| (mode == GameActiviy.MODE_TERRIBLE && type == Constant.TYPE_TERRIBLE_LOOM)
 					|| (mode == GameActiviy.MODE_TERRIBLE && type == Constant.TYPE_TERRIBLE_MOVE)
 					|| type == Constant.TYPE_TERRIBLE_DOUBLE
+					|| type == Constant.TYPE_TERRIBLE_2
 					) {
 				if (moveYOffset < cellHeight) {
 					// if (type == Constant.TYPE_GRAVITY_DOUBLE
@@ -824,6 +833,14 @@ public class GameSurfaceView extends SurfaceView implements
 					apples[0][x_index] = CELL_TYPE_APPLE_OK;
 				}
 
+				break;
+			case Constant.TYPE_TERRIBLE_2:
+				if (1 == random.nextInt(row)) {
+					apples[0][x_index] = CELL_TYPE_APPLE_2;
+				} else {
+					apples[0][x_index] = CELL_TYPE_APPLE_OK;
+				}
+				
 				break;
 			case Constant.TYPE_CLASSIC_DOUBLE:
 			case Constant.TYPE_GRAVITY_DOUBLE:
