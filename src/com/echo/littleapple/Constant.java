@@ -29,6 +29,7 @@ public class Constant {
 	public static final int TYPE_TERRIBLE_LOOM = 11;
 	public static final int TYPE_TERRIBLE_MOVE = 12;
 	public static final int TYPE_TERRIBLE_DOUBLE = 13;
+	public static final int TYPE_TERRIBLE_2 = 14;
 	
 	
 	public static final int TYPE_FLAPPY_BIRD = 20;

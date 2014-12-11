@@ -96,6 +96,7 @@ public class UpDownRnnerGameActivity extends Activity implements Callback,
 	private TextView resultTV;
 	private TextView bestTV;
 	private TextView currentModeTypeLevelTV;
+	private TextView introTV;
 
 	private String nickyName;
 	private int bestScore;
@@ -118,6 +119,9 @@ public class UpDownRnnerGameActivity extends Activity implements Callback,
 	private int lastFullBlockX = 0;
 	private int lastFullBlockWidth = 0;
 
+	public static final String ENABLE_PLUS_MODE = "enablePlusMode";
+	private boolean enablePlusMode = false;
+
     private ViewGroup adsWidgetContainer;
 
 	@Override
@@ -131,6 +135,7 @@ public class UpDownRnnerGameActivity extends Activity implements Callback,
 		surfaceView = (SurfaceView) findViewById(R.id.surface_view);
 		surfaceView.setKeepScreenOn(true);
 		resultLayer = (LinearLayout) findViewById(R.id.resultLayer);
+		introTV = (TextView) findViewById(R.id.intro_tv);
 		surfaceView.setSoundEffectsEnabled(false);
 		holder = surfaceView.getHolder();
 		surfaceView.setZOrderOnTop(true);
@@ -144,9 +149,17 @@ public class UpDownRnnerGameActivity extends Activity implements Callback,
 		currentModeTypeLevelTV = (TextView) findViewById(R.id.current_mode_type_level_tv);
 		currentModeTypeLevelTV.setVisibility(View.INVISIBLE);
 
+		Intent intent = getIntent();
+		nickyName = intent.getStringExtra("NICKYNAME");
+		enablePlusMode = intent.getBooleanExtra(ENABLE_PLUS_MODE, false);
+		if (enablePlusMode) {
+			introTV.setText(getResources().getString(R.string.block_up_down_plus_intro));
+		}else {
+			introTV.setText(getResources().getString(R.string.block_up_down_intro));
+		}
 		adsWidgetContainer = (ViewGroup) findViewById(R.id.ads_widget_container);
 
-		nickyName = getIntent().getStringExtra("NICKYNAME");
+
 
 		int height = ViewUtil.getScreenHeight(this);
 		groundHeight = ViewUtil.dipResourceToPx(this, R.dimen.ground_height);
@@ -233,6 +246,7 @@ public class UpDownRnnerGameActivity extends Activity implements Callback,
 			} else {
 				currentFloor = 2;
 			}
+			runnerSprite.enablePlusMode(enablePlusMode);
 			sprites.add(runnerSprite);
 
 			// sprites.add(runnerSprite2);
@@ -537,6 +551,10 @@ public class UpDownRnnerGameActivity extends Activity implements Callback,
 	public boolean onTouch(View v, MotionEvent event) {
 
 		int action = event.getAction();
+
+		if (introTV.getVisibility() == View.VISIBLE) {
+			introTV.setVisibility(View.GONE);
+		}
 
 		if ((action & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN
 				|| (action & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_POINTER_DOWN) {
