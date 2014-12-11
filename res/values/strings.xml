@@ -78,6 +78,7 @@
     <string name="type_loom">若隐若现</string>
     <string name="type_move">苹果在哪</string>
     <string name="type_terrible_double">双指齐下</string>
+    <string name="type_terrible_2">那个二</string>
     <string name="mode_classic">经典</string>
     <string name="mode_gravity">重力</string>
     <string name="mode_terrible">凌乱</string>
@@ -125,6 +126,7 @@
     <string name="loom_intro">小苹果消失之前，记住它的位置</string>
     <string name="move_intro">到手的苹果也会飞，手别太快</string>
     <string name="terrible_double_intro">一大波小苹果正在靠近，最好双指齐下～</string>
+    <string name="terrible_2_intro">那个看起来很二的小苹果，需要点二次哦～</string>
     <string name="download">下载</string>
     <string name="block_up_down_plus_intro">小苹果落地之后，才能上窜下跳～</string>
     <string name="block_up_down_intro">小苹果落地之前，即可上窜下跳～</string>

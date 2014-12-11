@@ -43,6 +43,7 @@ public class GameSurfaceView extends SurfaceView implements
 	private Bitmap bitmapError;
 	private Bitmap bitmapClick;
 	private Bitmap bitmapMine;
+	private Bitmap bitmap2;
 
 	private GameEventListner listner;
 	private int status;
@@ -128,6 +129,8 @@ public class GameSurfaceView extends SurfaceView implements
 				R.drawable.click);
 		bitmapMine = BitmapFactory.decodeResource(context.getResources(),
 				R.drawable.mine);
+	
+		bitmap2 = BitmapFactory.decodeResource(context.getResources(), R.drawable.apple_2);
 		rect = new Rect();
 
 		random = new Random();
@@ -228,16 +231,28 @@ public class GameSurfaceView extends SurfaceView implements
 							* cellHeight);
 					rect.set(left, top, right, bottom);
 
-					if (apples[i][j] == CELL_TYPE_BLANK) {
+					switch (apples[i][j]) {
+					case CELL_TYPE_BLANK:
 						// do nothing
-					} else if (apples[i][j] == CELL_TYPE_APPLE_OK || apples[i][j] == CELL_TYPE_APPLE_2) {
+						break;
+					case CELL_TYPE_APPLE_OK:
 						canvas.drawBitmap(bitmapApple, null, rect, applePaint);
-					} else if (apples[i][j] == CELL_TYPE_ERROR) {
+						break;
+					case CELL_TYPE_ERROR:
 						canvas.drawBitmap(bitmapError, null, rect, applePaint);
-					} else if (apples[i][j] == CELL_TYPE_APPLE_CLICKED) {
+						break;
+					case CELL_TYPE_APPLE_CLICKED:
 						canvas.drawBitmap(bitmapClick, null, rect, applePaint);
-					} else if (apples[i][j] == CELL_TYPE_MINE) {
+						break;
+					case CELL_TYPE_MINE:
 						canvas.drawBitmap(bitmapMine, null, rect, applePaint);
+						break;
+					case CELL_TYPE_APPLE_2:
+						canvas.drawBitmap(bitmap2, null, rect, applePaint);
+						break;
+
+					default:
+						break;
 					}
 				}
 
@@ -415,6 +430,7 @@ public class GameSurfaceView extends SurfaceView implements
 					|| (mode == GameActiviy.MODE_TERRIBLE && type == Constant.TYPE_TERRIBLE_LOOM)
 					|| (mode == GameActiviy.MODE_TERRIBLE && type == Constant.TYPE_TERRIBLE_MOVE)
 					|| type == Constant.TYPE_TERRIBLE_DOUBLE
+					|| type == Constant.TYPE_TERRIBLE_2
 					) {
 
 				if (y_index < 1) {
@@ -433,7 +449,9 @@ public class GameSurfaceView extends SurfaceView implements
 				}
 
 				// game over
-				if ((isBottomAppleRow(x_index, y_index) && apples[y_index][x_index] != CELL_TYPE_APPLE_OK)
+				if ((isBottomAppleRow(x_index, y_index) 
+						&& apples[y_index][x_index] != CELL_TYPE_APPLE_OK
+						&& apples[y_index][x_index] != CELL_TYPE_APPLE_2)
 						|| apples[y_index][x_index] == CELL_TYPE_MINE) {
 					apples[y_index][x_index] = CELL_TYPE_ERROR;
 					playGameSoundEffect(FAIL);
@@ -470,7 +488,7 @@ public class GameSurfaceView extends SurfaceView implements
 						}
 						
 					// apples[y_index][x_index] == CELL_TYPE_APPLE_2) 
-					}else if(apples[y_index][x_index] == CELL_TYPE_APPLE_2){
+					} else if(apples[y_index][x_index] == CELL_TYPE_APPLE_2){
 						playGameSoundEffect(OK);
 						apples[y_index][x_index] = CELL_TYPE_APPLE_OK;
 						
@@ -707,7 +725,9 @@ public class GameSurfaceView extends SurfaceView implements
 					// }else {
 					// moveYOffset += gravityMoveStepHeight;
 					// }
-					if (type == Constant.TYPE_TERRIBLE_MOVE || type == Constant.TYPE_TERRIBLE_DOUBLE) {
+					if (type == Constant.TYPE_TERRIBLE_MOVE 
+							|| type == Constant.TYPE_TERRIBLE_DOUBLE
+							|| type == Constant.TYPE_TERRIBLE_2) {
 						moveYOffset += terribleMoveMoveStepHeight;
 					}else {
 						moveYOffset += gravityMoveStepHeight;
@@ -717,6 +737,7 @@ public class GameSurfaceView extends SurfaceView implements
 				} else {
 					// the last one move out
 					for (int i = 0; i < COLUMN; i++) {
+						// TODO 2
 						if (apples[row - 1][i] == CELL_TYPE_APPLE_OK) {
 							apples[row - 1][i] = CELL_TYPE_ERROR;
 							moveYOffset -= 2 * moveStepHeight;
@@ -882,13 +903,15 @@ public class GameSurfaceView extends SurfaceView implements
 	}
 
 	private boolean isBottomAppleRow(int x_index, int y_index) {
-		if (apples[y_index][x_index] == CELL_TYPE_APPLE_OK) {
+		if (apples[y_index][x_index] == CELL_TYPE_APPLE_OK 
+				|| apples[y_index][x_index] == CELL_TYPE_APPLE_2) {
 			if (y_index == row - 1) {
 				return true;
 			} else {
 				for (int i = y_index + 1; i < row; i++) {
 					for (int j = 0; j < COLUMN; j++) {
-						if (apples[i][j] == CELL_TYPE_APPLE_OK) {
+						if (apples[i][j] == CELL_TYPE_APPLE_OK 
+								|| apples[i][j] == CELL_TYPE_APPLE_2) {
 							return false;
 						}
 
@@ -900,7 +923,8 @@ public class GameSurfaceView extends SurfaceView implements
 			boolean tmp1, tmp2;
 			if (y_index == row - 1) {
 				for (int i = 0; i < COLUMN; i++) {
-					if (apples[y_index][i] == CELL_TYPE_APPLE_OK) {
+					if (apples[y_index][i] == CELL_TYPE_APPLE_OK
+							|| apples[y_index][i] == CELL_TYPE_APPLE_2) {
 						return true;
 					}
 				}
@@ -908,7 +932,8 @@ public class GameSurfaceView extends SurfaceView implements
 			} else {
 				tmp1 = tmp2 = false;
 				for (int i = 0; i < COLUMN; i++) {
-					if (apples[y_index][i] == CELL_TYPE_APPLE_OK) {
+					if (apples[y_index][i] == CELL_TYPE_APPLE_OK
+							|| apples[y_index][i] == CELL_TYPE_APPLE_2) {
 						tmp1 = true;
 					}
 				}
@@ -916,7 +941,8 @@ public class GameSurfaceView extends SurfaceView implements
 				if (tmp1) {
 					for (int i = y_index + 1; i < row; i++) {
 						for (int j = 0; j < COLUMN; j++) {
-							if (apples[i][j] == CELL_TYPE_APPLE_OK) {
+							if (apples[i][j] == CELL_TYPE_APPLE_OK
+									|| apples[i][j] == CELL_TYPE_APPLE_2) {
 								return false;
 							}
 

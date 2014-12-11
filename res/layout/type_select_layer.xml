@@ -193,6 +193,17 @@
                 android:onClick="onStartTerribleDoubleButtonClick"
                 android:text="@string/type_terrible_double"
                 android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/startTerrible2Button"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dip"
+                android:background="@color/red"
+                android:onClick="onStartTerrible2ButtonClick"
+                android:text="@string/type_terrible_2"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <Button

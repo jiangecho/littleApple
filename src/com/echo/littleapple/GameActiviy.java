@@ -422,6 +422,35 @@ public class GameActiviy extends Activity implements GameEventListner {
 		
 	}
 
+	public void onStartTerrible2ButtonClick(View view){
+		if (countDownTimer == null) {
+			countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+		} else {
+			if (countDownTimer.durationMillis != TIME_LENGHT) {
+				countDownTimer = new MyCountDownTimer(TIME_LENGHT, 100);
+			}
+		}
+		type = Constant.TYPE_TERRIBLE_2;
+		mode = MODE_TERRIBLE;
+		gameView.setMode(MODE_TERRIBLE);
+		gameView.setType(Constant.TYPE_TERRIBLE_2);
+
+		bestScore = (int) App.getBestScore(Constant.TYPE_TERRIBLE_2);
+		typeIntroTextView.setText(R.string.terrible_2_intro);
+		typeIntroTextView.setVisibility(View.VISIBLE);
+		currentScore = 0;
+		timerTV.setVisibility(View.VISIBLE);
+		timerTV.setText("30:00");
+		currentModeString = getString(R.string.mode_terrible);
+		currentTypeString = getString(R.string.type_terrible_2);
+		currentModeTypeLevelTextView.setText(getString(
+				R.string.current_mode_type_level, currentModeString,
+				currentTypeString, currentLevelString));
+		typeSelectLayer.setVisibility(View.INVISIBLE);
+		modeSelectLayer.setVisibility(View.INVISIBLE);
+		
+	}
+
 
 	public void onSettingButtonClick(View view) {
 		LayoutInflater layoutInflater = LayoutInflater.from(this);
