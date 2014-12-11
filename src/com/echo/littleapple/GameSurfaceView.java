@@ -738,7 +738,8 @@ public class GameSurfaceView extends SurfaceView implements
 					// the last one move out
 					for (int i = 0; i < COLUMN; i++) {
 						// TODO 2
-						if (apples[row - 1][i] == CELL_TYPE_APPLE_OK) {
+						if (apples[row - 1][i] == CELL_TYPE_APPLE_OK
+								|| apples[row -1][i] == CELL_TYPE_APPLE_2) {
 							apples[row - 1][i] = CELL_TYPE_ERROR;
 							moveYOffset -= 2 * moveStepHeight;
 							status = STATUS_FAIL;
