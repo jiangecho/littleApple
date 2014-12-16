@@ -2,6 +2,7 @@ package com.echo.littleapple;
 
 public class Constant {
 
+	public static final String SHOW_GAME_CENTER = "show_game_center";
 	public static final String TYPE = "TYPE";
 	public static final String TOTAL_AWARD = "TOTAL_AWARD";
 	public static final String LAST_AWARD_WEEK = "LAST_AWARD_WEEK";

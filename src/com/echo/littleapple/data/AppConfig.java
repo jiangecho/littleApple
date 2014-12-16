@@ -4,6 +4,7 @@ public class AppConfig {
 	private int showInterstitialAdVersion; // only for xiaomi
 	private int autoAdVersion;
 	private int versionCode;
+	private int showGameCenterVersion;
 
 	public int getShowInterstitialAdVersion() {
 		return showInterstitialAdVersion;
@@ -15,6 +16,10 @@ public class AppConfig {
 
 	public int getVersionCode() {
 		return versionCode;
+	}
+	
+	public int getShowGameCenterVersion(){
+		return showGameCenterVersion;
 	}
 
 //	public AppConfig(int showInterstitialAdVersion, int autoAdVersion,

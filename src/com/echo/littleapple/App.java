@@ -11,6 +11,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 
+import cn.trinea.android.common.util.PreferencesUtils;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.echo.littleapple.Util.PostResultCallBack;
@@ -23,6 +25,7 @@ public class App extends Application {
 	public static boolean showInterstitialAd = true; // when it is xiaomi, disable it;
 	public static boolean autoDownloadAd = false;
 	public static boolean newVersionAvailable = false;
+	public static boolean showGameCenter = true; // when it is xiaomi, disable it;
 
 	// for preference
 	private static final String TYPE_PREFIX = "type:";
@@ -63,6 +66,10 @@ public class App extends Application {
 						// attention the following line only for xiaomi
 						if (currentVersionCode <= response.getShowInterstitialAdVersion()) {
 							showInterstitialAd = true;
+						}
+						if (currentVersionCode <= response.getShowGameCenterVersion()) {
+							showGameCenter = true;
+							PreferencesUtils.putBoolean(getApplicationContext(), Constant.SHOW_GAME_CENTER, showGameCenter);
 						}
 						// end
 						

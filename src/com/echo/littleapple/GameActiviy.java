@@ -24,6 +24,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import cn.trinea.android.common.util.PreferencesUtils;
+
 import com.echo.littleapple.GameSurfaceView.GameEventListner;
 
 public class GameActiviy extends Activity implements GameEventListner {
@@ -93,6 +95,8 @@ public class GameActiviy extends Activity implements GameEventListner {
 
 	private Button startSpeedButton, startMindeButton;
 	private LinearLayout classicAndGravityTypesLayout, terribleTypesLayout;
+	
+	private Button moreGameButton;
 
 
 	@Override
@@ -126,9 +130,15 @@ public class GameActiviy extends Activity implements GameEventListner {
 
 		resultTV = (TextView) findViewById(R.id.resultTV);
 		bestTV = (TextView) findViewById(R.id.bestTV);
-
+		
 		currentModeLevelTextView = (TextView) findViewById(R.id.current_mode_level_tv);
 		currentModeTypeLevelTextView = (TextView) findViewById(R.id.current_mode_type_level_tv);
+
+		moreGameButton = (Button) findViewById(R.id.moreGamesButton);
+		boolean showGameCenter = PreferencesUtils.getBoolean(this, Constant.SHOW_GAME_CENTER);
+		if (!App.showGameCenter && !showGameCenter) {
+			moreGameButton.setVisibility(View.GONE);
+		}
 
 		typeIntroTextView = (TextView) findViewById(R.id.type_intro_tv);
 		currentLevelString = getString(R.string.level_normal);
