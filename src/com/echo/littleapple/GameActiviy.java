@@ -44,6 +44,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import cn.trinea.android.common.util.PreferencesUtils;
+
 import com.echo.littleapple.GameSurfaceView.GameEventListner;
 import com.echo.littleapple.R.color;
 
@@ -120,6 +122,7 @@ public class GameActiviy extends Activity implements GameEventListner{
 	private Button startSpeedButton, startMindeButton;
 	private LinearLayout classicAndGravityTypesLayout, terribleTypesLayout;
 	
+	private Button moreGameButton;
 
 	private AdBanner adBanner;
 	private View adBannerView;
@@ -177,6 +180,12 @@ public class GameActiviy extends Activity implements GameEventListner{
 		currentModeLevelTextView = (TextView) findViewById(R.id.current_mode_level_tv);
 		currentModeTypeLevelTextView = (TextView) findViewById(R.id.current_mode_type_level_tv);
         
+		moreGameButton = (Button) findViewById(R.id.moreGamesButton);
+		boolean showGameCenter = PreferencesUtils.getBoolean(this, Constant.SHOW_GAME_CENTER);
+		if (!App.showGameCenter && !showGameCenter) {
+			moreGameButton.setVisibility(View.GONE);
+		}
+
         typeIntroTextView = (TextView) findViewById(R.id.type_intro_tv);
         currentLevelString = getString(R.string.level_normal);
         handler = new Handler();

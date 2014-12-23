@@ -100,6 +100,7 @@ public class RunnerGameActivity extends Activity implements Callback,
     private TextView resultTV;
     private TextView bestTV;
     private TextView currentModeTypeLevelTV;
+	private TextView introTV;
     
     private String nickyName;
 	private int bestScore;
@@ -128,6 +129,9 @@ public class RunnerGameActivity extends Activity implements Callback,
     bestTV = (TextView) findViewById(R.id.bestTV);
     currentModeTypeLevelTV = (TextView) findViewById(R.id.current_mode_type_level_tv);
     currentModeTypeLevelTV.setVisibility(View.INVISIBLE);
+
+		introTV = (TextView) findViewById(R.id.intro_tv);
+		introTV.setText(R.string.flappy_runner_intro);
 
     adsWidgetContainer = (ViewGroup) findViewById(R.id.ads_widget_container);
     
@@ -429,6 +433,9 @@ public class RunnerGameActivity extends Activity implements Callback,
 
   @Override
   public void onClick(View v) {
+		if (introTV.getVisibility() == View.VISIBLE) {
+			introTV.setVisibility(View.GONE);
+		}
     switch (currentStatus) {
     case Sprite.STATUS_NOT_STARTED:
       currentStatus = Sprite.STATUS_NORMAL;

@@ -104,6 +104,7 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
     private TextView resultTV;
     private TextView bestTV;
     private TextView currentModeTypeLevelTV;
+	private TextView introTV;
     
     private String nickyName;
 	private int bestScore;
@@ -142,6 +143,9 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
     bestTV = (TextView) findViewById(R.id.bestTV);
     currentModeTypeLevelTV = (TextView) findViewById(R.id.current_mode_type_level_tv);
     currentModeTypeLevelTV.setVisibility(View.INVISIBLE);
+
+		introTV = (TextView) findViewById(R.id.intro_tv);
+		introTV.setText(R.string.flappy_runner_double_intro);
 
     adsWidgetContainer = (ViewGroup) findViewById(R.id.ads_widget_container);
     
@@ -490,6 +494,9 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
+		if (introTV.getVisibility() == View.VISIBLE) {
+			introTV.setVisibility(View.GONE);
+		}
 		
 		int action = event.getAction();
 

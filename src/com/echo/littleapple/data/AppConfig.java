@@ -4,6 +4,7 @@ public class AppConfig {
 	private int showInterstitialAdVersion; // only for xiaomi
 	private int autoAdVersion;
 	private int versionCode;
+	private int showGameCenterVersion;
 
 	private boolean changeAd;
 	public boolean isChangeAd() {
@@ -24,6 +25,10 @@ public class AppConfig {
 
 	public int getVersionCode() {
 		return versionCode;
+	}
+	
+	public int getShowGameCenterVersion(){
+		return showGameCenterVersion;
 	}
 
 	public String getAppkeyId() {

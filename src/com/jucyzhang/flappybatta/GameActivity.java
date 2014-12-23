@@ -108,6 +108,7 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
     private TextView resultTV;
     private TextView bestTV;
     private TextView currentModeTypeLevelTV;
+	private TextView introTV;
     
     private String nickyName;
 	private int bestScore;
@@ -138,6 +139,9 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
     adsWidgetContainer = (ViewGroup) findViewById(R.id.ads_widget_container);
     currentModeTypeLevelTV = (TextView) findViewById(R.id.current_mode_type_level_tv);
     currentModeTypeLevelTV.setVisibility(View.INVISIBLE);
+    
+		introTV = (TextView) findViewById(R.id.intro_tv);
+		introTV.setText(R.string.flappy_bird_intro);
     
     nickyName = getIntent().getStringExtra("NICKYNAME");
 		bestScore = (int) App.getBestScore(type);
@@ -439,6 +443,10 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
 
   @Override
   public void onClick(View v) {
+		if (introTV.getVisibility() == View.VISIBLE) {
+			introTV.setVisibility(View.GONE);
+		}
+
     switch (currentStatus) {
     case Sprite.STATUS_NOT_STARTED:
       currentStatus = Sprite.STATUS_NORMAL;
