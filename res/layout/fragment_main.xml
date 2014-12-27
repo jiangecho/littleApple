@@ -39,7 +39,6 @@
 	        android:paddingLeft="5dip"
 	        android:paddingRight="5dip"
 		    android:background="#e0576069"
-	        android:text="点击最下面的小苹果开始,别点到空白"
 	        />
 
     </LinearLayout>

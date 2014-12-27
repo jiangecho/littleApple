@@ -59,6 +59,7 @@
         android:textColor="@color/white" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/runnerButton"
         android:layout_width="150dip"
         android:layout_height="wrap_content"
@@ -70,6 +71,7 @@
         android:textColor="@color/white" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/birdButton"
         android:layout_width="150dip"
         android:layout_height="wrap_content"
@@ -81,6 +83,7 @@
         android:textColor="@color/white" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/moreGamesButton"
         android:layout_width="150dip"
         android:layout_height="wrap_content"
