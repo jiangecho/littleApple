@@ -92,4 +92,6 @@
     <string name="move_intro">The apple may move left or right</string>
     <string name="terrible_double_intro">Many apples is on the way, two fingers, please</string>
     <string name="terrible_2_intro">The 2 apple, you need to tap twice～</string>
+    <string name="intro">Introduction:</string>
+    <string name="exit_title">Ho，exit?</string>
 </resources>
