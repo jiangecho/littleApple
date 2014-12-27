@@ -103,7 +103,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dip"
         android:layout_marginTop="10dip"
-        android:text="说明:"
+        android:text="@string/intro"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/red" />
 

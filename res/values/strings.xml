@@ -133,4 +133,5 @@
     <string name="flappy_bird_intro">小鸟飞呀飞，小心别撞死哦~</string>
     <string name="flappy_runner_intro">跳过每一个障碍物，注意把握时机~</string>
     <string name="flappy_runner_double_intro">跳过每一个障碍物，两个小苹果可以同时起跳哦~</string>
+    <string name="intro">说明:</string>
 </resources>
