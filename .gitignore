@@ -6,3 +6,8 @@ project.properties
 .project
 .classpath
 /.settings
+/.gradle
+/.idea
+/build
+/gradle
+
