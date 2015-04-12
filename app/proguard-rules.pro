@@ -15,3 +15,8 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keepattributes Signature
+-dontwarn android.support.**
+-dontwarn com.squareup.**
+-dontwarn okio.**
+-keep class com.wandoujia.ads.sdk.** { *; }
