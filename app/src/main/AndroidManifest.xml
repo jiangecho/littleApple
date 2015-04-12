@@ -45,24 +45,18 @@
 
         <!--For AdsSdk.-->
         <activity
-                android:name="com.wandoujia.ads.sdk.AppWallActivity"
-                android:launchMode="singleTop"
-                android:configChanges="orientation|keyboardHidden|screenSize"/>
-
+            android:name="com.wandoujia.ads.sdk.activities.AppDetailActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-                android:name="com.wandoujia.ads.sdk.AppWidgetContainerActivity"
-                android:theme="@android:style/Theme.Translucent.NoTitleBar"
-                android:configChanges="orientation|keyboardHidden|screenSize"/>
+            android:name="com.wandoujia.ads.sdk.activities.AppWallActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name="com.wandoujia.ads.sdk.activities.InterstitialActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <service android:name="com.wandoujia.ads.sdk.DownloadService"/>
-
-        <receiver android:name="com.wandoujia.ads.sdk.AppChangedReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED"/>
-
-                <data android:scheme="package"/>
-            </intent-filter>
-        </receiver>
+        <service
+            android:name="com.wandoujia.ads.sdk.download.AppDownloadService"
+            android:process=":app_download" />
 
         <activity
             android:name="com.jucyzhang.flappybatta.GameActivity"

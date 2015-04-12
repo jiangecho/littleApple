@@ -8,8 +8,6 @@ import org.apache.http.message.BasicNameValuePair;
 
 import com.echo.littleapple.Util.PostResultCallBack;
 import com.wandoujia.ads.sdk.Ads;
-import com.wandoujia.ads.sdk.loader.Fetcher.AdFormat;
-import com.wandoujia.ads.sdk.widget.AppWidget;
 
 import android.app.Activity;
 import android.app.Application;
@@ -119,12 +117,19 @@ public class App extends Application {
 	private void initAd() {
 		// TODO depend on different ad platform
 		// Init AdsSdk.
-		try {
-			Ads.init(this, APPKEY_ID, SECRET_KEY);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Ads.init(App.getContext(), APPKEY_ID, SECRET_KEY);
+					Ads.preLoad(App.AD_TAG, Ads.AdFormat.interstitial);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+		}).start();
 	}
 
 	public static void showInterstitialAd(Activity activity,
@@ -132,43 +137,44 @@ public class App extends Application {
 		if (!showInterstitialAd) {
 			return;
 		}
-		boolean tmp = Ads.isLoaded(AdFormat.interstitial, adTag);
-		if (tmp) {
-			adsWidgetContainer.setVisibility(View.VISIBLE);
-			AppWidget appWidget = Ads.showAppWidget(activity, null, adTag,
-					Ads.ShowMode.WIDGET, new View.OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							adsWidgetContainer.setVisibility(View.GONE);
-						}
-					});
-			if (App.autoDownloadAd) {
-				SharedPreferences sharedPreferences = activity
-						.getSharedPreferences(activity.getPackageName(),
-								Context.MODE_PRIVATE);
-				long lastEndlessModeMillis = sharedPreferences.getLong(
-						LAST_ENDLESS_DATE, 0);
-
-				// long lastEndlessModeMillis = 0;
-				long currentMillis = System.currentTimeMillis();
-				long len = currentMillis - lastEndlessModeMillis;
-				if (len > 24 * 60 * 60 * 1000) {
-					int app_widget_install_button = com.wandoujia.ads.sdk.R.id.app_widget_install_button;
-					View view = appWidget
-							.findViewById(app_widget_install_button);
-					if (view != null && view instanceof Button) {
-						((Button) view).performClick();
-						sharedPreferences.edit()
-								.putLong(LAST_ENDLESS_DATE, currentMillis)
-								.commit();
-					}
-				}
-
-			}
-			adsWidgetContainer.addView(appWidget);
-		} else {
-			Ads.preLoad(activity, AdFormat.interstitial, adTag);
-		}
+		Ads.showInterstitial(activity, adTag);
+//		boolean tmp = Ads.isLoaded(AdFormat.interstitial, adTag);
+//		if (tmp) {
+//			adsWidgetContainer.setVisibility(View.VISIBLE);
+//			AppWidget appWidget = Ads.showAppWidget(activity, null, adTag,
+//					Ads.ShowMode.WIDGET, new View.OnClickListener() {
+//						@Override
+//						public void onClick(View v) {
+//							adsWidgetContainer.setVisibility(View.GONE);
+//						}
+//					});
+//			if (App.autoDownloadAd) {
+//				SharedPreferences sharedPreferences = activity
+//						.getSharedPreferences(activity.getPackageName(),
+//								Context.MODE_PRIVATE);
+//				long lastEndlessModeMillis = sharedPreferences.getLong(
+//						LAST_ENDLESS_DATE, 0);
+//
+//				// long lastEndlessModeMillis = 0;
+//				long currentMillis = System.currentTimeMillis();
+//				long len = currentMillis - lastEndlessModeMillis;
+//				if (len > 24 * 60 * 60 * 1000) {
+//					int app_widget_install_button = com.wandoujia.ads.sdk.R.id.app_widget_install_button;
+//					View view = appWidget
+//							.findViewById(app_widget_install_button);
+//					if (view != null && view instanceof Button) {
+//						((Button) view).performClick();
+//						sharedPreferences.edit()
+//								.putLong(LAST_ENDLESS_DATE, currentMillis)
+//								.commit();
+//					}
+//				}
+//
+//			}
+//			adsWidgetContainer.addView(appWidget);
+//		} else {
+//			Ads.preLoad(adTag, Ads.AdFormat.interstitial);
+//		}
 
 	}
 

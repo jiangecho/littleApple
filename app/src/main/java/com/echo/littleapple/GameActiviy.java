@@ -8,13 +8,6 @@ import java.util.Random;
 import android.content.SharedPreferences;
 import org.apache.http.util.ByteArrayBuffer;
 
-import com.wandoujia.ads.sdk.AdListener;
-import com.wandoujia.ads.sdk.Ads;
-import com.wandoujia.ads.sdk.Ads.ShowMode;
-import com.wandoujia.ads.sdk.R.string;
-import com.wandoujia.ads.sdk.loader.Fetcher.AdFormat;
-import com.wandoujia.ads.sdk.widget.AdBanner;
-import com.wandoujia.ads.sdk.widget.AppWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +38,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import cn.trinea.android.common.util.PreferencesUtils;
+import com.wandoujia.ads.sdk.Ads;
+
 
 import com.echo.littleapple.GameSurfaceView.GameEventListner;
 import com.echo.littleapple.R.color;
@@ -125,7 +119,6 @@ public class GameActiviy extends Activity implements GameEventListner{
 	
 	private Button moreGameButton;
 
-	private AdBanner adBanner;
 	private View adBannerView;
 
 	private boolean isShowingAppWall = false;
@@ -1011,17 +1004,11 @@ level = LEVEL_HARD;
 		if (!App.showInterstitialAd) {
 			showBannerAd();
 		}
-		if (adBanner != null) {
-			adBanner.startAutoScroll();
-		}
 		super.onStart();
 	}
 
 	@Override
 	protected void onStop() {
-		if (adBanner != null) {
-			adBanner.stopAutoScroll();
-		}
 		super.onStop();
 	}
 
@@ -1196,11 +1183,7 @@ level = LEVEL_HARD;
 		      containerView.removeView(adBannerView);
 		    }
 
-
-
-		    adBanner = Ads.showBannerAd(this, (ViewGroup) findViewById(R.id.banner_ad_container),
-		       "61312ac6f2b2f4d277ebabd02f88f00b");
-		    adBannerView = adBanner.getView();
+		    adBannerView = Ads.createBannerView(this, "61312ac6f2b2f4d277ebabd02f88f00b");
 		  }
 	  
 	  

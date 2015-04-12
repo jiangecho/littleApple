@@ -39,9 +39,6 @@ import com.echo.littleapple.App;
 import com.echo.littleapple.Constant;
 import com.echo.littleapple.NewRankAcitivity;
 import com.echo.littleapple.R;
-import com.wandoujia.ads.sdk.Ads;
-import com.wandoujia.ads.sdk.Ads.ShowMode;
-import com.wandoujia.ads.sdk.loader.Fetcher.AdFormat;
 
 public class TwoRunnerGameActivity extends Activity implements Callback,
 		OnTouchListener {

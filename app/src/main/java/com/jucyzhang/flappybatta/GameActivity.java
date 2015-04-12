@@ -46,9 +46,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.echo.littleapple.NewRankAcitivity;
-import com.wandoujia.ads.sdk.Ads;
-import com.wandoujia.ads.sdk.Ads.ShowMode;
-import com.wandoujia.ads.sdk.loader.Fetcher.AdFormat;
 
 public class GameActivity extends Activity implements Callback, OnClickListener {
   /**

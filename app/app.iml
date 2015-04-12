@@ -85,18 +85,24 @@
       <excludeFolder url="file://$MODULE_DIR$/build/test-results" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 21 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 22 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
-    <orderEntry type="library" exported="" name="library-1.0.15" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.0.0" level="project" />
-    <orderEntry type="library" exported="" name="ShareSDK-Wechat-Core-2.3.11" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-22.0.0" level="project" />
+    <orderEntry type="library" exported="" name="okio-1.2.0" level="project" />
+    <orderEntry type="library" exported="" name="okhttp-2.2.0" level="project" />
     <orderEntry type="library" exported="" name="ShareSDK-Wechat-Moments-2.3.11" level="project" />
     <orderEntry type="library" exported="" name="mframework" level="project" />
+    <orderEntry type="library" exported="" name="okhttp-urlconnection-2.2.0" level="project" />
+    <orderEntry type="library" exported="" name="appcompat-v7-22.0.0" level="project" />
+    <orderEntry type="library" exported="" name="otto-1.3.6" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
+    <orderEntry type="library" exported="" name="library-1.0.15" level="project" />
+    <orderEntry type="library" exported="" name="WandoujiaSDK-" level="project" />
+    <orderEntry type="library" exported="" name="ShareSDK-Wechat-Core-2.3.11" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-22.0.0" level="project" />
     <orderEntry type="library" exported="" name="ShareSDK-SinaWeibo-2.3.11" level="project" />
     <orderEntry type="library" exported="" name="ShareSDK-QZone-2.3.11" level="project" />
-    <orderEntry type="library" exported="" name="appcompat-v7-22.0.0" level="project" />
     <orderEntry type="library" exported="" name="ShareSDK-Core-2.3.11" level="project" />
+    <orderEntry type="library" exported="" name="picasso-2.4.0" level="project" />
   </component>
 </module>
