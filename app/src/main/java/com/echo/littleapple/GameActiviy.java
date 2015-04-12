@@ -5,6 +5,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Random;
 
+import android.content.SharedPreferences;
 import org.apache.http.util.ByteArrayBuffer;
 
 import com.wandoujia.ads.sdk.AdListener;
@@ -181,7 +182,8 @@ public class GameActiviy extends Activity implements GameEventListner{
 		currentModeTypeLevelTextView = (TextView) findViewById(R.id.current_mode_type_level_tv);
         
 		moreGameButton = (Button) findViewById(R.id.moreGamesButton);
-		boolean showGameCenter = PreferencesUtils.getBoolean(this, Constant.SHOW_GAME_CENTER);
+		SharedPreferences sharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+		boolean showGameCenter = sharedPreferences.getBoolean(Constant.SHOW_GAME_CENTER, false);
 		if (!App.showGameCenter && !showGameCenter) {
 			moreGameButton.setVisibility(View.GONE);
 		}
@@ -1324,3 +1326,4 @@ level = LEVEL_HARD;
 	  dialog.show();
    }
 }
+
