@@ -25,3 +25,17 @@
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
+
+# volley
+-dontwarn com.android.volley.jar.**
+-keep class com.android.volley.**{*;}
+
+## ----------------------------------
+##      sharesdk
+## ----------------------------------
+-keep class cn.sharesdk.**{*;}
+-keep class com.sina.**{*;}
+-keep class **.R$* {*;}
+-keep class **.R{*;}
+-dontwarn cn.sharesdk.**
+-dontwarn **.R$*
