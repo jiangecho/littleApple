@@ -37,6 +37,7 @@ import com.echo.littleapple.App;
 import com.echo.littleapple.Constant;
 import com.echo.littleapple.NewRankAcitivity;
 import com.echo.littleapple.R;
+import com.umeng.analytics.MobclickAgent;
 
 public class TwoRunnerGameActivity extends Activity implements Callback,
 		OnTouchListener {
@@ -162,12 +163,14 @@ public class TwoRunnerGameActivity extends Activity implements Callback,
 	@Override
 	protected void onResume() {
 		super.onResume();
+		MobclickAgent.onResume(this);
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		stopDrawingThread();
+		MobclickAgent.onPause(this);
 	}
 
 	@Override

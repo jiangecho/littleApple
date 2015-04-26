@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 
 import com.echo.littleapple.GameSurfaceView.GameEventListner;
+import com.umeng.analytics.MobclickAgent;
 
 public class GameActiviy extends Activity implements GameEventListner {
 
@@ -183,6 +184,7 @@ public class GameActiviy extends Activity implements GameEventListner {
 			dialog.show();
 		}
 
+		MobclickAgent.updateOnlineConfig(this);
 	}
 
 	@Override
@@ -193,12 +195,14 @@ public class GameActiviy extends Activity implements GameEventListner {
 	@Override
 	public void onPause() {
 		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 		gameView.initSoundPool();
+		MobclickAgent.onResume(this);
 	}
 
 	private class MyCountDownTimer extends CountDownTimer {

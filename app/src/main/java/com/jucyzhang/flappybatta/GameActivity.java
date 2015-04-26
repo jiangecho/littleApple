@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import com.umeng.analytics.MobclickAgent;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -145,12 +146,14 @@ public class GameActivity extends Activity implements Callback, OnClickListener 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		MobclickAgent.onResume(this);
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		stopDrawingThread();
+		MobclickAgent.onPause(this);
 	}
 
 	@Override
