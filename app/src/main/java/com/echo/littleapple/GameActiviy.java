@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -97,6 +98,7 @@ public class GameActiviy extends Activity implements GameEventListner {
 	private LinearLayout classicAndGravityTypesLayout, terribleTypesLayout;
 	
 	private Button moreGameButton;
+	private MediaPlayer mediaPlayer;
 
 
 	@Override
@@ -185,11 +187,19 @@ public class GameActiviy extends Activity implements GameEventListner {
 		}
 
 		MobclickAgent.updateOnlineConfig(this);
+
+		mediaPlayer = MediaPlayer.create(this, R.raw.little_apple);
+		mediaPlayer.setVolume(0.5f, 0.5f);
+		mediaPlayer.setLooping(true);
+		mediaPlayer.start();
+
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		mediaPlayer.stop();
+		mediaPlayer.release();
 	}
 
 	@Override
