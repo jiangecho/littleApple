@@ -158,6 +158,9 @@ public class GameSurfaceView extends SurfaceView implements
 
 		canvas = holder.lockCanvas();
 
+		if (canvas == null){
+			return;
+		}
 		synchronized (holder) {
 			canvas.drawColor(Color.WHITE);
 			// draw the first horizontal lines, maybe hidden
