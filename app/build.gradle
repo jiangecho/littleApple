@@ -20,8 +20,8 @@ android {
         applicationId "com.echo.littleapple"
         minSdkVersion 9
         targetSdkVersion 21
-        versionCode 1308
-        versionName "3.8"
+        versionCode 1310
+        versionName "4.0"
     }
 
     signingConfigs {
