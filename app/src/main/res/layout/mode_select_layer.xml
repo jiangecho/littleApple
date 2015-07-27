@@ -25,16 +25,6 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/white" />
 
-    <Button
-        android:id="@+id/classicButton"
-        android:layout_width="150dip"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dip"
-        android:background="@color/red"
-        android:onClick="onClassicButtonClick"
-        android:text="@string/mode_classic"
-        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/gravityButton"
@@ -56,6 +46,17 @@
         android:background="@color/red"
         android:onClick="onTerribleGameButtonClick"
         android:text="@string/mode_terrible"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/classicButton"
+        android:layout_width="150dip"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dip"
+        android:background="@color/red"
+        android:onClick="onClassicButtonClick"
+        android:text="@string/mode_classic"
         android:textColor="@color/white" />
 
     <Button
